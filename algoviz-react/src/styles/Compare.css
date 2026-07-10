@@ -1,0 +1,196 @@
+.compare-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.compare-controls {
+  background: var(--card-bg, #1e1e2e);
+  border: 1px solid var(--border, #313244);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.compare-selectors {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.compare-selector {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.compare-selector label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted, #6c7086);
+}
+
+.compare-selector select {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border, #313244);
+  background: var(--bg-alt, #181825);
+  color: var(--text, #cdd6f4);
+  font-size: 0.9rem;
+}
+
+.compare-input-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.compare-input-row label {
+  font-size: 0.85rem;
+  color: var(--text-muted, #6c7086);
+  white-space: nowrap;
+}
+
+.compare-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border, #313244);
+  background: var(--bg-alt, #181825);
+  color: var(--text, #cdd6f4);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+}
+
+.compare-run-btn {
+  background: var(--accent, #cba6f7);
+  color: var(--bg, #11111b);
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.compare-run-btn:hover {
+  opacity: 0.85;
+}
+
+.compare-metrics {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.compare-metric-card {
+  flex: 1;
+  background: var(--card-bg, #1e1e2e);
+  border: 1px solid var(--border, #313244);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.compare-metric-card .metric-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted, #6c7086);
+}
+
+.compare-metric-card .metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent, #cba6f7);
+}
+
+.compare-metric-card .metric-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted, #6c7086);
+}
+
+.compare-canvases {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.compare-canvas-wrapper {
+  background: var(--card-bg, #1e1e2e);
+  border: 1px solid var(--border, #313244);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.compare-canvas-wrapper h3 {
+  font-size: 0.95rem;
+  margin: 0 0 0.75rem 0;
+  color: var(--text, #cdd6f4);
+}
+
+.compare-canvas {
+  width: 100%;
+  height: 300px;
+  border-radius: 8px;
+  background: var(--bg-alt, #181825);
+}
+
+.compare-msg {
+  margin: 0.75rem 0 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted, #6c7086);
+  font-family: 'JetBrains Mono', monospace;
+  min-height: 1.2rem;
+}
+
+.compare-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--card-bg, #1e1e2e);
+  border: 1px solid var(--border, #313244);
+  border-radius: 10px;
+}
+
+.compare-stepper button {
+  background: var(--bg-alt, #181825);
+  color: var(--text, #cdd6f4);
+  border: 1px solid var(--border, #313244);
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.compare-stepper button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.compare-stepper span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text, #cdd6f4);
+}
+
+[data-theme='light'] .compare-controls,
+[data-theme='light'] .compare-metric-card,
+[data-theme='light'] .compare-canvas-wrapper,
+[data-theme='light'] .compare-stepper {
+  --card-bg: #ffffff;
+  --border: #e0e0e0;
+  --bg-alt: #f5f5f5;
+  --text: #1e1e2e;
+  --text-muted: #666;
+  --accent: #7c3aed;
+}

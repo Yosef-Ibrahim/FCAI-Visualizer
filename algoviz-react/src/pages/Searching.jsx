@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { algorithms } from '../data/algorithmData';
-import {
-  genLinearSearchSteps,
-  genBinarySearchSteps,
-  genJumpSearchSteps,
-} from '../algorithms/searching/searchingGenerators';
+import { getAlgorithm, getAlgorithmsByCategory } from '../application/AlgorithmRegistry';
 import { SearchingVisualizer } from '../algorithms/searching/searchingVisualizer';
 import { useLang } from '../hooks/useLang';
 
@@ -18,14 +13,10 @@ import '../styles/Searching.css';
 // ── Only the searching subset ──────────────────────────────────────────────
 const SEARCH_KEYS = ['linear-search', 'binary-search', 'jump-search'];
 const searchAlgorithms = Object.fromEntries(
-  Object.entries(algorithms).filter(([k]) => SEARCH_KEYS.includes(k))
+  getAlgorithmsByCategory('searching')
+    .filter(a => SEARCH_KEYS.includes(a.id))
+    .map(a => [a.id, a])
 );
-
-const generators = {
-  'linear-search': genLinearSearchSteps,
-  'binary-search': genBinarySearchSteps,
-  'jump-search':   genJumpSearchSteps,
-};
 
 // Searching requires a sorted array for binary/jump
 const NEEDS_SORTED = ['binary-search', 'jump-search'];
@@ -115,12 +106,11 @@ export default function Searching() {
   useEffect(() => {
     if (array.length === 0) return;
     const t = parseInt(target, 10);
-    const generator = generators[algo];
-    if (!generator) return;
+    const instance = getAlgorithm(algo);
 
     const newSteps = isNaN(t)
-      ? generator(array, array[0])   // fallback: search for first element
-      : generator(array, t);
+      ? instance.generateSteps({ arr: array, target: array[0] })
+      : instance.generateSteps({ arr: array, target: t });
 
     setSteps(newSteps);
     setStepIdx(-1);
@@ -172,6 +162,10 @@ export default function Searching() {
     ? (activeStep.codeLines?.[lang] ?? activeStep.codeLine ?? -1)
     : -1;
   const currentAlgoData = searchAlgorithms[algo] ?? {};
+  const Smetadata = currentAlgoData;
+  const ScodeByLang = Smetadata?.codeSnippets
+    ? Object.fromEntries(Object.entries(Smetadata.codeSnippets).map(([lang, lines]) => [lang, lines.join('\n')]))
+    : null;
 
   // Result badge derived from the last reached step
   const resultFound    = activeStep?.found;
@@ -228,7 +222,7 @@ export default function Searching() {
 
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="searching-header">
-        <h2>{currentAlgoData.name ?? 'Searching'}</h2>
+        <h2>{Smetadata?.name ?? 'Searching'}</h2>
         {activeStep && (
           <div className="step-msg">{activeStep.msg}</div>
         )}
@@ -287,18 +281,18 @@ export default function Searching() {
 
         {/* Side panel */}
         <div className="searching-side-panel">
-          <ComplexityPanel complexity={currentAlgoData.complexity} />
+          <ComplexityPanel complexity={Smetadata?.complexity} />
 
           <div className="panel-card">
             <h3>Description</h3>
             <p style={{ fontSize: '14px', color: 'var(--text-muted)', lineHeight: '1.6' }}>
-              {currentAlgoData.description}
+              {Smetadata?.explanation?.body?.replace(/<[^>]*>/g, '').substring(0, 200) || `${Smetadata?.name || algo} search`}
             </p>
           </div>
 
           <CodePanel
-            codeByLang={currentAlgoData.codeByLang}
-            codeSnippet={currentAlgoData.code?.js}
+            codeByLang={ScodeByLang}
+            codeSnippet={ScodeByLang?.[lang] || ''}
             activeLine={activeLine}
             lang={lang}
             setLang={setLang}

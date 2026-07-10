@@ -1,8 +1,130 @@
-const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
-const MODEL = import.meta.env.VITE_OPENROUTER_MODEL || 'openrouter/auto';
+import { ApiKeyManager } from '../application/apikeys/ApiKeyManager';
 
-const IS_PROD = import.meta.env.PROD;
-const API_URL = IS_PROD ? '/api/chat' : 'https://openrouter.ai/api/v1/chat/completions';
+const manager = new ApiKeyManager();
+
+const PROVIDER_CONFIG = {
+  Groq: {
+    buildUrl: (key) => `https://api.groq.com/openai/v1/chat/completions`,
+    buildHeaders: (key) => ({
+      'Authorization': `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    }),
+    parseResponse: (data) => data.choices?.[0]?.message?.content || '',
+  },
+  OpenRouter: {
+    buildUrl: (key) => `https://openrouter.ai/api/v1/chat/completions`,
+    buildHeaders: (key) => ({
+      'Authorization': `Bearer ${key}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://fcai-visualizer.example.com',
+      'X-Title': 'FCAI-Visualizer',
+    }),
+    parseResponse: (data) => data.choices?.[0]?.message?.content || '',
+  },
+  OpenAI: {
+    buildUrl: (key) => `https://api.openai.com/v1/chat/completions`,
+    buildHeaders: (key) => ({
+      'Authorization': `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    }),
+    parseResponse: (data) => data.choices?.[0]?.message?.content || '',
+  },
+  Gemini: {
+    buildUrl: (key, model) =>
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+    buildHeaders: () => ({ 'Content-Type': 'application/json' }),
+    buildBody: (model, messages) => ({
+      contents: messages.map(m => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }],
+      })),
+    }),
+    parseResponse: (data) => data.candidates?.[0]?.content?.parts?.[0]?.text || '',
+  },
+};
+
+function formatMessages(messages) {
+  return messages.map(m => ({
+    role: m.role,
+    content: m.content,
+  }));
+}
+
+async function callProvider(keyEntry, messages, options = {}) {
+  const config = PROVIDER_CONFIG[keyEntry.provider];
+  if (!config) throw new Error(`Unknown provider: ${keyEntry.provider}`);
+
+  const body = config.buildBody
+    ? config.buildBody(keyEntry.model, messages)
+    : { model: keyEntry.model, messages: formatMessages(messages), ...options };
+
+  const url = config.buildUrl(keyEntry.key, keyEntry.model);
+  const headers = config.buildHeaders(keyEntry.key);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  });
+
+  if (response.status === 429) {
+    manager.markOutOfWork(keyEntry.id);
+    throw new Error('RATE_LIMITED');
+  }
+  if (response.status === 401) {
+    manager.markOutOfWork(keyEntry.id);
+    throw new Error('UNAUTHORIZED');
+  }
+  if (response.status === 402 || response.status === 403) {
+    manager.markOutOfWork(keyEntry.id);
+    throw new Error('OUT_OF_CREDITS');
+  }
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`API error (${response.status}): ${error}`);
+  }
+
+  const data = await response.json();
+  const content = config.parseResponse(data);
+  manager.markSuccess(keyEntry.id);
+  return content;
+}
+
+async function callAI(messages, options = {}) {
+  let keyEntry = manager.getKeyForRequest();
+  if (!keyEntry || !keyEntry.hasKey) {
+    throw new Error('NO_API_KEY_AVAILABLE');
+  }
+
+  const defaultOptions = {
+    max_tokens: options.maxTokens || 2048,
+    temperature: options.temperature ?? 0.7,
+  };
+
+  let lastError = null;
+  const triedKeys = new Set();
+
+  for (let attempt = 0; attempt < 5; attempt++) {
+    if (triedKeys.has(keyEntry.id)) break;
+    triedKeys.add(keyEntry.id);
+
+    try {
+      return await callProvider(keyEntry, messages, defaultOptions);
+    } catch (err) {
+      lastError = err;
+      if (err.message === 'RATE_LIMITED' || err.message === 'OUT_OF_CREDITS' || err.message === 'UNAUTHORIZED') {
+        const next = manager.getKeyForRequest();
+        if (!next || !next.hasKey || triedKeys.has(next.id)) break;
+        keyEntry = next;
+        continue;
+      }
+      throw err;
+    }
+  }
+
+  throw lastError || new Error('AI call failed after all retries');
+}
 
 const CACHE_STORAGE_KEY = 'fcai_visualizer_question_cache';
 const MAX_CACHE_PER_KEY = 20;
@@ -38,23 +160,16 @@ function saveCacheToStorage() {
 }
 
 function getCachedQuestion(topic, subTopic, difficulty, questionMode, language) {
-  if (questionCache.size === 0) {
-    loadCacheFromStorage();
-  }
-  
+  if (questionCache.size === 0) loadCacheFromStorage();
   const key = getCacheKey(topic, subTopic, difficulty, questionMode, language);
   const questions = questionCache.get(key);
-  
-  if (questions && questions.length > 0) {
-    return questions.pop();
-  }
+  if (questions && questions.length > 0) return questions.pop();
   return null;
 }
 
 function cacheQuestions(topic, subTopic, difficulty, questionMode, language, questions) {
   const key = getCacheKey(topic, subTopic, difficulty, questionMode, language);
   const existing = questionCache.get(key) || [];
-  
   const combined = [...existing, ...questions].slice(-MAX_CACHE_PER_KEY);
   questionCache.set(key, combined);
   saveCacheToStorage();
@@ -64,9 +179,7 @@ loadCacheFromStorage();
 
 export async function generateQuestion(topic, subTopic, difficulty, questionType = 'mcq', questionMode = 'general', language = 'javascript') {
   const cached = getCachedQuestion(topic, subTopic, difficulty, questionMode, language);
-  if (cached) {
-    return cached;
-  }
+  if (cached) return cached;
 
   const useSingleQuestion = questionMode === 'code' || questionMode === 'complexity';
   const questionCount = useSingleQuestion ? 1 : BATCH_SIZE;
@@ -98,7 +211,7 @@ Guidelines:
 - Make questions unique and different from common textbook examples
 - For trace-related questions, ask about specific steps (e.g., "what happens after this node is deleted", "how does the array look after 2 passes")
 - If including code, put it in the question text
-- ${questionCount === 1 
+- ${questionCount === 1
   ? `Generate exactly ONE question in JSON format (not an array):
 {"question": "...", "type": "${questionType}", "difficulty": "${difficulty}", "topic": "${topic}", "subTopic": "${subTopic || topic}", "questionMode": "${questionMode}", "options": ["A) option1", "B) option2", "C) option3", "D) option4"], "correctAnswer": "A", "explanation": "..."}`
   : `Generate exactly ${BATCH_SIZE} questions in a JSON array:
@@ -129,32 +242,10 @@ Make them different from standard textbook examples. Focus on ${topic} algorithm
         ? `Generate ONE unique ${difficulty} question about ${topicName} (${questionMode} mode).`
         : userPrompt;
 
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          ...(IS_PROD ? {} : { 'Authorization': `Bearer ${OPENROUTER_API_KEY}` }),
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://fcai-visualizer.example.com',
-          'X-Title': 'FCAI-Visualizer AI Training',
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          messages: [
-            { role: 'system', content: actualSystemPrompt },
-            { role: 'user', content: actualUserPrompt },
-          ],
-          max_tokens: 2048,
-          temperature: 0.7,
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`API error: ${error}`);
-      }
-
-      const data = await response.json();
-      const content = data.choices[0].message.content;
+      const content = await callAI([
+        { role: 'system', content: actualSystemPrompt },
+        { role: 'user', content: actualUserPrompt },
+      ], { maxTokens: 2048, temperature: 0.7 });
 
       try {
         let parsed;
@@ -183,8 +274,7 @@ Make them different from standard textbook examples. Focus on ${topic} algorithm
         throw new Error(`Parsed JSON does not have required fields. Content: ${content.substring(0, 200)}`);
       } catch (parseError) {
         console.error(`Parse attempt ${attempt + 1} failed: ${parseError.message}`);
-        console.error('Raw response:', content.substring(0, 500));
-        lastError = new Error(`Parsing failed: ${parseError.message}. Raw response: ${content.substring(0, 200)}`);
+        lastError = new Error(`Parsing failed: ${parseError.message}. Raw: ${content.substring(0, 200)}`);
       }
     } catch (error) {
       console.error(`AI Service Attempt ${attempt + 1} failed:`, error);
@@ -211,43 +301,25 @@ Return a JSON with:
 {
   "isCorrect": true/false,
   "feedback": "Brief explanation of why they were right or wrong",
-  "nextDifficulty": "easier"/"same"/"harder" // based on performance
+  "nextDifficulty": "easier"/"same"/"harder"
 }`;
 
   try {
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        ...(IS_PROD ? {} : { 'Authorization': `Bearer ${OPENROUTER_API_KEY}` }),
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://fcai-visualizer.example.com',
-        'X-Title': 'FCAI-Visualizer AI Training',
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: [
-          { role: 'system', content: 'You are an educational AI that evaluates student answers. Be encouraging but honest.' },
-          { role: 'user', content: prompt },
-        ],
-        max_tokens: 512,
-        temperature: 0.5,
-      }),
-    });
+    const content = await callAI([
+      { role: 'system', content: 'You are an educational AI that evaluates student answers. Be encouraging but honest.' },
+      { role: 'user', content: prompt },
+    ], { maxTokens: 512, temperature: 0.5 });
 
-    const data = await response.json();
-    const content = data.choices[0].message.content;
-    
     try {
       const jsonMatch = content.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
+      if (jsonMatch) return JSON.parse(jsonMatch[0]);
     } catch {
-      return { isCorrect: userAnswer === question.correctAnswer, feedback: 'Answer evaluated.', nextDifficulty: 'same' };
+      // fallback
     }
   } catch {
-    return { isCorrect: userAnswer === question.correctAnswer, feedback: 'Answer evaluated.', nextDifficulty: 'same' };
+    // fallback
   }
+  return { isCorrect: userAnswer === question.correctAnswer, feedback: 'Answer evaluated.', nextDifficulty: 'same' };
 }
 
 export async function generateTraceStep(algorithm, arrayState, stepNumber) {
@@ -265,7 +337,7 @@ Return JSON:
 {
   "action": "compare/swap/key/select/find",
   "description": "What happens in this step",
-  "indices": [i, j], // indices involved
+  "indices": [i, j],
   "nextState": [resulting array],
   "question": "What is the correct next state after this step?",
   "options": ["A) [array1]", "B) [array2]", "C) [array3]", "D) [array4]"],
@@ -273,33 +345,14 @@ Return JSON:
 }`;
 
   try {
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        ...(IS_PROD ? {} : { 'Authorization': `Bearer ${OPENROUTER_API_KEY}` }),
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://fcai-visualizer.example.com',
-        'X-Title': 'FCAI-Visualizer AI Training',
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: [
-          { role: 'system', content: 'You are an algorithm tracing teacher. Help students understand each step of algorithms.' },
-          { role: 'user', content: prompt },
-        ],
-        max_tokens: 1024,
-        temperature: 0.5,
-      }),
-    });
+    const content = await callAI([
+      { role: 'system', content: 'You are an algorithm tracing teacher. Help students understand each step of algorithms.' },
+      { role: 'user', content: prompt },
+    ], { maxTokens: 1024, temperature: 0.5 });
 
-    const data = await response.json();
-    const content = data.choices[0].message.content;
-    
     try {
       const jsonMatch = content.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
+      if (jsonMatch) return JSON.parse(jsonMatch[0]);
     } catch {
       return generateFallbackTraceStep(algorithm, arrayState, stepNumber);
     }
@@ -331,4 +384,12 @@ function generateFallbackTraceStep(algorithm, array, step) {
     options: ['A) Swap', 'B) No swap', 'C) Move to end', 'D) No change'],
     correctAnswer: 'A',
   };
+}
+
+export function getApiKeyStatus() {
+  return manager.getStatus();
+}
+
+export function resetApiKeys() {
+  manager.resetAll();
 }

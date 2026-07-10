@@ -110,6 +110,25 @@ export default function Sidebar({ collapsed, onToggle }) {
           <span className="icon">🎯</span>
           Practice Mode
         </NavLink>
+        <NavLink
+          to="/compare"
+          className={({ isActive }) =>
+            `sidebar-mode-item${isActive ? ' active' : ''}`
+          }
+        >
+          <span className="icon">⚖️</span>
+          Compare
+        </NavLink>
+        <div className="sidebar-section-title">System</div>
+        <NavLink
+          to="/api-keys"
+          className={({ isActive }) =>
+            `sidebar-mode-item${isActive ? ' active' : ''}`
+          }
+        >
+          <span className="icon">🔑</span>
+          API Keys
+        </NavLink>
       </div>
     </nav>
   );

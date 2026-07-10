@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react';
-import { generateQuestion } from '../../services/aiService';
 import { useLang } from '../../hooks/useLang';
 import { complexity, algoNames, codeSnippets } from '../../data/algorithmData';
+import { GenerateQuestionUseCase } from '../../application/quiz/GenerateQuestionUseCase';
+
+const questionUseCase = new GenerateQuestionUseCase();
 
 const CODE_LANGUAGES = [
   { value: 'js', label: 'JavaScript' },
@@ -644,7 +646,8 @@ export default function QuizPanel({ topic, onComplete, subTopic = null }) {
     if (hasValidKey || retryWithAI) {
       setLoadingMode('ai');
       try {
-        questionData = await generateQuestion(topic, actualSubTopic, 'medium', 'mcq', actualType, lang);
+        const result = await questionUseCase.execute(topic, actualSubTopic, 'medium', 'mcq', actualType, lang);
+        questionData = { question: result.question, options: result.options, correctAnswer: result.correctAnswer, explanation: result.explanation, type: result.type, difficulty: result.difficulty, topic: result.topic, subTopic: result.subTopic, questionMode: result.questionMode };
         questionSource = 'ai';
       } catch (err) {
         console.log('AI failed:', err.message);

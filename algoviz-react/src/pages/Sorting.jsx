@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { algorithms } from '../data/algorithmData';
-import {
-  genBubbleSteps, genSelectionSteps, genInsertionSteps,
-  genMergeSteps, genQuickSteps, genHeapSteps,
-  genCountingSteps, genRadixSteps
-} from '../algorithms/sorting/sortingGenerators';
+import { getAlgorithm, getAlgorithmsByCategory } from '../application/AlgorithmRegistry';
 import { SortingVisualizer } from '../algorithms/sorting/sortingVisualizer';
 import { useLang } from '../hooks/useLang';
 
@@ -15,22 +10,12 @@ import ComplexityPanel from '../components/sorting/ComplexityPanel';
 
 import '../styles/Sorting.css';
 
-// Only the sorting subset of the full algorithms map
 const SORTING_KEYS = ['bubble','selection','insertion','merge','quick','heap','counting','radix'];
 const sortingAlgorithms = Object.fromEntries(
-  Object.entries(algorithms).filter(([k]) => SORTING_KEYS.includes(k))
+  getAlgorithmsByCategory('sorting')
+    .filter(a => SORTING_KEYS.includes(a.id))
+    .map(a => [a.id, a])
 );
-
-const generators = {
-  bubble:    genBubbleSteps,
-  selection: genSelectionSteps,
-  insertion: genInsertionSteps,
-  merge:     genMergeSteps,
-  quick:     genQuickSteps,
-  heap:      genHeapSteps,
-  counting:  genCountingSteps,
-  radix:     genRadixSteps,
-};
 
 export default function Sorting() {
   const { algo: urlAlgo } = useParams();
@@ -71,14 +56,8 @@ export default function Sorting() {
 
   // ── Array generation ──────────────────────────────────────────────────
   const generateArray = (size, currentAlgo = algo) => {
-    let newArr;
-    if (currentAlgo === 'counting') {
-      newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 15) + 1);
-    } else if (currentAlgo === 'radix') {
-      newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 900) + 100);
-    } else {
-      newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 90) + 10);
-    }
+    const instance = getAlgorithm(currentAlgo);
+    const newArr = instance.getDefaultInput().slice(0, size);
     setArray(newArr);
     setCustomInput('');
     return newArr;
@@ -93,14 +72,12 @@ export default function Sorting() {
   // ── Step generation ───────────────────────────────────────────────────
   useEffect(() => {
     if (array.length > 0) {
-      const generator = generators[algo];
-      if (generator) {
-        const newSteps = generator([...array]);
-        setSteps(newSteps);
-        setStepIdx(-1);
-        SortingVisualizer.setState({ array, steps: newSteps, algo, speed });
-        SortingVisualizer.drawStep(-1);
-      }
+      const instance = getAlgorithm(algo);
+      const newSteps = instance.generateSteps([...array]);
+      setSteps(newSteps);
+      setStepIdx(-1);
+      SortingVisualizer.setState({ array, steps: newSteps, algo, speed });
+      SortingVisualizer.drawStep(-1);
     }
   }, [array, algo, speed]);
 
@@ -151,11 +128,19 @@ export default function Sorting() {
     ? (activeStep.codeLines?.[lang] ?? activeStep.codeLine ?? -1)
     : -1;
   const currentAlgoData  = sortingAlgorithms[algo];
+  const metadata = currentAlgoData;
+  const complexity = metadata?.complexity;
+  const description = metadata?.explanation?.body
+    ? metadata.explanation.body.replace(/<[^>]*>/g, '').substring(0, 200)
+    : `${metadata?.name || algo} visualization`;
+  const codeByLang = metadata?.codeSnippets
+    ? Object.fromEntries(Object.entries(metadata.codeSnippets).map(([lang, lines]) => [lang, lines.join('\n')]))
+    : null;
 
   return (
     <div className="sorting-page">
       <div className="sorting-header">
-        <h2>{currentAlgoData?.name}</h2>
+        <h2>{metadata?.name}</h2>
         {activeStep && (
           <div className="step-msg">{activeStep.msg}</div>
         )}
@@ -191,18 +176,18 @@ export default function Sorting() {
         </div>
 
         <div className="sorting-side-panel">
-          <ComplexityPanel complexity={currentAlgoData?.complexity} />
+          <ComplexityPanel complexity={complexity} />
 
           <div className="panel-card">
             <h3>Description</h3>
             <p style={{ fontSize: '14px', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-              {currentAlgoData?.description}
+              {description}
             </p>
           </div>
 
           <CodePanel
-            codeByLang={currentAlgoData?.codeByLang}
-            codeSnippet={currentAlgoData?.code?.js}
+            codeByLang={codeByLang}
+            codeSnippet={codeByLang?.[lang] || ''}
             activeLine={activeLine}
             lang={lang}
             setLang={setLang}
