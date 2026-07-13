@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="algoviz-react/assets/fcainew.png" width="120" alt="FCAI-Visualizer Logo" />
+  <img src="assets/fcainew.png" width="120" alt="FCAI-Visualizer Logo" />
 </p>
 
 <h1 align="center">FCAI-Visualizer</h1>
@@ -55,13 +55,9 @@ The application is engineered with a focus on performance, scalability, and modu
 #### Local Installation Protocol
 1. **Clone Repository:**
    ```bash
-   git clone https://github.com/Yosef-Ibrahim/AlgoVs.git
+   git clone https://github.com/Yosef-Ibrahim/FCAI-Visualizer.git
    ```
-2. **Directory Navigation:**
-   ```bash
-   cd algoviz-react
-   ```
-3. **Dependency Acquisition:**
+2. **Dependency Acquisition:**
    ```bash
    npm install
    ```
@@ -84,5 +80,5 @@ Contributions to the FCAI Algorithm Visualizer should follow the established arc
 3. Routing and navigation must be updated in `App.jsx` and `Sidebar.jsx` respectively.
 
 ### License
-This project is distributed under the MIT License.
+This project is distributed under the AGPLv3 License.
 
