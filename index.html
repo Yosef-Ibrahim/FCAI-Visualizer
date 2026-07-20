@@ -1,140 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AVL Tree Visualizer — Educational Edition</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="BST.css" />
-</head>
-<body class="night">
-
-  <!-- ═══════════════════════════ SIDE PANEL ═══════════════════════════ -->
-  <aside id="panel">
-
-    <!-- Title -->
-    <div class="panel-title">
-      <span class="title-main">AVL Tree</span>
-      <span class="title-sub">Visualizer</span>
-      <span class="title-edition">Educational Edition</span>
-    </div>
-
-    <!-- Theme toggle -->
-    <button id="btn-theme" class="btn-theme">☀ Switch to Light Mode</button>
-
-    <hr class="divider" />
-
-    <!-- Node Value -->
-    <section class="section">
-      <div class="section-label">NODE VALUE</div>
-      <div class="input-row">
-        <input id="val-input" type="text" value="0" autocomplete="off" spellcheck="false" />
-      </div>
-      <div class="tip-text">Tip: prefix with <kbd>-</kbd> for negatives</div>
-
-      <button id="btn-insert" class="btn btn-accent">Insert Node</button>
-      <button id="btn-delete" class="btn btn-danger">Delete Node</button>
-      <button id="btn-clear"  class="btn btn-danger-dim">Clear Entire Tree</button>
-    </section>
-
-    <hr class="divider" />
-
-    <!-- Search -->
-    <section class="section">
-      <div class="section-label">SEARCH</div>
-      <div class="btn-row-2">
-        <button id="btn-pred" class="btn btn-orange-dim sm">Predecessor</button>
-        <button id="btn-succ" class="btn btn-orange-dim sm">Successor</button>
-      </div>
-    </section>
-
-    <hr class="divider" />
-
-    <!-- Traversals -->
-    <section class="section">
-      <div class="section-label">TRAVERSALS</div>
-      <button class="btn btn-ghost sm trav-btn" data-trav="pre">Pre-Order (Root→L→R)</button>
-      <button class="btn btn-ghost sm trav-btn" data-trav="in">In-Order (Sorted)</button>
-      <button class="btn btn-ghost sm trav-btn" data-trav="post">Post-Order (L→R→Root)</button>
-      <button class="btn btn-ghost sm trav-btn" data-trav="bfs">Breadth-First (Levels)</button>
-    </section>
-
-    <hr class="divider" />
-
-    <!-- Random generator -->
-    <section class="section">
-      <div class="section-label">RANDOM GENERATOR</div>
-      <div class="gen-row">
-        <label>N =</label>
-        <input id="rand-input" type="number" min="1" max="99" value="12" />
-        <button id="btn-gen" class="btn btn-green sm">Generate!</button>
-      </div>
-    </section>
-
-    <hr class="divider" />
-
-    <!-- Speed -->
-    <section class="section">
-      <div class="section-label">ANIMATION SPEED</div>
-      <div class="speed-row">
-        <button class="speed-btn active" data-speed="0">Slow</button>
-        <button class="speed-btn"        data-speed="1">Normal</button>
-        <button class="speed-btn"        data-speed="2">Fast</button>
-      </div>
-    </section>
-
-    <!-- Status bar -->
-    <div id="status-bar">
-      <div class="status-title">STATUS</div>
-      <div id="stat1" class="stat-line1">AVL Tree Ready</div>
-      <div id="stat2" class="stat-line2">Type a value and press Insert!</div>
-    </div>
-
-  </aside>
-
-  <!-- ═══════════════════════════ CANVAS AREA ═══════════════════════════ -->
-  <main id="canvas-wrap">
-    <canvas id="tree-canvas"></canvas>
-
-    <!-- Live stats overlay -->
-    <div id="live-stats">
-      <div class="ls-label">LIVE STATS</div>
-      <div id="ls-nodes">Nodes:  0</div>
-      <div id="ls-height">Height: 0</div>
-      <div id="ls-balance" class="ls-balanced">Balanced ✓</div>
-    </div>
-
-    <!-- Depth legend -->
-    <div id="depth-legend">
-      <span class="legend-label">Depth:</span>
-      <span class="legend-dot" style="background:#5aa0ff"></span>
-      <span class="legend-dot" style="background:#37be73"></span>
-      <span class="legend-dot" style="background:#ff913c"></span>
-      <span class="legend-dot" style="background:#b450f0"></span>
-      <span class="legend-dot" style="background:#f54b82"></span>
-      <span class="legend-dot" style="background:#2dc3c8"></span>
-      <span class="legend-dot" style="background:#e1c828"></span>
-      <span class="legend-dot" style="background:#8cd23c"></span>
-    </div>
-
-    <!-- Hints -->
-    <div id="hints">Scroll: Zoom &nbsp;|&nbsp; Right-click+Drag: Pan &nbsp;|&nbsp; Double-click: Reset View &nbsp;|&nbsp; Enter: Insert</div>
-
-    <!-- Traversal result bar -->
-    <div id="trav-bar" style="display:none">
-      <span id="trav-title"></span>
-      <span id="trav-result"></span>
-    </div>
-
-    <!-- Popup toast -->
-    <div id="popup" style="display:none">
-      <span id="popup-msg"></span>
-      <div id="popup-progress"></div>
-    </div>
-  </main>
-
-  <script src="BST.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="FCAI-Visualizer — A sophisticated platform for visualizing Algorithms and Data Structures. Interactive BST, AVL Tree, Sorting, Searching, and Graph visualizers." />
+    <meta name="keywords" content="algorithm visualizer, data structures, BST, AVL tree, sorting, React" />
+    <meta name="author" content="FCAI-Visualizer Team" />
+    <meta name="title" content="FCAI-Visualizer — Algorithm & Data Structure Visualizer" />
+    <meta property="og:title" content="FCAI-Visualizer — Algorithm & Data Structure Visualizer" />
+    <title>FCAI-Visualizer — Algorithm & Data Structure Visualizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
