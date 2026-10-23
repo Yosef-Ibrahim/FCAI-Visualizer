@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, mohamed_alsayed]
+    branches: [main]
   pull_request:
 
 # The workflow only reads the repository — no write permissions needed.
