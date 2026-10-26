@@ -85,7 +85,7 @@ export const advancedDataStructureCourse = {
   description: 'Study tree structures that organize hierarchical data and keep operations efficient as collections grow.',
   icon: GitBranch,
   color: 'gold',
-  lessonCount: 3,
+  lessonCount: 4,
   topics: [
     {
       id: 'trees',
@@ -110,6 +110,14 @@ export const advancedDataStructureCourse = {
       route: '/courses/advanced-data-structure/red-black-tree',
       icon: GitBranch,
       tags: ['Color rules', 'Rotations', 'Balancing'],
+    },
+    {
+      id: 'b-tree',
+      title: 'B-Tree',
+      description: 'Explore multi-key nodes, promoted split keys, predecessor deletion, borrowing, and merging.',
+      route: '/courses/advanced-data-structure/b-tree',
+      icon: GitBranch,
+      tags: ['Order 3', 'Split & promote', 'Delete & rebalance'],
     },
   ],
 };

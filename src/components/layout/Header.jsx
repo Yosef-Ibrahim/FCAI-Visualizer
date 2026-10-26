@@ -17,6 +17,7 @@ const ROUTE_TITLE_KEYS = {
   '/courses/advanced-data-structure/trees': 'routes.course-trees',
   '/courses/advanced-data-structure/avl-tree': 'routes.course-avl-tree',
   '/courses/advanced-data-structure/red-black-tree': 'routes.course-red-black-tree',
+  '/courses/advanced-data-structure/b-tree': 'catalog:topic.b-tree.title',
   '/sorting': 'routes.sorting',
   '/searching': 'routes.searching',
   '/data-structures': 'routes.data-structures',

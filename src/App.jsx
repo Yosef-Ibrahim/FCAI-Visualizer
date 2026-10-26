@@ -13,6 +13,7 @@ import AdvancedHome from './pages/courses/AdvancedDataStructure/AdvancedHome';
 import TreesCourse from './pages/courses/AdvancedDataStructure/Trees';
 import AVLTree from './pages/courses/AdvancedDataStructure/AVLTree';
 import RedBlackTree from './pages/courses/AdvancedDataStructure/RedBlackTree';
+import BTree from './pages/courses/AdvancedDataStructure/BTree';
 import InformationTheoryHome from './pages/courses/InformationTheoryCompression/InformationTheoryHome';
 import LosslessCompression from './pages/courses/InformationTheoryCompression/LosslessCompression';
 import LossyCompression from './pages/courses/InformationTheoryCompression/LossyCompression';
@@ -49,6 +50,7 @@ export default function App() {
           <Route path="courses/advanced-data-structure/trees" element={<TreesCourse />} />
           <Route path="courses/advanced-data-structure/avl-tree" element={<AVLTree />} />
           <Route path="courses/advanced-data-structure/red-black-tree" element={<RedBlackTree />} />
+          <Route path="courses/advanced-data-structure/b-tree" element={<BTree />} />
           <Route path="courses/information-theory-compression" element={<InformationTheoryHome />} />
           <Route path="courses/information-theory-compression/lossless" element={<LosslessCompression />} />
           <Route path="courses/information-theory-compression/lossy" element={<LossyCompression />} />

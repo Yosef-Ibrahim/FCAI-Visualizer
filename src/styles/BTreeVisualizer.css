@@ -1,0 +1,696 @@
+.btree-page {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  grid-template-columns: 300px minmax(0, 1fr);
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.btree-panel {
+  z-index: 1;
+  display: flex;
+  width: 300px;
+  min-width: 0;
+  flex-direction: column;
+  gap: 14px;
+  padding: 19px 18px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 1px solid var(--border);
+  background:
+    linear-gradient(to bottom, color-mix(in srgb, var(--accent) 20%, transparent), transparent 5px),
+    var(--surface);
+}
+
+.btree-panel-heading > span,
+.btree-visualization-header > div:first-child > span {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.btree-panel-heading h1 {
+  margin: 5px 0 6px;
+  color: var(--accent);
+  font: 700 28px/1.1 var(--font-mono);
+}
+
+.btree-panel-heading p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.btree-limit-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 5%, var(--surface));
+}
+
+.btree-order-select {
+  min-height: 40px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.btree-order-select option {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.btree-limit-card > strong {
+  color: var(--accent);
+  font-size: 13px;
+}
+
+.btree-limit-card > span {
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.btree-stat-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto;
+  align-items: center;
+  gap: 5px 8px;
+  padding-top: 7px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.btree-stat-row b {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.btree-operation-form,
+.btree-control-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btree-operation-form,
+.btree-control-section {
+  padding-top: 11px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+}
+
+.btree-section-label {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.btree-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.btree-input::placeholder {
+  color: color-mix(in srgb, var(--text-muted) 88%, transparent);
+  opacity: 1;
+}
+
+.btree-input:focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  outline-offset: 1px;
+}
+
+.btree-input.has-error {
+  border-color: var(--accent2);
+}
+
+.btree-input-error {
+  color: var(--accent2);
+  font-size: 11px;
+}
+
+.btree-operation-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.btree-action,
+.btree-reset-button,
+.btree-icon-button,
+.btree-speed-button {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 7px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--text);
+  font: 700 14px var(--font-body);
+  cursor: pointer;
+  transition: background .16s, border-color .16s, color .16s, transform .16s;
+}
+
+.btree-action:hover:not(:disabled),
+.btree-icon-button:hover:not(:disabled),
+.btree-speed-button:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+
+.btree-action:active:not(:disabled),
+.btree-icon-button:active:not(:disabled),
+.btree-reset-button:active:not(:disabled),
+.btree-speed-button:active {
+  transform: scale(.97);
+}
+
+.btree-action:disabled,
+.btree-reset-button:disabled,
+.btree-icon-button:disabled,
+.btree-speed-button:disabled {
+  cursor: not-allowed;
+  opacity: .48;
+}
+
+.btree-action:focus-visible,
+.btree-reset-button:focus-visible,
+.btree-icon-button:focus-visible,
+.btree-speed-button:focus-visible,
+.btree-zoom-controls button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btree-action--insert {
+  border-color: color-mix(in srgb, var(--accent3) 38%, var(--border));
+  color: color-mix(in srgb, var(--accent3) 70%, var(--text));
+}
+
+.btree-action--search {
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--border));
+  color: var(--accent);
+}
+
+.btree-action--delete {
+  border-color: color-mix(in srgb, var(--accent2) 38%, var(--border));
+  color: color-mix(in srgb, var(--accent2) 70%, var(--text));
+}
+
+.btree-playback-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.btree-icon-button {
+  min-height: 40px;
+  padding: 6px;
+}
+
+.btree-play-button {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+}
+
+.btree-step-count {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-align: center;
+}
+
+.btree-speed-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.btree-speed-button {
+  min-height: 36px;
+  padding: 6px;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.btree-speed-button.is-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 15%, var(--surface));
+  color: var(--accent);
+}
+
+.btree-reset-button {
+  min-height: 44px;
+  border-color: color-mix(in srgb, var(--accent2) 38%, var(--border));
+  background: color-mix(in srgb, var(--accent2) 7%, var(--surface));
+  color: color-mix(in srgb, var(--accent2) 70%, var(--text));
+}
+
+.btree-reset-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent2) 15%, var(--surface));
+}
+
+.btree-step-message {
+  margin-top: auto;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 4%, var(--surface));
+}
+
+.btree-step-message p {
+  margin: 5px 0 0;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.btree-step-message.is-found,
+.btree-step-message.is-insert,
+.btree-step-message.is-complete {
+  border-left-color: var(--accent3);
+}
+
+.btree-step-message.is-not-found,
+.btree-step-message.is-duplicate,
+.btree-step-message.is-delete {
+  border-left-color: var(--accent2);
+}
+
+.btree-step-message.is-split,
+.btree-step-message.is-root-split,
+.btree-step-message.is-promote,
+.btree-step-message.is-merge,
+.btree-step-message.is-borrow,
+.btree-step-message.is-predecessor,
+.btree-step-message.is-underflow {
+  border-left-color: var(--accent4);
+}
+
+.btree-visualization {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+  background:
+    radial-gradient(color-mix(in srgb, var(--border) 60%, transparent) .7px, transparent .7px) 0 0 / 18px 18px,
+    var(--bg);
+}
+
+.btree-visualization-header {
+  z-index: 1;
+  display: flex;
+  min-height: 82px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+}
+
+.btree-visualization-header h2 {
+  margin: 3px 0 0;
+  color: var(--text);
+  font: 750 18px var(--font-head);
+}
+
+.btree-visualization-stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btree-zoom-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+}
+
+.btree-zoom-controls button {
+  display: inline-flex;
+  width: 28px;
+  height: 27px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.btree-zoom-controls button:hover {
+  background: color-mix(in srgb, var(--accent) 13%, var(--surface));
+  color: var(--accent);
+}
+
+.btree-drawing-scroll {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  overscroll-behavior: none;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.btree-drawing-scroll.is-panning {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.btree-drawing {
+  display: block;
+  flex: 0 0 auto;
+  margin: auto;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.btree-drawing-scroll > .tree-hints {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.btree-drawing-scroll > .tree-live-stats {
+  z-index: 2;
+}
+
+.btree-live-stat {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.btree-live-stat b {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.btree-drawing-scroll > .tree-depth-legend {
+  z-index: 2;
+}
+
+.btree-edges line {
+  stroke: color-mix(in srgb, var(--text-muted) 56%, transparent);
+  stroke-width: 2;
+  transition: stroke .2s;
+}
+
+.btree-edges line.is-selected {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.btree-node {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.btree-node rect {
+  fill: var(--surface);
+  stroke: var(--depth-color, var(--accent));
+  stroke-width: 2;
+  filter: drop-shadow(0 4px 8px color-mix(in srgb, var(--text) 12%, transparent));
+  transition: fill .18s, stroke .18s, filter .18s;
+}
+
+.btree-node text {
+  fill: var(--text);
+  font: 700 13px var(--font-mono);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.btree-key {
+  pointer-events: none;
+}
+
+.btree-key text {
+  fill: var(--text);
+  font: 700 13px var(--font-mono);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.btree-key rect {
+  fill: color-mix(in srgb, var(--accent3) 22%, var(--surface));
+  stroke: var(--accent3);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent3) 35%, transparent));
+}
+
+.btree-node .btree-key-divider {
+  stroke: var(--border);
+  stroke-width: 1.5;
+}
+
+.btree-node .btree-active-key {
+  fill: color-mix(in srgb, var(--accent3) 22%, var(--surface));
+  stroke: var(--accent3);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent3) 35%, transparent));
+}
+
+.btree-promotion-marker rect {
+  fill: color-mix(in srgb, var(--accent4) 22%, var(--surface));
+  stroke: var(--accent4);
+  stroke-width: 2;
+}
+
+.btree-promotion-marker text {
+  fill: var(--text);
+  font: 800 13px var(--font-mono);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.btree-node.is-visit rect {
+  fill: color-mix(in srgb, var(--accent) 15%, var(--surface));
+  stroke: var(--accent);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent) 38%, transparent));
+}
+
+.btree-node.is-found rect,
+.btree-node.is-insert rect,
+.btree-node.is-complete rect {
+  fill: color-mix(in srgb, var(--accent3) 17%, var(--surface));
+  stroke: var(--accent3);
+}
+
+.btree-node.is-split rect,
+.btree-node.is-root-split rect,
+.btree-node.is-promote rect,
+.btree-node.is-predecessor rect,
+.btree-node.is-borrow rect {
+  fill: color-mix(in srgb, var(--accent4) 18%, var(--surface));
+  stroke: var(--accent4);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent4) 30%, transparent));
+}
+
+.btree-node.is-merge rect,
+.btree-node.is-underflow rect,
+.btree-node.is-delete rect {
+  fill: color-mix(in srgb, var(--accent2) 15%, var(--surface));
+  stroke: var(--accent2);
+}
+
+.btree-node.is-visit rect,
+.btree-node.is-found rect,
+.btree-node.is-insert rect,
+.btree-node.is-complete rect,
+.btree-node.is-split rect,
+.btree-node.is-root-split rect,
+.btree-node.is-promote rect,
+.btree-node.is-predecessor rect,
+.btree-node.is-borrow rect,
+.btree-node.is-merge rect,
+.btree-node.is-underflow rect,
+.btree-node.is-delete rect {
+  transition: fill .18s ease, stroke .18s ease, filter .18s ease;
+}
+
+[dir="rtl"] .btree-panel {
+  border-right: 0;
+  border-left: 1px solid var(--border);
+}
+
+[dir="rtl"] .btree-step-message {
+  border-right: 3px solid var(--accent);
+  border-left: 1px solid var(--border);
+}
+
+@media (max-width: 900px) {
+  .btree-panel {
+    width: 260px;
+    min-width: 260px;
+    padding-inline: 14px;
+  }
+}
+
+@media (max-width: 767px) {
+  .btree-page {
+    height: auto;
+    min-height: calc(100vh - var(--header-h));
+    grid-template-columns: minmax(0, 1fr);
+    overflow: visible;
+  }
+
+  .btree-panel {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    max-height: none;
+    flex-shrink: 0;
+    overflow: visible;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .btree-step-message {
+    margin-top: 0;
+  }
+
+  .btree-visualization {
+    min-height: 470px;
+  }
+
+  .btree-drawing-scroll > .tree-hints {
+    bottom: 8px;
+    left: 8px;
+    max-width: calc(100% - 16px);
+    gap: 3px;
+    padding: 5px 6px;
+    font-size: 10px;
+  }
+
+  .btree-drawing-scroll > .tree-hints .tree-hint {
+    gap: 4px;
+    padding: 2px 3px;
+    white-space: normal;
+  }
+
+  .btree-drawing-scroll > .tree-hints .tree-hint + .tree-hint {
+    padding-left: 6px;
+  }
+
+  .btree-drawing-scroll > .tree-hints .tree-hint-icon svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  [dir="rtl"] .btree-panel {
+    border-left: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .btree-panel {
+    gap: 12px;
+    padding: 16px 14px;
+  }
+
+  .btree-visualization-header {
+    min-height: 70px;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 11px 13px;
+  }
+
+  .btree-visualization-header h2 {
+    font-size: 16px;
+  }
+
+  .btree-visualization-stats {
+    gap: 5px;
+  }
+
+  .btree-drawing-scroll > .tree-live-stats {
+    top: 8px;
+    right: 8px;
+    min-width: 142px;
+    padding: 8px 10px 7px;
+  }
+
+  .btree-drawing-scroll > .tree-live-stats .tree-ls-label {
+    margin-bottom: 4px;
+    font-size: 9px;
+  }
+
+  .btree-live-stat {
+    font-size: 10px;
+  }
+
+  .btree-drawing-scroll > .tree-depth-legend {
+    top: 8px;
+    left: 8px;
+    gap: 3px;
+    padding: 5px 7px;
+  }
+
+  .btree-drawing-scroll > .tree-depth-legend .tree-legend-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .btree-operation-buttons {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .btree-action {
+    padding-inline: 4px;
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btree-node rect,
+  .btree-edges line {
+    transition: none;
+  }
+}
