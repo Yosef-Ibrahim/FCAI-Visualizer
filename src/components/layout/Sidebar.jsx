@@ -47,6 +47,7 @@ const COURSE_LINKS = [
       { key: 'trees', to: '/courses/advanced-data-structure/trees', icon: TreePine },
       { key: 'avl-tree', to: '/courses/advanced-data-structure/avl-tree', icon: TreePine },
       { key: 'red-black-tree', to: '/courses/advanced-data-structure/red-black-tree', icon: TreePine },
+      { key: 'b-tree', to: '/courses/advanced-data-structure/b-tree', icon: TreePine },
     ],
   },
   {
