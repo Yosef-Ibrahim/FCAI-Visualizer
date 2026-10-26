@@ -70,6 +70,17 @@ body {
 #root { width: 100%; height: 100vh; }
 button, input, select, textarea { font: inherit; }
 button { color: inherit; }
+select option {
+  background-color: var(--surface);
+  color: var(--text);
+}
+select option:checked,
+select option:hover {
+  background-color: var(--surface3);
+  color: var(--text);
+}
+select option:disabled { color: var(--text-muted); }
+select:disabled { opacity: .55; }
 canvas { display: block; }
 a { color: inherit; text-decoration: none; }
 ::selection { background: rgba(23, 105, 170, .18); }
