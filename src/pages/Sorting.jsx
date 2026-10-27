@@ -53,7 +53,7 @@ export default function Sorting() {
   // ── Array generation ──────────────────────────────────────────────────
   const generateArray = (size, currentAlgo = algo) => {
     const instance = getAlgorithm(currentAlgo);
-    const newArr = instance.getDefaultInput().slice(0, size);
+    const newArr = instance.getDefaultInput(size);
     setArray(newArr);
     setCustomInput('');
     return newArr;
