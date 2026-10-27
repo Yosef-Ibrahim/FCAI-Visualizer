@@ -18,7 +18,7 @@ export class SortingAlgorithm extends Algorithm {
   get codeSnippets() { return this._snippets; }
   get explanation() { return this._explanation; }
 
-  getDefaultInput() {
-    return Array.from({ length: 20 }, () => Math.floor(Math.random() * 90) + 10);
+  getDefaultInput(size = 20) {
+    return Array.from({ length: size }, () => Math.floor(Math.random() * 90) + 10);
   }
 }
