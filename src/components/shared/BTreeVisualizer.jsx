@@ -87,6 +87,7 @@ function layoutTree(root, maxKeys) {
       id: `${node.id}:${index}`,
       key,
       nodeId: node.id,
+      parentId: node.parentId,
       x: node.x + (index - (node.keys.length - 1) / 2) * KEY_WIDTH,
       y: node.y,
       opacity: 1,
@@ -200,7 +201,7 @@ function interpolateLayout(from, to, progress) {
     }
     const current = newKey ?? oldKey;
     const otherNodes = newKey ? fromNodes : toNodes;
-    const parent = otherNodes.get(current.node.parentId);
+    const parent = otherNodes.get(current.parentId);
     const anchor = parent ? { x: parent.x, y: parent.y } : { x: current.x, y: current.y };
     return newKey
       ? {
