@@ -80,6 +80,11 @@ function layoutTree(root, maxKeys) {
     nodes,
     edges,
     keys: nodes.flatMap((node) => node.keys.map((key, index) => ({
+      // A key's visual identity is its node slot, not its numeric value.
+      // During internal-key deletion, the predecessor temporarily exists in
+      // both the parent and leaf snapshots; value-only IDs collapse those
+      // separate positions and can leave the parent label visually stale.
+      id: `${node.id}:${index}`,
       key,
       nodeId: node.id,
       x: node.x + (index - (node.keys.length - 1) / 2) * KEY_WIDTH,
@@ -178,21 +183,16 @@ function interpolateLayout(from, to, progress) {
     }];
   });
 
-  const oldKeys = new Map(from.nodes.flatMap((node) => node.keys.map((key, index) => [
-    key,
-    { node, x: node.x + (index - (node.keys.length - 1) / 2) * KEY_WIDTH, y: node.y },
-  ])));
-  const newKeys = new Map(to.nodes.flatMap((node) => node.keys.map((key, index) => [
-    key,
-    { node, x: node.x + (index - (node.keys.length - 1) / 2) * KEY_WIDTH, y: node.y },
-  ])));
-  const keys = [...new Set([...oldKeys.keys(), ...newKeys.keys()])].map((key) => {
-    const oldKey = oldKeys.get(key);
-    const newKey = newKeys.get(key);
+  const oldKeys = new Map(from.keys.map((item) => [item.id, item]));
+  const newKeys = new Map(to.keys.map((item) => [item.id, item]));
+  const keys = [...new Set([...oldKeys.keys(), ...newKeys.keys()])].map((id) => {
+    const oldKey = oldKeys.get(id);
+    const newKey = newKeys.get(id);
     if (oldKey && newKey) {
       return {
-        key,
-        nodeId: newKey.node.id,
+        id,
+        key: newKey.key,
+        nodeId: newKey.nodeId,
         x: oldKey.x + (newKey.x - oldKey.x) * eased,
         y: oldKey.y + (newKey.y - oldKey.y) * eased,
         opacity: 1,
@@ -204,15 +204,17 @@ function interpolateLayout(from, to, progress) {
     const anchor = parent ? { x: parent.x, y: parent.y } : { x: current.x, y: current.y };
     return newKey
       ? {
-        key,
-        nodeId: newKey.node.id,
+        id,
+        key: newKey.key,
+        nodeId: newKey.nodeId,
         x: anchor.x + (newKey.x - anchor.x) * eased,
         y: anchor.y + (newKey.y - anchor.y) * eased,
         opacity: eased,
       }
       : {
-        key,
-        nodeId: oldKey.node.id,
+        id,
+        key: oldKey.key,
+        nodeId: oldKey.nodeId,
         x: oldKey.x,
         y: oldKey.y,
         opacity: 1 - eased,
@@ -405,7 +407,7 @@ function TreeDrawing({
             const isFocused = focusIds.has(item.nodeId) && activeStep?.key === item.key;
             return (
               <g
-                key={`key-${item.key}`}
+                key={`key-${item.id}`}
                 className={`btree-key${isFocused ? ' is-focused' : ''}`}
                 transform={`translate(${item.x} ${item.y})`}
                 opacity={item.opacity}
