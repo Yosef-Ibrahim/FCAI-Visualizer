@@ -167,6 +167,30 @@ describe('BTree (Ord = 3)', () => {
     expectValidTree(tree);
   });
 
+
+  it('keeps the predecessor in the merged leaf and removes it from the root after deletion', () => {
+    const tree = new BTree(5);
+    [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].forEach((value) => {
+      tree.insert(value);
+    });
+
+    const result = tree.delete(30);
+
+    expect(result.deleted).toBe(true);
+    expect(tree.root.keys).toEqual([60]);
+    expect(tree.root.children.map((child) => child.keys)).toEqual([
+      [10, 20, 40, 50],
+      [70, 80, 90, 100],
+    ]);
+    expect(getInOrder(tree.root)).toEqual([10, 20, 40, 50, 60, 70, 80, 90, 100]);
+    expectValidTree(tree);
+
+    const finalSnapshot = result.steps.at(-1).snapshot;
+    expect(finalSnapshot.keys).toEqual([60]);
+    expect(finalSnapshot.children[0].keys).toEqual([10, 20, 40, 50]);
+    expect(finalSnapshot.children[0].keys.filter((key) => key === 20)).toHaveLength(1);
+  });
+
   it('borrows from the right sibling and reports missing-key searches and deletes', () => {
     const tree = new BTree();
     [1, 5, 0, 4, 3, 2, 6, 7].forEach((value) => tree.insert(value));
