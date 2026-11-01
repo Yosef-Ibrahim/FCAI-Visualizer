@@ -76,7 +76,9 @@ export class StackDS {
           '    return stack[-1]  # O(1)',
         ],
         cpp: [
+          "#include <vector>",
           "#include <stdexcept>",
+          "using namespace std;",
           "int peek(const vector<int>& stack) {",
           "  if (stack.empty()) throw underflow_error(\"Stack is empty\");",
           "  return stack.back(); // O(1)",
