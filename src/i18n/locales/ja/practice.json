@@ -2,8 +2,14 @@
   "title": "練習モード",
   "subtitle": "アルゴリズムの知識を試そう",
   "modes": {
-    "quiz": { "title": "クイズ", "description": "選択式の問題" },
-    "trace": { "title": "実行トレース", "description": "ステップごとの実行トレース" }
+    "quiz": {
+      "title": "クイズ",
+      "description": "選択式の問題"
+    },
+    "trace": {
+      "title": "実行トレース",
+      "description": "ステップごとの実行トレース"
+    }
   },
   "session": {
     "quiz": "クイズ",
@@ -82,5 +88,10 @@
       "incorrect": "✗ 不正解",
       "wrongAnswer": "不正解！ 正しい答え: {{answer}}"
     }
+  },
+  "feedback": {
+    "title": "フィードバックを送る",
+    "description": "改善案や不具合、学習体験へのご意見をお寄せください。",
+    "link": "フィードバック"
   }
 }
