@@ -34,6 +34,7 @@ export class LinkedListDS {
           '    lst.head = node',
           '    # O(1)',
         ],
+        lineOffsets: { cpp: 1 },
         cpp: [
           "struct Node { int value; Node* next; Node(int v) : value(v), next(nullptr) {} };",
           "void insertHead(Node*& head, int value) {",
@@ -63,7 +64,9 @@ export class LinkedListDS {
           '    curr.next = node',
           '    # O(n) — traverse to end',
         ],
+        lineOffsets: { cpp: 1 },
         cpp: [
+          "struct Node { int value; Node* next; Node(int v) : value(v), next(nullptr) {} };",
           "void insertTail(Node*& head, int value) {",
           "  Node* node = new Node(value);",
           "  if (!head) { head = node; return; }",
@@ -95,7 +98,9 @@ export class LinkedListDS {
           '    node.next = curr.next',
           '    curr.next = node',
         ],
+        lineOffsets: { cpp: 1 },
         cpp: [
+          "struct Node { int value; Node* next; Node(int v) : value(v), next(nullptr) {} };",
           "void insertAt(Node*& head, int index, int value) {",
           "  if (index == 0) { insertHead(head, value); return; }",
           "  Node* current = head;",
@@ -129,7 +134,9 @@ export class LinkedListDS {
           '        curr = curr.next',
           '    curr.next = curr.next.next',
         ],
+        lineOffsets: { cpp: 1 },
         cpp: [
+          "struct Node { int value; Node* next; Node(int v) : value(v), next(nullptr) {} };",
           "void deleteAt(Node*& head, int index) {",
           "  if (!head) return;",
           "  if (index == 0) { Node* old = head; head = head->next; delete old; return; }",
@@ -167,7 +174,9 @@ export class LinkedListDS {
           '    node.next = curr.next',
           '    curr.next = node',
         ],
+        lineOffsets: { cpp: 1 },
         cpp: [
+          "struct Node { int value; Node* next; Node(int v) : value(v), next(nullptr) {} };",
           "void insertOrdered(Node*& head, int value) {",
           "  Node* node = new Node(value);",
           "  if (!head || value <= head->value) { node->next = head; head = node; return; }",
@@ -209,7 +218,9 @@ export class LinkedListDS {
           '        curr = curr.next',
           '    return False  # not found',
         ],
+        lineOffsets: { cpp: 1 },
         cpp: [
+          "struct Node { int value; Node* next; Node(int v) : value(v), next(nullptr) {} };",
           "bool deleteByValue(Node*& head, int value) {",
           "  if (!head) return false;",
           "  if (head->value == value) { Node* old = head; head = head->next; delete old; return true; }",

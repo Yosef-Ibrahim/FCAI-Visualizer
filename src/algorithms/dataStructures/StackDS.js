@@ -29,6 +29,7 @@ export class StackDS {
           '    stack.append(val)',
           '    # O(1) — add to top',
         ],
+        lineOffsets: { cpp: 2 },
         cpp: [
           "#include <vector>",
           "using namespace std;",
@@ -53,6 +54,7 @@ export class StackDS {
           '    stack.pop()',
           '    return val  # O(1)',
         ],
+        lineOffsets: { cpp: 3 },
         cpp: [
           "#include <stdexcept>",
           "int pop(vector<int>& stack) {",
@@ -75,6 +77,7 @@ export class StackDS {
           '    if not stack: return None',
           '    return stack[-1]  # O(1)',
         ],
+        lineOffsets: { cpp: 3 },
         cpp: [
           "#include <vector>",
           "#include <stdexcept>",

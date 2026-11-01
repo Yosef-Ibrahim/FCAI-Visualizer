@@ -34,6 +34,7 @@ export class ArrayDS {
           '        arr[i] = arr[i-1]  # shift right',
           '    arr[idx] = val',
         ],
+        lineOffsets: { cpp: 2 },
         cpp: [
           "#include <vector>",
           "using namespace std;",
@@ -54,6 +55,7 @@ export class ArrayDS {
           '    # Direct index access O(1)',
           '    arr[idx] = val',
         ],
+        lineOffsets: { cpp: 2 },
         cpp: [
           "#include <vector>",
           "using namespace std;",
@@ -78,6 +80,7 @@ export class ArrayDS {
           '        arr[i] = arr[i+1]  # shift left',
           '    arr.pop()',
         ],
+        lineOffsets: { cpp: 2 },
         cpp: [
           "#include <vector>",
           "using namespace std;",

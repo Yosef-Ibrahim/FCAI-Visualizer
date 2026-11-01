@@ -298,7 +298,8 @@ export function initDSVisualizer(container, type) {
 
       const step = steps[currentStepIdx];
       updateProgress(currentStepIdx, steps.length);
-      renderCodeLines(codeObj, step.line);
+      const lineOffset = codeObj.lineOffsets?.[currentLang] ?? 0;
+      renderCodeLines(codeObj, step.line + lineOffset);
       codeStepMsgEl.textContent = step.msg;
 
       if (step.action) step.action();

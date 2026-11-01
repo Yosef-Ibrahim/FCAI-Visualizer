@@ -30,6 +30,7 @@ export class QueueDS {
           '    queue.append(val)',
           '    # O(1) — add to rear',
         ],
+        lineOffsets: { cpp: 2 },
         cpp: [
           "#include <queue>",
           "using namespace std;",
@@ -54,6 +55,7 @@ export class QueueDS {
           '    queue.pop(0)',
           '    return val  # O(1)',
         ],
+        lineOffsets: { cpp: 3 },
         cpp: [
           "#include <queue>",
           "#include <stdexcept>",
@@ -77,6 +79,7 @@ export class QueueDS {
           '    if not queue: return None',
           '    return queue[0]  # O(1)',
         ],
+        lineOffsets: { cpp: 3 },
         cpp: [
           "#include <queue>",
           "#include <stdexcept>",
