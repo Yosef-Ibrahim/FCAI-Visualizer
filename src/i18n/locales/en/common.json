@@ -10,7 +10,10 @@
     "linkedin": "LinkedIn",
     "linkedinLabel": "Open LinkedIn profile",
     "linkedinAction": "Connect with me",
-    "madeBy": "Built for learning · Get in touch"
+    "madeBy": "Built for learning · Get in touch",
+    "source": "GitHub repository",
+    "sourceLabel": "Open GitHub source code and issues",
+    "sourceAction": "View source / report an issue"
   },
   "header": {
     "eyebrow": "FCAI-CU · Learning platform",
