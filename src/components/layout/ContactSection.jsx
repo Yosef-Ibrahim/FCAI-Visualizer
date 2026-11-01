@@ -1,4 +1,4 @@
-import { BriefcaseBusiness, Mail, ExternalLink, Github } from 'lucide-react';
+import { BriefcaseBusiness, Mail, ExternalLink, Code2 } from 'lucide-react';
 import { useT } from '../../hooks/useT';
 import './ContactSection.css';
 
@@ -38,7 +38,7 @@ export default function ContactSection() {
             rel="noopener noreferrer"
             aria-label={t('contact.sourceLabel')}
           >
-            <span className="contact-link-icon"><Github size={19} /></span>
+            <span className="contact-link-icon"><Code2 size={19} /></span>
             <span className="contact-link-copy">
               <small>{t('contact.source')}</small>
               <strong>{t('contact.sourceAction')}</strong>
