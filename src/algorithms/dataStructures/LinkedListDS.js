@@ -34,6 +34,14 @@ export class LinkedListDS {
           '    lst.head = node',
           '    # O(1)',
         ],
+        cpp: [
+          "struct Node { int value; Node* next; Node(int v) : value(v), next(nullptr) {} };",
+          "void insertHead(Node*& head, int value) {",
+          "  Node* node = new Node(value);",
+          "  node->next = head;",
+          "  head = node; // O(1)",
+          "}",
+        ],
       },
       insertTail: {
         js: [
@@ -54,6 +62,15 @@ export class LinkedListDS {
           '    while curr.next: curr = curr.next',
           '    curr.next = node',
           '    # O(n) — traverse to end',
+        ],
+        cpp: [
+          "void insertTail(Node*& head, int value) {",
+          "  Node* node = new Node(value);",
+          "  if (!head) { head = node; return; }",
+          "  Node* current = head;",
+          "  while (current->next) current = current->next;",
+          "  current->next = node; // O(n)",
+          "}",
         ],
       },
       insertAt: {
@@ -78,6 +95,16 @@ export class LinkedListDS {
           '    node.next = curr.next',
           '    curr.next = node',
         ],
+        cpp: [
+          "void insertAt(Node*& head, int index, int value) {",
+          "  if (index == 0) { insertHead(head, value); return; }",
+          "  Node* current = head;",
+          "  for (int i = 0; i < index - 1; ++i) current = current->next;",
+          "  Node* node = new Node(value);",
+          "  node->next = current->next;",
+          "  current->next = node;",
+          "}",
+        ],
       },
       deleteAt: {
         js: [
@@ -101,6 +128,16 @@ export class LinkedListDS {
           '    for i in range(idx - 1):',
           '        curr = curr.next',
           '    curr.next = curr.next.next',
+        ],
+        cpp: [
+          "void deleteAt(Node*& head, int index) {",
+          "  if (!head) return;",
+          "  if (index == 0) { Node* old = head; head = head->next; delete old; return; }",
+          "  Node* current = head;",
+          "  for (int i = 0; i < index - 1; ++i) current = current->next;",
+          "  Node* old = current->next;",
+          "  if (old) { current->next = old->next; delete old; }",
+          "}",
         ],
       },
       insertOrdered: {
@@ -129,6 +166,16 @@ export class LinkedListDS {
           '        curr = curr.next',
           '    node.next = curr.next',
           '    curr.next = node',
+        ],
+        cpp: [
+          "void insertOrdered(Node*& head, int value) {",
+          "  Node* node = new Node(value);",
+          "  if (!head || value <= head->value) { node->next = head; head = node; return; }",
+          "  Node* current = head;",
+          "  while (current->next && current->next->value < value) current = current->next;",
+          "  node->next = current->next;",
+          "  current->next = node;",
+          "}",
         ],
       },
       deleteByValue: {
@@ -161,6 +208,17 @@ export class LinkedListDS {
           '            return True',
           '        curr = curr.next',
           '    return False  # not found',
+        ],
+        cpp: [
+          "bool deleteByValue(Node*& head, int value) {",
+          "  if (!head) return false;",
+          "  if (head->value == value) { Node* old = head; head = head->next; delete old; return true; }",
+          "  Node* current = head;",
+          "  while (current->next && current->next->value != value) current = current->next;",
+          "  if (!current->next) return false;",
+          "  Node* old = current->next; current->next = old->next; delete old;",
+          "  return true;",
+          "}",
         ],
       },
     };

@@ -260,3 +260,20 @@ existing pattern exactly:
 - Before changing these behaviours, add/update colocated Vitest regression
   tests. Run `npm run verify` (lint, typecheck, i18n, tests, production build)
   and confirm the GitHub Actions CI workflow is green before reporting success.
+
+
+## Data-structure code walkthrough languages and responsive UI
+
+- Every operation in ArrayDS, LinkedListDS, StackDS, and QueueDS must expose
+  JavaScript, Python, and C++ snippets to the imperative code walkthrough.
+- C++ examples must be idiomatic educational snippets, include required
+  standard headers, and match the operation being traced. Never fall back to
+  JavaScript or Python text under a selected C++ tab.
+- Keep language controls keyboard accessible and synchronize their pressed
+  state with the selected language.
+- Responsive visualizers must keep controls scrollable, canvas usable on
+  narrow screens, and code panels within the canvas bounds. Avoid horizontal
+  page overflow. Use ResizeObserver for canvas layout changes, reset the
+  canvas transform on resize, and disconnect observers/listeners in destroy().
+- Run npm run verify and inspect desktop, tablet, and mobile layouts before
+  claiming responsive behaviour is verified.

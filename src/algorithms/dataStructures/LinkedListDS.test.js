@@ -6,6 +6,17 @@ const valuesOf = (list) =>
   list.nodes.filter((node) => !node.isDeleted).map((node) => node.val);
 
 describe('LinkedListDS', () => {
+  it('provides C++ code for every visualized operation', () => {
+    const structure = new LinkedListDS();
+    const snippets = structure.getOpsCode();
+
+    for (const operation of ["insertHead","insertTail","insertAt","deleteAt","insertOrdered","deleteByValue"]) {
+      expect(snippets[operation].cpp).toBeDefined();
+      expect(snippets[operation].cpp.length).toBeGreaterThan(0);
+      expect(snippets[operation].cpp.join('\n')).toMatch(/\b(void|int|bool|#include|struct)\b/);
+    }
+  });
+
   it('starts empty', () => {
     const list = new LinkedListDS();
 

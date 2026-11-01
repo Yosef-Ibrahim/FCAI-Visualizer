@@ -6,6 +6,17 @@ const valuesOf = (queue) =>
   queue.nodes.filter((node) => !node.isDeleted).map((node) => node.val);
 
 describe('QueueDS', () => {
+  it('provides C++ code for every visualized operation', () => {
+    const structure = new QueueDS();
+    const snippets = structure.getOpsCode();
+
+    for (const operation of ["enqueue","dequeue","peek"]) {
+      expect(snippets[operation].cpp).toBeDefined();
+      expect(snippets[operation].cpp.length).toBeGreaterThan(0);
+      expect(snippets[operation].cpp.join('\n')).toMatch(/\b(void|int|bool|#include|struct)\b/);
+    }
+  });
+
   it('starts empty', () => {
     const queue = new QueueDS();
 

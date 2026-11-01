@@ -34,6 +34,13 @@ export class ArrayDS {
           '        arr[i] = arr[i-1]  # shift right',
           '    arr[idx] = val',
         ],
+        cpp: [
+          "#include <vector>",
+          "using namespace std;",
+          "void insertAt(vector<int>& arr, int idx, int value) {",
+          "  arr.insert(arr.begin() + idx, value); // O(n)",
+          "}",
+        ],
       },
       set: {
         js: [
@@ -46,6 +53,13 @@ export class ArrayDS {
           'def set_val(arr, idx, val):',
           '    # Direct index access O(1)',
           '    arr[idx] = val',
+        ],
+        cpp: [
+          "#include <vector>",
+          "using namespace std;",
+          "void setValue(vector<int>& arr, int idx, int value) {",
+          "  arr[idx] = value; // O(1)",
+          "}",
         ],
       },
       delete: {
@@ -63,6 +77,13 @@ export class ArrayDS {
           '    for i in range(idx, n-1):',
           '        arr[i] = arr[i+1]  # shift left',
           '    arr.pop()',
+        ],
+        cpp: [
+          "#include <vector>",
+          "using namespace std;",
+          "void deleteAt(vector<int>& arr, int idx) {",
+          "  arr.erase(arr.begin() + idx); // O(n)",
+          "}",
         ],
       },
     };

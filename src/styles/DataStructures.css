@@ -447,3 +447,73 @@ html[data-theme='light'] .ds-cline.active { background: rgba(108, 99, 255, 0.12)
   .ds-title-main { font-size: clamp(22px, 5vw, 26px); }
   .ds-code-panel { bottom: 10px; right: 10px; width: calc(100% - 20px); max-width: none; }
 }
+
+
+/* Friendlier code walkthrough */
+.ds-code-panel {
+  width: min(440px, calc(100% - 32px));
+  max-height: min(430px, calc(100% - 112px));
+  border-radius: 18px;
+  backdrop-filter: blur(16px);
+}
+.ds-code-header { gap: 12px; padding: 14px 16px; }
+.ds-code-title { display: inline-flex; align-items: center; gap: 10px; letter-spacing: 0; }
+.ds-code-title-icon {
+  display: grid; width: 34px; height: 34px; flex: 0 0 34px; place-items: center;
+  border-radius: 11px; background: color-mix(in srgb, var(--accent) 14%, var(--bg-main));
+  color: var(--accent); font-size: 18px;
+}
+.ds-code-title strong { display: block; font-size: 13px; }
+.ds-code-title small { display: block; margin-top: 2px; color: var(--text-muted); font-size: 10px; font-weight: 500; }
+.ds-code-lang-bar { display: flex; flex-wrap: nowrap; gap: 3px; max-width: 100%; padding: 4px; border-radius: 10px; }
+.ds-code-lang-btn { min-height: 32px; padding: 5px 9px; border-radius: 7px; font-size: 11px; white-space: nowrap; }
+.ds-code-lang-btn:focus-visible, .ds-code-close-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ds-code-pre { flex: 1 1 auto; min-height: 100px; max-height: none; padding: 12px 0; font-size: 12px; line-height: 1.75; }
+.ds-cline { padding-top: 3px; padding-bottom: 3px; }
+.ds-code-step-msg { white-space: normal; line-height: 1.5; }
+
+/* Responsive visualizer layout */
+.ds-page { min-width: 0; min-height: 0; }
+.ds-panel, .ds-canvas-wrap { min-width: 0; }
+.ds-hints { max-width: calc(100% - 32px); text-align: center; line-height: 1.5; }
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .ds-panel { width: clamp(248px, 30vw, 290px); }
+  .ds-section { padding: 16px 18px; }
+  .ds-code-panel { right: 14px; bottom: 52px; width: min(400px, calc(100% - 28px)); }
+  .ds-live-stats { top: 14px; left: 14px; padding: 12px; }
+  .ds-hints { bottom: 12px; font-size: 11px; }
+}
+
+@media (max-width: 767px) {
+  .ds-page { height: auto !important; min-height: 100%; overflow-x: hidden; overflow-y: auto; flex-direction: column; align-items: stretch; }
+  .ds-panel {
+    width: 100%; min-width: 0; max-height: min(48vh, 440px); flex: 0 0 auto;
+    overflow-x: hidden; border-right: 0; border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 5px 18px rgba(0,0,0,.06);
+  }
+  .ds-panel-title { padding: 17px 18px; }
+  .ds-section { padding: 14px 18px; gap: 10px; }
+  .ds-canvas-wrap { width: 100%; height: clamp(390px, 62vh, 620px); min-height: 390px; flex: 0 0 auto; }
+  .ds-live-stats { top: 10px; left: 10px; padding: 9px 11px; gap: 4px; border-radius: 10px; }
+  .ds-ls-label { font-size: 9px; margin-bottom: 0; }
+  .ds-ls-item { font-size: 11px; }
+  .ds-popup { top: 10px; right: 10px; max-width: calc(100% - 130px); padding: 10px 12px; font-size: 12px; }
+  .ds-hints { bottom: 10px; width: calc(100% - 20px); max-width: none; padding: 7px 10px; border-radius: 12px; font-size: 10px; }
+  .ds-code-panel { position: absolute; right: 8px; bottom: 48px; left: 8px; width: auto; max-width: none; max-height: min(54%, 350px); border-radius: 14px; }
+  .ds-code-header { align-items: flex-start; padding: 10px 11px; }
+  .ds-code-title { gap: 7px; }
+  .ds-code-title-icon { width: 29px; height: 29px; flex-basis: 29px; }
+  .ds-code-title small { display: none; }
+  .ds-code-lang-bar { gap: 1px; padding: 3px; }
+  .ds-code-lang-btn { min-height: 30px; padding: 4px 7px; font-size: 10px; }
+  .ds-code-pre { min-height: 90px; font-size: 11px; }
+  .ds-code-step-msg { padding: 8px 11px; font-size: 11px; }
+}
+@media (max-width: 380px) {
+  .ds-code-title strong { font-size: 11px; }
+  .ds-code-lang-btn { padding-inline: 5px; font-size: 9px; }
+  .ds-btn { gap: 5px; padding-inline: 9px; font-size: 12px; }
+  .ds-gen-row { flex-wrap: wrap; }
+  .ds-gen-row .ds-rand-input { min-width: 0; flex: 1; }
+}

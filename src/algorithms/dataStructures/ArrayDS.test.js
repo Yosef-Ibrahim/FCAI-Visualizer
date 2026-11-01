@@ -6,6 +6,17 @@ const valuesOf = (array) =>
   array.nodes.filter((node) => !node.isDeleted).map((node) => node.val);
 
 describe('ArrayDS', () => {
+  it('provides C++ code for every visualized operation', () => {
+    const structure = new ArrayDS();
+    const snippets = structure.getOpsCode();
+
+    for (const operation of ["insert","set","delete"]) {
+      expect(snippets[operation].cpp).toBeDefined();
+      expect(snippets[operation].cpp.length).toBeGreaterThan(0);
+      expect(snippets[operation].cpp.join('\n')).toMatch(/\b(void|int|bool|#include|struct)\b/);
+    }
+  });
+
   it('starts empty', () => {
     const array = new ArrayDS();
 
