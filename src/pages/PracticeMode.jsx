@@ -1,10 +1,21 @@
 import { useState, useCallback } from 'react';
+import { MessageSquare } from 'lucide-react';
 import QuizPanel from '../components/ai/QuizPanel';
 import TracePanel from '../components/ai/TracePanel';
 import ScoreBoard from '../components/ai/ScoreBoard';
 import { useProgress } from '../hooks/useProgress';
 import { useT } from '../hooks/useT';
 import '../styles/Training.css';
+
+const FEEDBACK_URL = 'https://github.com/Yosef-Ibrahim/FCAI-Visualizer/issues/new/choose';
+
+function FeedbackLink({ label }) {
+  return (
+    <a className="training-feedback-link" href={FEEDBACK_URL} target="_blank" rel="noopener noreferrer">
+      <MessageSquare size={16} aria-hidden="true" /> {label}
+    </a>
+  );
+}
 
 const TOPICS = {
   sorting: { icon: '⊞' },
@@ -66,6 +77,7 @@ export default function PracticeMode() {
           <p className="training-subtitle">
             {t('subtitle')}
           </p>
+          <FeedbackLink label={t('feedback.link')} />
         </header>
 
         <ScoreBoard stats={stats} onClear={resetProgress} />
@@ -97,6 +109,7 @@ export default function PracticeMode() {
 
   return (
     <div className="training-page">
+      <div className="training-top-actions">
       <button
         className="btn btn-outline"
         onClick={handleBack}
@@ -104,8 +117,8 @@ export default function PracticeMode() {
       >
         <span className="rtl-flip" aria-hidden="true">←</span> {t('backToMenu')}
       </button>
-
-
+      <FeedbackLink label={t('feedback.link')} />
+      </div>
 
       {showTopicSelect ? (
         <div style={{
