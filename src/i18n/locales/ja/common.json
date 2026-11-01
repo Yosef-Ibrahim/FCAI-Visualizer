@@ -10,7 +10,10 @@
     "linkedin": "LinkedIn",
     "linkedinLabel": "LinkedInプロフィールを開く",
     "linkedinAction": "つながりましょう",
-    "madeBy": "学びのために開発 · お気軽にご連絡ください"
+    "madeBy": "学びのために開発 · お気軽にご連絡ください",
+    "source": "GitHub リポジトリ",
+    "sourceLabel": "GitHubのソースコードとIssueを開く",
+    "sourceAction": "ソースコードを見る・問題を報告"
   },
   "header": {
     "eyebrow": "FCAI-CU · 学習プラットフォーム",
