@@ -1,7 +1,8 @@
-import { BriefcaseBusiness, Mail, ExternalLink } from 'lucide-react';
+import { BriefcaseBusiness, Mail, ExternalLink, Github } from 'lucide-react';
 import { useT } from '../../hooks/useT';
 import './ContactSection.css';
 
+const SOURCE_URL = 'https://github.com/Yosef-Ibrahim/FCAI-Visualizer';
 const LINKEDIN_URL = 'https://www.linkedin.com/in/youssef-ibrahim-mohamed-48b068333/';
 const CONTACT_EMAIL = 'youssefibrahimelisely@gmail.com';
 
@@ -28,6 +29,21 @@ export default function ContactSection() {
               <small>{t('contact.email')}</small>
               <strong>{CONTACT_EMAIL}</strong>
             </span>
+          </a>
+
+          <a
+            className="contact-link"
+            href={SOURCE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t('contact.sourceLabel')}
+          >
+            <span className="contact-link-icon"><Github size={19} /></span>
+            <span className="contact-link-copy">
+              <small>{t('contact.source')}</small>
+              <strong>{t('contact.sourceAction')}</strong>
+            </span>
+            <ExternalLink className="contact-external-icon" size={15} />
           </a>
 
           <a
