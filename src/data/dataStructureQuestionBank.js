@@ -106,7 +106,6 @@ export function buildDataStructureQuestionBank(algorithm, language = 'en') {
     // Stable option order rotation avoids a permanently predictable answer slot.
     const uniqueOptions = [...new Set(options)].slice(0, 4);
     while (uniqueOptions.length < 4) uniqueOptions.push(distractors[uniqueOptions.length]);
-    const answerIndex = uniqueOptions.indexOf(answer);
     const shift = index % 4;
     const rotated = uniqueOptions.map((_, i) => uniqueOptions[(i - shift + 4) % 4]);
     const correctLetter = String.fromCharCode(65 + rotated.indexOf(answer));
