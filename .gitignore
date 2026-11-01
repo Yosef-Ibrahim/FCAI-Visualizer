@@ -29,9 +29,12 @@ test-artifacts/
 *.njsproj
 *.sln
 *.sw?
-.env
+# Environment files (keep the example template)
+.env*
+!.env.example
 *.env
 agent.md
+opencode.json
 
 .agents
 skills-lock
