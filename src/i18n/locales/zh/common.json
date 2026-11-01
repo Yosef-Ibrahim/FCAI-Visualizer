@@ -10,7 +10,10 @@
     "linkedin": "LinkedIn",
     "linkedinLabel": "打开 LinkedIn 个人主页",
     "linkedinAction": "与我联系",
-    "madeBy": "为学习而打造 · 欢迎联系"
+    "madeBy": "为学习而打造 · 欢迎联系",
+    "source": "GitHub 仓库",
+    "sourceLabel": "打开 GitHub 源代码和问题反馈",
+    "sourceAction": "查看源码 / 提交问题"
   },
   "header": {
     "eyebrow": "FCAI-CU · 学习平台",
