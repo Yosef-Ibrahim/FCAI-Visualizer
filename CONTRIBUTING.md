@@ -19,8 +19,6 @@ Thanks for helping improve FCAI Visualizer! Contributions are welcome, including
 
 ## Commits and pull requests
 
-Use [Conventional Commits](https://www.conventionalcommits.org/), for example `feat(visualizer): add merge sort`. Keep the subject imperative and under 72 characters.
-
 Open a pull request with a clear summary, the reason for the change, and relevant issue links. Include screenshots for UI changes and mention the checks you ran.
 
 ## AI-assisted contributions
@@ -32,4 +30,4 @@ AI tools and coding agents may be used. Contributors must review and understand 
 - [ ] Yes
 - [ ] No
 
-Include your answer in the pull request description. Do not add AI attribution footers to commits.
+Include your answer in the pull request description. 
