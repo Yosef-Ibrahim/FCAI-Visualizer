@@ -10,7 +10,10 @@
     "linkedin": "لينكدإن",
     "linkedinLabel": "فتح الملف الشخصي على لينكدإن",
     "linkedinAction": "تواصل معي",
-    "madeBy": "صُمّم للتعلّم · يسعدني تواصلك"
+    "madeBy": "صُمّم للتعلّم · يسعدني تواصلك",
+    "source": "مستودع GitHub",
+    "sourceLabel": "فتح الكود المصدري أو الإبلاغ عن مشكلة",
+    "sourceAction": "عرض السورس كود أو إرسال Issue"
   },
   "header": {
     "eyebrow": "FCAI-CU · منصّة تعليمية",
