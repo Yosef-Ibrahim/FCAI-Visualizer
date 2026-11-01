@@ -1,0 +1,30 @@
+name: General feedback
+description: Share your experience, ideas, or what should be improved.
+title: "[Feedback]: "
+labels: ["feedback"]
+body:
+  - type: dropdown
+    id: experience
+    attributes:
+      label: How was your experience?
+      options:
+        - Very helpful
+        - Helpful
+        - Neutral
+        - Needs improvement
+    validations:
+      required: true
+  - type: textarea
+    id: liked
+    attributes:
+      label: What did you find useful?
+  - type: textarea
+    id: improve
+    attributes:
+      label: What should we improve next?
+    validations:
+      required: true
+  - type: textarea
+    id: other
+    attributes:
+      label: Anything else?
