@@ -23,6 +23,35 @@ describe('ArrayDS', () => {
     expect(valuesOf(array)).toEqual([42, 7]);
   });
 
+  it('rejects indexes beyond the current length instead of silently appending', () => {
+    const array = new ArrayDS();
+    array.insert(0, 10);
+    array.insert(1, 20);
+    array.insert(2, 30);
+
+    expect(array.insert(7, 99)).toBe(false);
+    expect(array.insert(-1, 99)).toBe(false);
+    expect(array.insert(1.5, 99)).toBe(false);
+    expect(valuesOf(array)).toEqual([10, 20, 30]);
+  });
+
+  it('allows insertion exactly at the current length', () => {
+    const array = new ArrayDS();
+    array.insert(0, 10);
+    array.insert(1, 20);
+
+    expect(array.insert(2, 30)).toBe(true);
+    expect(valuesOf(array)).toEqual([10, 20, 30]);
+  });
+
+  it('does not insert an empty value', () => {
+    const array = new ArrayDS();
+
+    expect(array.insert(0, '')).toBe(false);
+    expect(array.insert(0, null)).toBe(false);
+    expect(array.getSize()).toBe(0);
+  });
+
   it('inserts in the middle', () => {
     const array = new ArrayDS();
 

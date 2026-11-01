@@ -238,3 +238,25 @@ existing pattern exactly:
   if you change either.
 - `npm.cmd` and `scripts/setup-node.ps1` are maintained optional portable-Node
   tooling; keep their behavior aligned with `.node-version`.
+
+
+## Input validation and tree invariants
+
+- Tree node values are finite numbers in the supported range; parse with
+  `Number`, never `parseInt`, so decimal values are preserved. An empty
+  input is invalid and must never silently become node value `0`. An explicit
+  `0` remains a valid value.
+- Array insertion accepts only integer indexes in the inclusive range
+  `0..length`. A blank index means append; a supplied negative, fractional,
+  or greater-than-length index must be rejected, never clamped to append.
+  Array value inputs must be non-empty; the string `"0"` is a valid value.
+- Clear a successfully submitted tree/array value input after the operation
+  is accepted. Enter and the visible Insert button must use the same handler.
+- AVL height convention is: empty subtree = -1, leaf = 0. Keep
+  `AVLNode.height`, `AVLTree._height`, and `_updateHeight` consistent.
+  Balanced insertions must not emit rotations; test LL, RR, LR, and RL cases.
+- Tree relationship lines must use the theme's `edgeCol`, not the node
+  outline color. Preserve sufficient contrast in both light and dark themes.
+- Before changing these behaviours, add/update colocated Vitest regression
+  tests. Run `npm run verify` (lint, typecheck, i18n, tests, production build)
+  and confirm the GitHub Actions CI workflow is green before reporting success.

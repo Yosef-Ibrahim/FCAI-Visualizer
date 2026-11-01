@@ -101,14 +101,24 @@ export class ArrayDS {
     const idxInput = panel.querySelector('#arr-idx');
     const code = this.getOpsCode();
 
-    const getVal = () => valInput.value || Math.floor(Math.random() * 100).toString();
-    const getIdx = () => parseInt(idxInput.value, 10);
+    const getVal = () => valInput.value.trim();
+    const getIdx = () => idxInput.value.trim() === '' ? null : Number(idxInput.value);
 
-    panel.querySelector('#arr-btn-insert').addEventListener('click', () => {
-      let idx = getIdx();
+    const insertValue = () => {
       const val = getVal();
+      const rawIdx = getIdx();
       const size = this.getSize();
-      if (isNaN(idx) || idx < 0 || idx > size) idx = size;
+      if (val === '') {
+        showPopup('Enter a value before inserting', T.highlight);
+        valInput.focus();
+        return;
+      }
+      const idx = rawIdx === null ? size : rawIdx;
+      if (!Number.isInteger(idx) || idx < 0 || idx > size) {
+        showPopup(`Invalid index: use an integer from 0 to ${size}`, T.highlight);
+        idxInput.focus();
+        return;
+      }
       runSteps(code.insert, [
         { line: 0, msg: `insert(arr, ${idx}, "${val}")` },
         { line: 1, msg: `Current length = ${size}` },
@@ -117,6 +127,19 @@ export class ArrayDS {
         { line: 4, msg: `Place value "${val}" at index ${idx}`, action: () => { this.insert(idx, val); showPopup(`Inserted ${val} at [${idx}]`, T.accent); } },
         { line: 5, msg: '✓ Insert complete' },
       ]);
+      valInput.value = '';
+      valInput.focus();
+    };
+
+    const insertButton = panel.querySelector('#arr-btn-insert');
+    insertButton.addEventListener('click', insertValue);
+    [valInput, idxInput].forEach((input) => {
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          insertValue();
+        }
+      });
     });
 
     panel.querySelector('#arr-btn-set').addEventListener('click', () => {
@@ -173,6 +196,9 @@ export class ArrayDS {
 
   insert(idx, val, instant = false) {
     const active = this.nodes.filter(n => !n.isDeleted);
+    if (!Number.isInteger(idx) || idx < 0 || idx > active.length || val === undefined || val === null || val === '') {
+      return false;
+    }
     const newNode = {
       id: this.nextId++, val,
       x: 0, y: -80, targetX: 0, targetY: 0,
@@ -184,6 +210,7 @@ export class ArrayDS {
     this._recalcTargets();
     if (instant) { newNode.x = newNode.targetX; newNode.y = newNode.targetY; newNode.highlight = 0; }
     else newNode.x = newNode.targetX;
+    return true;
   }
 
   setVal(idx, val) {

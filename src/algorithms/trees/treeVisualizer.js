@@ -76,7 +76,7 @@ export function initTreeVisualizer(container, type = 'avl') {
     <hr class="tree-divider"/>
     <section class="tree-section">
       <div class="tree-section-label">NODE VALUE</div>
-      <div class="tree-input-row"><input class="tree-val-input" id="tv-val-input" type="text" value="0" autocomplete="off" spellcheck="false"/></div>
+      <div class="tree-input-row"><input class="tree-val-input" id="tv-val-input" type="text" autocomplete="off" spellcheck="false"/></div>
       <div class="tree-tip">Tip: prefix with <kbd>-</kbd> for negatives</div>
       <button class="tree-btn tree-btn-accent" id="tv-btn-insert">Insert Node</button>
       <button class="tree-btn tree-btn-danger" id="tv-btn-delete">Delete Node</button>
@@ -447,7 +447,13 @@ export function initTreeVisualizer(container, type = 'avl') {
   // ── Input helpers ──────────────────────────────────────────────────────
   const valInput = panel.querySelector('#tv-val-input');
   const randInput = panel.querySelector('#tv-rand-input');
-  function getVal() { const v = parseInt(valInput.value, 10); return isNaN(v) ? 0 : Math.max(-9999, Math.min(9999, v)); }
+  function getVal() {
+    const raw = valInput.value.trim();
+    if (raw === '') return null;
+    const value = Number(raw);
+    if (!Number.isFinite(value)) return null;
+    return Math.max(-9999, Math.min(9999, value));
+  }
 
   // ── Actions ────────────────────────────────────────────────────────────
   function getT() {
@@ -457,12 +463,25 @@ export function initTreeVisualizer(container, type = 'avl') {
 
   function doInsert() {
     const val = getVal();
+    if (val === null) {
+      setStatus('Enter a valid number', 'The value cannot be empty.');
+      valInput.focus();
+      return;
+    }
+    if (rbtBusy) return;
     tree.searchPath = [];
     startRbtOperation('insert', val);
+    valInput.value = '';
+    valInput.focus();
   }
 
   function doDelete() {
     const val = getVal();
+    if (val === null) {
+      setStatus('Enter a valid number', 'The value cannot be empty.');
+      valInput.focus();
+      return;
+    }
     tree.searchPath = [];
     startRbtOperation('delete', val);
   }
@@ -795,8 +814,8 @@ export function initTreeVisualizer(container, type = 'avl') {
     const drawEdges = (layout, alpha) => {
       if (alpha <= 0) return;
       ctx.globalAlpha = alpha;
-      ctx.strokeStyle = theme.nodeStroke;
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = theme.edgeCol || theme.nodeStroke;
+      ctx.lineWidth = 2.5;
       layout.edges.forEach(({ parentValue, value }) => {
         const from = point(parentValue);
         const to = point(value);
