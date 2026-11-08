@@ -1,4 +1,4 @@
-import { BriefcaseBusiness, Mail, ExternalLink, Code2 } from 'lucide-react';
+import { Mail, Code2, BriefcaseBusiness } from 'lucide-react';
 import { useT } from '../../hooks/useT';
 import './ContactSection.css';
 
@@ -10,63 +10,35 @@ export default function ContactSection() {
   const t = useT();
 
   return (
-    <footer className="contact-section" aria-labelledby="contact-title">
-      <div className="contact-section-inner">
-        <div className="contact-copy">
-          <span className="contact-eyebrow">{t('contact.eyebrow')}</span>
-          <h2 id="contact-title">{t('contact.title')}</h2>
-          <p>{t('contact.description')}</p>
-        </div>
-
-        <div className="contact-links">
-          <a
-            className="contact-link"
-            href={`mailto:${CONTACT_EMAIL}`}
-            aria-label={t('contact.emailLabel')}
-          >
-            <span className="contact-link-icon"><Mail size={19} /></span>
-            <span className="contact-link-copy">
-              <small>{t('contact.email')}</small>
-              <strong>{CONTACT_EMAIL}</strong>
-            </span>
-          </a>
-
-          <a
-            className="contact-link"
-            href={SOURCE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={t('contact.sourceLabel')}
-          >
-            <span className="contact-link-icon"><Code2 size={19} /></span>
-            <span className="contact-link-copy">
-              <small>{t('contact.source')}</small>
-              <strong>{t('contact.sourceAction')}</strong>
-            </span>
-            <ExternalLink className="contact-external-icon" size={15} />
-          </a>
-
-          <a
-            className="contact-link"
-            href={LINKEDIN_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={t('contact.linkedinLabel')}
-          >
-            <span className="contact-link-icon"><BriefcaseBusiness size={19} /></span>
-            <span className="contact-link-copy">
-              <small>{t('contact.linkedin')}</small>
-              <strong>{t('contact.linkedinAction')}</strong>
-            </span>
-            <ExternalLink className="contact-external-icon" size={15} />
-          </a>
-        </div>
-
-        <div className="contact-bottom">
-          <span>FCAI-Visualizer</span>
-          <span>{t('contact.madeBy')}</span>
-        </div>
-      </div>
-    </footer>
+    <nav className="contact-dock" aria-label={t('contact.title')}>
+      <a
+        className="contact-dock-link"
+        href={SOURCE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={t('contact.sourceLabel')}
+        data-tooltip={t('contact.source')}
+      >
+        <Code2 size={18} aria-hidden="true" />
+      </a>
+      <a
+        className="contact-dock-link"
+        href={`mailto:${CONTACT_EMAIL}`}
+        aria-label={t('contact.emailLabel')}
+        data-tooltip={t('contact.email')}
+      >
+        <Mail size={18} aria-hidden="true" />
+      </a>
+      <a
+        className="contact-dock-link"
+        href={LINKEDIN_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={t('contact.linkedinLabel')}
+        data-tooltip={t('contact.linkedin')}
+      >
+        <BriefcaseBusiness size={18} aria-hidden="true" />
+      </a>
+    </nav>
   );
 }
