@@ -24,7 +24,7 @@
     "advanced-data-structure": {
       "eyebrow": "応用コース",
       "title": "高度なデータ構造",
-      "description": "階層データを整理し、データが増えても操作の効率を保つ木構造を学びます。"
+      "description": "データが増えても整理しやすい、階層構造やプレフィックス構造を学びます。"
     },
     "information-theory-compression": {
       "eyebrow": "情報理論コース",
@@ -130,6 +130,15 @@
         "次数 3",
         "分割と昇格",
         "削除と再平衡"
+      ]
+    },
+    "trie": {
+      "title": "トライ木",
+      "description": "単語を挿入し、共通のプレフィックスから検索可能な文字の木が成長する様子を確認しましょう。",
+      "tags": [
+        "プレフィックス木",
+        "単語の挿入",
+        "O(L) 検索"
       ]
     },
     "lossless-compression": {

@@ -24,7 +24,7 @@
     "advanced-data-structure": {
       "eyebrow": "高级课程",
       "title": "高级数据结构",
-      "description": "学习如何利用树结构组织层次化数据，并在数据规模增长时保持操作高效。"
+      "description": "学习层次结构与前缀结构，了解它们如何在数据增长时保持数据有序。"
     },
     "information-theory-compression": {
       "eyebrow": "信息论课程",
@@ -130,6 +130,15 @@
         "阶数 3",
         "分裂与提升",
         "删除与再平衡"
+      ]
+    },
+    "trie": {
+      "title": "字典树（Trie）",
+      "description": "插入单词，观察共享前缀如何逐步构成可搜索的字符树。",
+      "tags": [
+        "前缀树",
+        "单词插入",
+        "O(L) 查找"
       ]
     },
     "lossless-compression": {

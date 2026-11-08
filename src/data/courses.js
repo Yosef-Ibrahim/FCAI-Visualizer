@@ -82,10 +82,10 @@ export const advancedDataStructureCourse = {
   id: 'advanced-data-structure',
   title: 'Advanced Data Structure',
   eyebrow: 'Advanced course',
-  description: 'Study tree structures that organize hierarchical data and keep operations efficient as collections grow.',
+  description: 'Study hierarchical and prefix-based structures that keep data organized as collections grow.',
   icon: GitBranch,
   color: 'gold',
-  lessonCount: 4,
+  lessonCount: 5,
   topics: [
     {
       id: 'trees',
@@ -118,6 +118,14 @@ export const advancedDataStructureCourse = {
       route: '/courses/advanced-data-structure/b-tree',
       icon: GitBranch,
       tags: ['Order 3', 'Split & promote', 'Delete & rebalance'],
+    },
+    {
+      id: 'trie',
+      title: 'Trie',
+      description: 'Insert words and watch shared prefixes grow into a searchable character tree.',
+      route: '/courses/advanced-data-structure/trie',
+      icon: GitBranch,
+      tags: ['Prefix tree', 'Word insertion', 'O(L) lookup'],
     },
   ],
 };

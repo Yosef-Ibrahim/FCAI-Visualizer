@@ -24,7 +24,7 @@
     "advanced-data-structure": {
       "eyebrow": "Advanced course",
       "title": "Advanced Data Structure",
-      "description": "Study tree structures that organize hierarchical data and keep operations efficient as collections grow."
+      "description": "Study hierarchical and prefix-based structures that keep data organized as collections grow."
     },
     "information-theory-compression": {
       "eyebrow": "Information theory course",
@@ -130,6 +130,15 @@
         "Order 3",
         "Split & promote",
         "Delete & rebalance"
+      ]
+    },
+    "trie": {
+      "title": "Trie",
+      "description": "Insert words and watch shared prefixes grow into a searchable character tree.",
+      "tags": [
+        "Prefix tree",
+        "Word insertion",
+        "O(L) lookup"
       ]
     },
     "lossless-compression": {
