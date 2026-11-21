@@ -1,0 +1,98 @@
+{
+  "title": "Dynamic Programming",
+  "subtitle": "Watch overlapping subproblems build bottom-up, inspect state dependencies, and trace back optimal solutions.",
+  "algos": {
+    "fibonacci-dp": {
+      "name": "Fibonacci (Tabulation)",
+      "shortDesc": "1D bottom-up table showing how F(i) reuses F(i−1) and F(i−2).",
+      "complexityNote": "Bottom-up tabulation eliminates exponential O(2ⁿ) recursion · O(1) space possible with two rolling variables"
+    },
+    "knapsack-01": {
+      "name": "0/1 Knapsack",
+      "shortDesc": "2D item-by-capacity table comparing skip vs. take with optimal subset traceback.",
+      "complexityNote": "Pseudo-polynomial in capacity W · Backtracking recovers the exact optimal item subset"
+    },
+    "lcs": {
+      "name": "Longest Common Subsequence",
+      "shortDesc": "2D alignment grid with diagonal matches, mismatch choices, and subsequence reconstruction.",
+      "complexityNote": "m, n = string lengths · Diagonal transition on match, max(up, left) on mismatch"
+    },
+    "coin-change-dp": {
+      "name": "Coin Change (Min Coins)",
+      "shortDesc": "1D minimum-coin table initialized to ∞ that succeeds even where greedy fails.",
+      "complexityNote": "n = denominations, A = target amount · Guarantees the global minimum coin count"
+    }
+  },
+  "controls": {
+    "algorithm": "Algorithm",
+    "parameters": "Input parameters",
+    "playback": "Playback",
+    "speed": "Speed",
+    "stepCounter": "Step {{current}} / {{total}}",
+    "jumpToTraceback": "Jump to traceback",
+    "resetDefaults": "Reset defaults",
+    "apply": "Apply input",
+    "showCode": "Show code",
+    "hideCode": "Hide code",
+    "fibN": "Target n (1–12)",
+    "capacity": "Capacity W (0–12)",
+    "items": "Items (name:weight:value)",
+    "itemsHint": "Comma-separated, up to 6 items, e.g. A:1:1, B:3:4, C:4:5, D:5:7",
+    "stringA": "String A (max 10 chars)",
+    "stringB": "String B (max 10 chars)",
+    "coins": "Coin denominations",
+    "coinsHint": "Up to 6 positive integers, e.g. 1, 3, 4",
+    "targetAmount": "Target amount (0–20)"
+  },
+  "telemetry": {
+    "phase": "Phase",
+    "recurrence": "Active recurrence",
+    "result": "Result",
+    "inspectCell": "Hovered / focused cell",
+    "pending": "—",
+    "cellInspect": "Cell ({{row}}, {{col}}) = {{value}}",
+    "phases": {
+      "init": "Initialize",
+      "fill": "Table fill",
+      "traceback": "Traceback",
+      "done": "Complete"
+    },
+    "legend": {
+      "active": "Active cell",
+      "dependency": "Dependencies",
+      "traceback": "Traceback path",
+      "empty": "Unfilled"
+    }
+  },
+  "errors": {
+    "invalidInput": "Please check your input values and try again.",
+    "invalidItems": "Enter 1–6 items formatted as Name:Weight:Value with positive integer weights.",
+    "invalidCoins": "Enter 1–6 positive integer coin denominations."
+  },
+  "steps": {
+    "fibInit": "Initialize 1D DP table of size {{size}} for Fibonacci({{n}}).",
+    "fibBase": "Base case: dp[{{index}}] = {{value}}.",
+    "fibFill": "Compute dp[{{i}}] = dp[{{prev1Index}}] ({{prev1}}) + dp[{{prev2Index}}] ({{prev2}}) = {{value}}.",
+    "fibDone": "Done! Fibonacci({{n}}) = {{result}}.",
+    "knapsackInit": "Initialize ({{rows}} × {{cols}}) table with zeros for {{count}} items and capacity {{capacity}}.",
+    "knapsackNoFit": "Item {{item}} (weight {{weight}}) exceeds capacity {{w}}; carry forward skip value {{skipVal}}.",
+    "knapsackTake": "Item {{item}} at w={{w}}: taking ({{takeVal}}) beats skipping ({{skipVal}}) → dp[{{i}}][{{w}}] = {{best}}.",
+    "knapsackSkip": "Item {{item}} at w={{w}}: skipping ({{skipVal}}) ≥ taking ({{takeVal}}) → dp[{{i}}][{{w}}] = {{best}}.",
+    "knapsackTraceTake": "Traceback at ({{i}}, {{w}}): include {{item}} (w={{weight}}, v={{value}}) and jump to capacity {{nextW}}.",
+    "knapsackTraceSkip": "Traceback at ({{i}}, {{w}}): value came from above, so exclude {{item}}.",
+    "knapsackDone": "Done! Maximum value = {{maxValue}} using items [{{items}}] (weight {{totalWeight}}/{{capacity}}).",
+    "lcsInit": "Initialize ({{rows}} × {{cols}}) LCS table for \"{{a}}\" and \"{{b}}\".",
+    "lcsMatch": "Characters match ('{{chA}}' = '{{chB}}'): extend diagonal to dp[{{i}}][{{j}}] = {{value}}.",
+    "lcsMismatch": "Mismatch ('{{chA}}' ≠ '{{chB}}'): dp[{{i}}][{{j}}] = max(up {{up}}, left {{left}}) = {{value}}.",
+    "lcsTraceMatch": "Traceback at ({{i}}, {{j}}): matched '{{ch}}' — record it and step diagonally.",
+    "lcsTraceUp": "Traceback at ({{i}}, {{j}}): move up to row {{nextI}}.",
+    "lcsTraceLeft": "Traceback at ({{i}}, {{j}}): move left to column {{nextJ}}.",
+    "lcsDone": "Done! LCS length = {{length}}, subsequence = \"{{subsequence}}\".",
+    "coinInit": "Initialize dp[0] = 0 and dp[1..{{amount}}] = ∞ using coins [{{coins}}].",
+    "coinFill": "Amount {{amount}}: using coin {{coin}} from dp[{{prev}}] yields minimum {{value}} coins.",
+    "coinUnreachableCell": "Amount {{amount}}: no coin reaches this value yet — remains ∞.",
+    "coinTrace": "Traceback at amount {{current}}: take coin {{coin}}, leaving {{next}}.",
+    "coinDone": "Done! Minimum coins for {{amount}} is {{minCoins}} using [{{picked}}].",
+    "coinDoneUnreachable": "Done! Target {{amount}} cannot be formed with coins [{{coins}}]."
+  }
+}

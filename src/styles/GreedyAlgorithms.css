@@ -1,0 +1,1001 @@
+/* ── Greedy Algorithms Workbench ───────────────────────────────────────────── */
+/* Uses exclusively AlgoVs design-system CSS variables for light & dark themes. */
+
+.greedy-workbench {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  min-height: 100%;
+  width: 100%;
+  max-width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: clip;
+}
+
+/* ── Left scrollable control rail ── */
+.greedy-controls-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px 16px;
+  background: var(--surface);
+  border-inline-end: 1px solid var(--border);
+  overflow-y: auto;
+  max-height: calc(100vh - var(--header-h));
+}
+
+.greedy-pane-header h1 {
+  margin: 0 0 4px;
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.greedy-pane-header p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.greedy-control-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.greedy-section-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.greedy-section-label {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.greedy-step-badge {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+
+/* Algorithm selector */
+.greedy-algo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.greedy-algo-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--text);
+  text-align: start;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.greedy-algo-btn:hover {
+  border-color: var(--accent);
+}
+
+.greedy-algo-btn.is-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+}
+
+.greedy-algo-btn-title {
+  font-family: var(--font-head);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.greedy-algo-btn.is-active .greedy-algo-btn-title {
+  color: var(--accent);
+}
+
+.greedy-algo-btn-desc {
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* Parameter form */
+.greedy-param-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.greedy-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.greedy-field input {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+
+.greedy-field input:focus {
+  border-color: var(--accent);
+}
+
+.greedy-field-hint {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.greedy-preset-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.greedy-preset-btn {
+  width: 100%;
+  min-height: 34px;
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+.greedy-error-msg {
+  margin: 0;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--accent2);
+  background: color-mix(in srgb, var(--accent2) 10%, var(--surface));
+  color: var(--accent2);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.greedy-form-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.greedy-form-actions .btn {
+  flex: 1 1 auto;
+  min-height: 36px;
+  font-size: 12.5px;
+  padding: 6px 10px;
+}
+
+/* Playback controls */
+.greedy-playback-bar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.greedy-icon-btn {
+  padding: 0 9px;
+  min-height: 36px;
+}
+
+.greedy-icon-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.greedy-play-btn {
+  flex: 1;
+  min-height: 36px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+}
+
+.greedy-scrubber-wrap input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.greedy-speed-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.greedy-speed-row input[type="range"] {
+  flex: 1;
+  accent-color: var(--accent);
+}
+
+.greedy-speed-val {
+  min-width: 28px;
+  text-align: end;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.greedy-controls-pane .panel-card {
+  padding: 12px;
+  box-shadow: none;
+  background: var(--surface2);
+}
+
+.greedy-controls-pane .panel-card h3 {
+  margin: 0 0 8px;
+  padding-bottom: 6px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+.greedy-controls-pane .complexity-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px 10px;
+  font-size: 12px;
+}
+
+.greedy-controls-pane .complexity-label {
+  color: var(--text-muted);
+}
+
+.greedy-controls-pane .complexity-value {
+  color: var(--accent3);
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+/* ── Right stage pane ── */
+.greedy-stage-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px;
+  min-width: 0;
+  overflow-y: auto;
+  max-height: calc(100vh - var(--header-h));
+}
+
+.greedy-stage-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Flush inline telemetry bar */
+.greedy-telemetry-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 18px;
+  padding: 11px 16px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+.greedy-telemetry-algo {
+  font-family: var(--font-head);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.greedy-telemetry-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.greedy-telemetry-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+}
+
+.greedy-telemetry-key {
+  color: var(--text-muted);
+}
+
+.greedy-telemetry-val {
+  font-family: var(--font-mono);
+  color: var(--accent);
+}
+
+.greedy-narration {
+  padding: 10px 16px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--accent) 4%, var(--surface));
+}
+
+/* ── Shared stage view framing ── */
+.greedy-view-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  min-width: 0;
+}
+
+.greedy-view-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 14px;
+}
+
+.greedy-view-head h3 {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.greedy-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.greedy-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.greedy-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.greedy-dot--accepted { background: var(--accent3); }
+.greedy-dot--rejected { background: var(--accent2); }
+.greedy-dot--active { background: var(--accent); }
+
+.greedy-inline-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.greedy-inline-stats strong {
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+
+.greedy-val-emerald {
+  color: var(--accent3) !important;
+}
+
+/* ── Interval Timeline (Gantt) ── */
+.greedy-gantt-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+  padding-bottom: 4px;
+}
+
+.greedy-gantt {
+  min-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.greedy-gantt-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.greedy-gantt-row {
+  display: grid;
+  grid-template-columns: 92px minmax(220px, 1fr) 82px;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  background: var(--surface2);
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.greedy-gantt-row.is-row-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+
+.greedy-gantt-label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.greedy-gantt-name {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.greedy-gantt-range {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.greedy-gantt-track {
+  position: relative;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.greedy-gantt-cursor {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+  z-index: 3;
+}
+
+.greedy-gantt-bar {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  overflow: hidden;
+  white-space: nowrap;
+  z-index: 2;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.greedy-gantt-bar.is-pending {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.greedy-gantt-bar.is-active,
+.greedy-gantt-bar.is-current {
+  border: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  color: var(--text);
+}
+
+.greedy-gantt-bar.is-accepted {
+  background: color-mix(in srgb, var(--accent3) 24%, var(--surface));
+  border: 1.5px solid var(--accent3);
+  color: var(--text);
+}
+
+.greedy-gantt-bar.is-rejected {
+  background: color-mix(in srgb, var(--accent2) 15%, var(--surface));
+  border: 1px dashed var(--accent2);
+  color: var(--accent2);
+  text-decoration: line-through;
+}
+
+.greedy-gantt-axis {
+  display: grid;
+  grid-template-columns: 92px minmax(220px, 1fr) 82px;
+  gap: 10px;
+  padding: 0 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.greedy-gantt-axis-ticks {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Status pills */
+.greedy-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+}
+
+.greedy-status-pill.is-accepted {
+  border-color: var(--accent3);
+  background: color-mix(in srgb, var(--accent3) 14%, var(--surface));
+  color: var(--accent3);
+}
+
+.greedy-status-pill.is-partial {
+  border-color: var(--accent4);
+  background: color-mix(in srgb, var(--accent4) 16%, var(--surface));
+  color: var(--accent4);
+}
+
+.greedy-status-pill.is-rejected {
+  border-color: var(--accent2);
+  background: color-mix(in srgb, var(--accent2) 12%, var(--surface));
+  color: var(--accent2);
+}
+
+.greedy-status-pill.is-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color: var(--accent);
+}
+
+/* ── Fractional Knapsack Fill & List ── */
+.greedy-fill-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.greedy-fill-caption {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.greedy-fill-bar {
+  display: flex;
+  width: 100%;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.greedy-fill-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--surface);
+  overflow: hidden;
+  white-space: nowrap;
+  transition: width 0.22s ease;
+  border-inline-end: 1px solid color-mix(in srgb, var(--surface) 40%, transparent);
+}
+
+.greedy-fill-seg--accent { background: var(--accent); }
+.greedy-fill-seg--accent3 { background: var(--accent3); }
+.greedy-fill-seg--accent4 { background: var(--accent4); }
+.greedy-fill-seg--accent2 { background: var(--accent2); }
+
+.greedy-fill-seg.is-fraction {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 6px,
+    color-mix(in srgb, var(--surface) 18%, transparent) 6px,
+    color-mix(in srgb, var(--surface) 18%, transparent) 12px
+  );
+}
+
+.greedy-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.greedy-item-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.greedy-item-row.is-row-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+
+.greedy-item-ident {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.greedy-item-name {
+  font-family: var(--font-head);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.greedy-item-ratio {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--accent);
+}
+
+.greedy-item-nums {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.greedy-item-gain {
+  color: var(--accent3);
+  font-weight: 700;
+}
+
+/* ── Greedy Coin Change View ── */
+.greedy-coin-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.greedy-coin-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 72px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.greedy-coin-card.is-picked {
+  border-color: var(--accent3);
+  background: color-mix(in srgb, var(--accent3) 12%, var(--surface));
+}
+
+.greedy-coin-card.is-skipped {
+  opacity: 0.58;
+}
+
+.greedy-coin-card.is-active {
+  border-color: var(--accent);
+  border-width: 2px;
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+}
+
+.greedy-coin-disc {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--accent4);
+  background: color-mix(in srgb, var(--accent4) 14%, var(--surface));
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.greedy-coin-meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.greedy-coin-card.is-picked .greedy-coin-meta {
+  color: var(--accent3);
+}
+
+.greedy-picked-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  font-size: 12.5px;
+}
+
+.greedy-picked-label {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.greedy-picked-empty {
+  color: var(--text-muted);
+}
+
+.greedy-picked-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.greedy-coin-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--accent3);
+  background: color-mix(in srgb, var(--accent3) 14%, var(--surface));
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Counterexample / Optimal verdict ribbon */
+.greedy-verdict {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+}
+
+.greedy-verdict--optimal {
+  border-color: var(--accent3);
+  background: color-mix(in srgb, var(--accent3) 10%, var(--surface));
+}
+
+.greedy-verdict--fail {
+  border-color: var(--accent2);
+  background: color-mix(in srgb, var(--accent2) 10%, var(--surface));
+}
+
+.greedy-verdict--impossible {
+  border-color: var(--accent4);
+  background: color-mix(in srgb, var(--accent4) 10%, var(--surface));
+}
+
+.greedy-verdict-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-head);
+  font-size: 13.5px;
+  color: var(--text);
+}
+
+.greedy-verdict--optimal .greedy-verdict-head { color: var(--accent3); }
+.greedy-verdict--fail .greedy-verdict-head { color: var(--accent2); }
+.greedy-verdict--impossible .greedy-verdict-head { color: var(--accent4); }
+
+.greedy-verdict-body {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.greedy-verdict-compare {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+.greedy-verdict-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.greedy-verdict-col-label {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.greedy-verdict-col-val {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Collapsible Code drawer */
+.greedy-code-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.greedy-code-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-head);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.greedy-code-toggle:hover {
+  border-color: var(--accent);
+  background: var(--surface2);
+}
+
+.greedy-code-toggle-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.greedy-code-panel-wrap .panel-card {
+  padding: 14px;
+  box-shadow: none;
+}
+
+/* Quiet related greedy links strip */
+.greedy-related-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.greedy-related-title {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.greedy-related-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.greedy-related-link {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 11px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.greedy-related-link:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+}
+
+.greedy-related-link strong {
+  display: block;
+  font-family: var(--font-head);
+  font-size: 12.5px;
+  margin-bottom: 2px;
+}
+
+.greedy-related-link span {
+  display: block;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* ── Responsive stacking below 900px ── */
+@media (max-width: 900px) {
+  .greedy-workbench {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: auto;
+  }
+
+  .greedy-controls-pane {
+    max-height: 44vh;
+    border-inline-end: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .greedy-stage-pane {
+    max-height: none;
+    padding: 14px 12px;
+  }
+
+  .greedy-related-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .greedy-verdict-compare {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

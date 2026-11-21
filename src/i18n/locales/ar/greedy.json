@@ -1,0 +1,128 @@
+{
+  "title": "الخوارزميات الجشعة",
+  "subtitle": "تتبع الاختيارات المثلى محلياً وقيود الصلاحية، واكتشف متى تنجح خاصية الاختيار الجشع ومتى تفشل.",
+  "algos": {
+    "activity-selection": {
+      "name": "اختيار الأنشطة",
+      "shortDesc": "رتب الفترات حسب وقت الانتهاء الأسبق واقبل كل نشاط غير متداخل.",
+      "complexityNote": "الترتيب حسب وقت الانتهاء يهيمن على الزمن · برهان الاستبدال يثبت أمثلية الحل"
+    },
+    "fractional-knapsack": {
+      "name": "حقيبة الظهر الكسرية",
+      "shortDesc": "رتب العناصر حسب نسبة القيمة إلى الوزن وخذ عناصر كاملة أو جزئية حتى تمتلئ الحقيبة.",
+      "complexityNote": "يرتب العناصر تنازلياً حسب كثافة القيمة · الحل الجشع أمثل لأن العناصر قابلة للتجزئة"
+    },
+    "greedy-coin-change": {
+      "name": "صرف العملات الجشع",
+      "shortDesc": "اختر أكبر عملة مناسبة في كل خطوة وقارن النتيجة بالحل الأمثل بالبرمجة الديناميكية.",
+      "complexityNote": "أمثل للعملات المعيارية مثل العملات الأمريكية · قد يفشل مع فئات غير معيارية مثل [1, 3, 4]"
+    }
+  },
+  "controls": {
+    "algorithm": "الخوارزمية",
+    "parameters": "مدخلات المسألة",
+    "playback": "التحكم بالعرض",
+    "speed": "السرعة",
+    "stepCounter": "الخطوة {{current}} / {{total}}",
+    "resetDefaults": "إعادة الافتراضي",
+    "apply": "تطبيق المدخلات",
+    "showCode": "إظهار الكود",
+    "hideCode": "إخفاء الكود",
+    "loadFailingCase": "تحميل حالة فشل ([1, 3, 4], 6)",
+    "loadCanonicalCase": "تحميل عملات معيارية ([1, 5, 10, 25], 41)",
+    "activitiesLabel": "الأنشطة (الاسم:البداية:النهاية)",
+    "activitiesHint": "مفصولة بفاصلة، حتى 12 فترة بحيث البداية < النهاية",
+    "capacity": "السعة W",
+    "itemsLabel": "العناصر (الاسم:الوزن:القيمة)",
+    "itemsHint": "مفصولة بفاصلة، حتى 10 عناصر بأوزان موجبة",
+    "coinsLabel": "فئات العملات",
+    "coinsHint": "حتى 8 أعداد صحيحة موجبة، مثل: 1, 5, 10, 25",
+    "amountLabel": "المبلغ المطلوب (0–200)"
+  },
+  "views": {
+    "activity": {
+      "title": "الخط الزمني لجدولة الأنشطة",
+      "accepted": "مقبول",
+      "rejected": "تعارض",
+      "active": "قيد الفحص",
+      "lastFinish": "آخر انتهاء",
+      "selectedCount": "المختارة",
+      "statusAccepted": "مقبول",
+      "statusRejected": "متداخل",
+      "statusActive": "قيد الفحص",
+      "statusPending": "في الانتظار",
+      "noneYet": "—"
+    },
+    "knapsack": {
+      "title": "العناصر المرتبة بالكثافة وشريط الامتلاء",
+      "fillBarLabel": "نسبة امتلاء الحقيبة",
+      "capacityUsed": "السعة المستخدمة",
+      "totalValue": "القيمة الإجمالية",
+      "ratio": "النسبة",
+      "weight": "الوزن",
+      "value": "القيمة",
+      "taken": "مأخوذ",
+      "skipped": "تم تخطيه (ممتلئة)",
+      "pending": "قيد الانتظار",
+      "wholeTag": "100%",
+      "fractionTag": "{{percent}}%"
+    },
+    "coin": {
+      "title": "اختيار الفئات والمبلغ المتبقي",
+      "target": "المبلغ المستهدف",
+      "remaining": "المتبقي",
+      "covered": "المغطى",
+      "coinsUsed": "العملات المستخدمة",
+      "denomination": "فئة {{value}}",
+      "countBadge": "×{{count}}",
+      "pickedSequence": "تسلسل العملات المختارة",
+      "emptyPicked": "لم تُختر أي عملة بعد",
+      "greedyLabel": "اختيار الجشع",
+      "dpOptLabel": "الحل الأمثل (DP)",
+      "coinsSummary": "{{count}} عملات [{{coins}}]",
+      "unreachedSummary": "فشل (المتبقي {{remaining}})",
+      "impossibleSummary": "غير ممكن",
+      "verdictOptimalTitle": "الحل الجشع يطابق الحل الأمثل",
+      "verdictOptimalBody": "مع هذه الفئات والمبلغ، اختيار أكبر عملة مناسبة يحقق أقل عدد ممكن من العملات.",
+      "verdictSuboptimalTitle": "مثال مضاد: الحل الجشع غير أمثل",
+      "verdictSuboptimalBody": "اختيار أكبر عملة أولاً التزم بالعملة {{first}} مبكراً، فاستخدم {{greedyCount}} عملات بدلاً من الأمثل {{optCount}}.",
+      "verdictFailedTitle": "مثال مضاد: الخوارزمية الجشعة توقفت",
+      "verdictFailedBody": "تبقى مبلغ {{remaining}} دون تغطية رغم وجود حل دقيق بالبرمجة الديناميكية بـ {{optCount}} عملات.",
+      "verdictImpossibleTitle": "لا يوجد تكوين دقيق للمبلغ",
+      "verdictImpossibleBody": "لا يمكن للخوارزمية الجشعة ولا البرمجة الديناميكية تكوين هذا المبلغ بهذه الفئات."
+    }
+  },
+  "related": {
+    "title": "خوارزميات جشعة أخرى في AlgoVs",
+    "dijkstra": "خوارزمية ديكسترا لأقصر مسار",
+    "dijkstraDesc": "تثبّت بجشع أقرب عقدة لم تُزر بعد",
+    "mstCompare": "مقارنة Prim و Kruskal",
+    "mstCompareDesc": "استكشف استراتيجيات الشجرة الممتدة الصغرى في صفحة المقارنة",
+    "huffman": "ترميز هوفمان",
+    "huffmanDesc": "يدمج بجشع الرمزين الأقل تكراراً في كل خطوة"
+  },
+  "errors": {
+    "invalidInput": "يرجى التحقق من قيم المدخلات والمحاولة مجدداً.",
+    "invalidActivities": "أدخل من 1 إلى 12 نشاطاً بالصيغة الاسم:البداية:النهاية بحيث البداية < النهاية.",
+    "invalidItems": "أدخل من 1 إلى 10 عناصر بالصيغة الاسم:الوزن:القيمة بأوزان وسعة موجبة.",
+    "invalidCoins": "أدخل من 1 إلى 8 فئات صحيحة موجبة ومبلغاً بين 0 و 200."
+  },
+  "steps": {
+    "activitySort": "تم ترتيب {{count}} أنشطة تصاعدياً حسب وقت الانتهاء الأسبق.",
+    "activityAccept": "قبول {{name}} [{{start}}, {{end}}] لأن البداية {{start}} ≥ آخر انتهاء {{prevEnd}}.",
+    "activityReject": "رفض {{name}} [{{start}}, {{end}}] — يتعارض مع الانتهاء السابق عند {{lastEnd}}.",
+    "activityDone": "تم! تم اختيار {{count}} أنشطة غير متداخلة: {{selected}}.",
+    "fracSort": "تم ترتيب {{count}} عناصر تنازلياً حسب نسبة القيمة/الوزن (السعة {{capacity}}).",
+    "fracSkipFull": "تخطي {{name}} — الحقيبة وصلت للسعة الكاملة ({{capacity}}).",
+    "fracTakeWhole": "أخذ 100% من {{name}} (الوزن {{weight}}، القيمة {{value}}، النسبة {{ratio}}). السعة المتبقية: {{remaining}}.",
+    "fracTakePart": "أخذ {{percent}}% من {{name}} (الوزن {{takenWeight}}/{{weight}} ← +{{gainedValue}} قيمة). امتلات الحقيبة.",
+    "fracDone": "تم! أقصى قيمة = {{totalValue}} باستخدام {{usedWeight}}/{{capacity}} من السعة.",
+    "coinSort": "تم ترتيب الفئات تنازلياً [{{coins}}] للمبلغ {{amount}}.",
+    "coinSkip": "تخطي العملة {{coin}} — أكبر من المبلغ المتبقي {{remaining}}.",
+    "coinPick": "اختيار العملة {{coin}} ← المتبقي {{remaining}} (تم استخدام {{count}} عملات).",
+    "coinDoneOptimal": "تم! وجد الجشع حلاً أمثل: {{count}} عملات [{{coins}}].",
+    "coinDoneSuboptimal": "استخدم الجشع {{greedyCount}} عملات [{{greedyCoins}}], بينما الحل الأمثل (DP) يستخدم {{optCount}} عملات [{{optCoins}}].",
+    "coinDoneFailedWithOpt": "توقف الجشع بمتبقٍ قدره {{remaining}} للمبلغ {{amount}}، بينما تحلها DP بـ {{optCount}} عملات [{{optCoins}}].",
+    "coinDoneImpossible": "لا يمكن تكوين المبلغ {{amount}} بالفئات المعطاة."
+  }
+}
