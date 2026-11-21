@@ -10,6 +10,10 @@ import { compressArithmetic } from '../algorithms/compression/arithmetic.js';
 import { compressLZ77 } from '../algorithms/compression/lz77.js';
 import { compressLZ78, compressLZW } from '../algorithms/compression/dictionary.js';
 import { compressDPCM, compressLinearPrediction, compressDCT } from '../algorithms/compression/lossy.js';
+import { HashTable } from '../algorithms/dataStructures/HashTable.js';
+import { buildSuffixTrie, searchSuffixTrie } from '../algorithms/suffix/SuffixTrie.js';
+import { buildSuffixArray, searchSuffixArray } from '../algorithms/suffix/SuffixArray.js';
+import { buildSuffixTree, searchSuffixTree } from '../algorithms/suffix/SuffixTree.js';
 
 // `npm run i18n:check` compares the locale bundles with each other. It does
 // not check the other direction: that the keys the code actually emits exist
@@ -35,7 +39,7 @@ const compressionSteps = () => [
 beforeAll(async () => {
   // The locale bundles are loaded lazily by i18next — wait for them, otherwise
   // every lookup would fall back to the raw key.
-  await i18n.loadNamespaces('steps', 'catalog');
+  await i18n.loadNamespaces(['steps', 'catalog', 'hashing', 'suffix', 'dp', 'greedy']);
 });
 
 describe('translation keys used by the algorithms', () => {
@@ -60,6 +64,42 @@ describe('translation keys used by the algorithms', () => {
     for (const step of compressionSteps()) {
       if (!step.msgKey) continue;
 
+      const resolved = i18n.t(step.msgKey, step.msgParams ?? {});
+      if (resolved === step.msgKey) missing.push(step.msgKey);
+    }
+
+    expect(missing).toEqual([]);
+  });
+
+  it('resolves every key emitted by hashing and suffix engines', () => {
+    const hashTable = new HashTable(7, 'linear');
+    const hashSteps = [
+      ...hashTable.insert(10).steps,
+      ...hashTable.insert(17).steps,
+      ...hashTable.search(17).steps,
+      ...hashTable.delete(10).steps,
+      ...hashTable.rehash().steps,
+    ];
+    const trieBuilt = buildSuffixTrie('banana');
+    const trieSearch = searchSuffixTrie(trieBuilt.root, trieBuilt.textWithSentinel, 'ana');
+    const arrBuilt = buildSuffixArray('banana');
+    const arrSearch = searchSuffixArray(arrBuilt.textWithSentinel, arrBuilt.sa, 'ana');
+    const treeBuilt = buildSuffixTree('banana');
+    const treeSearch = searchSuffixTree(treeBuilt.root, treeBuilt.textWithSentinel, 'ana');
+
+    const allSteps = [
+      ...hashSteps,
+      ...trieBuilt.steps,
+      ...trieSearch.steps,
+      ...arrBuilt.steps,
+      ...arrSearch.steps,
+      ...treeBuilt.steps,
+      ...treeSearch.steps,
+    ];
+    const missing = [];
+
+    for (const step of allSteps) {
+      if (!step.msgKey) continue;
       const resolved = i18n.t(step.msgKey, step.msgParams ?? {});
       if (resolved === step.msgKey) missing.push(step.msgKey);
     }

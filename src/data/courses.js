@@ -1,13 +1,18 @@
 import {
   Binary,
+  Compass,
   FileArchive,
   GitBranch,
+  Grid3x3,
+  Hash,
   Image,
   Layers3,
   ListOrdered,
   Network,
   Search,
+  Table2,
   Workflow,
+  Zap,
 } from 'lucide-react';
 
 export const dataStructureCourse = {
@@ -17,7 +22,7 @@ export const dataStructureCourse = {
   description: 'Build a strong foundation in the structures and algorithms that power modern software. Explore each concept through an interactive visualizer.',
   icon: Layers3,
   color: 'blue',
-  lessonCount: 7,
+  lessonCount: 8,
   topics: [
     {
       id: 'arrays',
@@ -75,6 +80,14 @@ export const dataStructureCourse = {
       icon: Network,
       tags: ['BFS', 'DFS', 'Dijkstra'],
     },
+    {
+      id: 'hashing',
+      title: 'Hashing',
+      description: 'Map keys into buckets and trace chaining, probing, tombstones, and rehashing.',
+      route: '/courses/data-structure/hashing',
+      icon: Hash,
+      tags: ['Chaining', 'Open addressing', 'Rehashing'],
+    },
   ],
 };
 
@@ -85,7 +98,7 @@ export const advancedDataStructureCourse = {
   description: 'Study hierarchical and prefix-based structures that keep data organized as collections grow.',
   icon: GitBranch,
   color: 'gold',
-  lessonCount: 5,
+  lessonCount: 8,
   topics: [
     {
       id: 'trees',
@@ -126,6 +139,58 @@ export const advancedDataStructureCourse = {
       route: '/courses/advanced-data-structure/trie',
       icon: GitBranch,
       tags: ['Prefix tree', 'Word insertion', 'O(L) lookup'],
+    },
+    {
+      id: 'suffix-trie',
+      title: 'Suffix Trie',
+      description: 'Index every suffix of a string to trace fast substring matching and occurrences.',
+      route: '/courses/advanced-data-structure/suffix-trie',
+      icon: GitBranch,
+      tags: ['All suffixes', 'Substring search', 'O(n²) nodes'],
+    },
+    {
+      id: 'suffix-tree',
+      title: 'Suffix Tree',
+      description: 'Compress unary chains into labeled edges to shrink suffix storage to linear node count.',
+      route: '/courses/advanced-data-structure/suffix-tree',
+      icon: GitBranch,
+      tags: ['Path compression', 'Edge labels', 'O(n) nodes'],
+    },
+    {
+      id: 'suffix-array',
+      title: 'Suffix Array',
+      description: 'Sort suffix offsets lexicographically, compute LCP with Kasai, and binary-search patterns.',
+      route: '/courses/advanced-data-structure/suffix-array',
+      icon: Table2,
+      tags: ['Sorted suffixes', 'Kasai LCP', 'Binary search'],
+    },
+  ],
+};
+
+export const algorithmDesignCourse = {
+  id: 'algorithms',
+  title: 'Algorithm Analysis & Design',
+  eyebrow: 'Algorithms course',
+  description: 'Master core problem-solving paradigms by stepping through dynamic programming recurrences and greedy decision rules.',
+  icon: Compass,
+  color: 'emerald',
+  lessonCount: 2,
+  topics: [
+    {
+      id: 'dynamic-programming',
+      title: 'Dynamic Programming',
+      description: 'Fill 1D and 2D recurrence tables, inspect subproblem dependencies, and trace optimal solutions.',
+      route: '/courses/algorithms/dynamic-programming',
+      icon: Grid3x3,
+      tags: ['0/1 Knapsack', 'LCS', 'Coin Change'],
+    },
+    {
+      id: 'greedy',
+      title: 'Greedy Algorithms',
+      description: 'Apply locally optimal choices to intervals, fractional knapsack, and coin change counterexamples.',
+      route: '/courses/algorithms/greedy',
+      icon: Zap,
+      tags: ['Activity selection', 'Fractional knapsack', 'Counterexamples'],
     },
   ],
 };

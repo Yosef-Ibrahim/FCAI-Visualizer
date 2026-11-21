@@ -14,11 +14,18 @@ const ROUTE_TITLE_KEYS = {
   '/courses/data-structure/sorting': 'catalog:topic.sorting.title',
   '/courses/data-structure/searching': 'catalog:topic.searching.title',
   '/courses/data-structure/graphs': 'catalog:topic.graphs.title',
+  '/courses/data-structure/hashing': 'catalog:topic.hashing.title',
   '/courses/advanced-data-structure/trees': 'routes.course-trees',
   '/courses/advanced-data-structure/avl-tree': 'routes.course-avl-tree',
   '/courses/advanced-data-structure/red-black-tree': 'routes.course-red-black-tree',
   '/courses/advanced-data-structure/b-tree': 'catalog:topic.b-tree.title',
   '/courses/advanced-data-structure/trie': 'catalog:topic.trie.title',
+  '/courses/advanced-data-structure/suffix-trie': 'catalog:topic.suffix-trie.title',
+  '/courses/advanced-data-structure/suffix-tree': 'catalog:topic.suffix-tree.title',
+  '/courses/advanced-data-structure/suffix-array': 'catalog:topic.suffix-array.title',
+  '/courses/algorithms': 'catalog:course.algorithms.title',
+  '/courses/algorithms/dynamic-programming': 'catalog:topic.dynamic-programming.title',
+  '/courses/algorithms/greedy': 'catalog:topic.greedy.title',
   '/sorting': 'routes.sorting',
   '/searching': 'routes.searching',
   '/data-structures': 'routes.data-structures',
@@ -34,6 +41,8 @@ const ALGORITHM_SLUGS = new Set([
   'linear-search', 'binary-search', 'jump-search',
   'bst', 'avl', 'rbt',
   'bfs', 'dfs', 'dijkstra', 'prim', 'kruskal',
+  'fibonacci-dp', 'knapsack-01', 'lcs', 'coin-change-dp',
+  'activity-selection', 'fractional-knapsack', 'greedy-coin-change',
 ]);
 const TOPIC_SLUGS = new Set(['arrays', 'stacks', 'queues', 'linked-lists']);
 const DS_TYPE_KEYS = {
