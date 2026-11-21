@@ -1,0 +1,129 @@
+{
+  "title": "جدول التجزئة",
+  "subtitle": "تتبّع دوال التجزئة، معالجة التصادمات، أقواس الاستقصاء، شواهد الحذف، وإعادة التجزئة.",
+  "controlsAria": "أدوات التحكم بجدول التجزئة",
+  "stageAria": "منطقة عرض جدول التجزئة",
+  "strategies": {
+    "label": "معالجة التصادم",
+    "chaining": "السلاسل المنفصلة",
+    "linear": "الاستقصاء الخطي",
+    "quadratic": "الاستقصاء التربيعي",
+    "double": "التجزئة المزدوجة",
+    "hint": {
+      "chaining": "يخزن كل دلو سلسلة مرتبطة للمفاتيح المتصادمة.",
+      "linear": "يفحص الخانات المتتالية: (h(k) + i) mod m.",
+      "quadratic": "يقفز بخطوات تربيعية: (h(k) + i²) mod m.",
+      "double": "يتحرك بخطوة دالة ثانية: (h₁(k) + i · h₂(k)) mod m."
+    }
+  },
+  "tableSize": {
+    "label": "حجم الجدول الأولي (m)",
+    "rehashedBadge": "توسّع إلى m = {{m}}"
+  },
+  "operations": {
+    "label": "مفتاح صحيح",
+    "placeholder": "مثال: 23، 0، -5",
+    "insert": "إدراج",
+    "search": "بحث",
+    "delete": "حذف",
+    "rehash": "إعادة تجزئة",
+    "rehashTitle": "توسيع الجدول إلى أقرب عدد أولي ≥ 2m وتنظيف شواهد الحذف",
+    "sample": "عينة",
+    "clear": "مسح"
+  },
+  "playback": {
+    "label": "التشغيل",
+    "start": "العودة لأول خطوة",
+    "previous": "الخطوة السابقة",
+    "play": "تشغيل",
+    "pause": "إيقاف مؤقت",
+    "next": "الخطوة التالية",
+    "end": "الانتقال للخطوة الأخيرة",
+    "speed": "سرعة الحركة",
+    "slow": "بطيء",
+    "normal": "عادي",
+    "fast": "سريع",
+    "stepCounter": "الخطوة {{current}} / {{total}}",
+    "ready": "جاهز",
+    "narrationLabel": "تتبّع الخطوات",
+    "idleMessage": "أدرج أو ابحث عن مفتاح صحيح أو احذفه—أو حمّل عينة—لتتبّع التجزئة خطوة بخطوة."
+  },
+  "telemetry": {
+    "ariaLabel": "مؤشرات جدول التجزئة",
+    "formula": "التجزئة",
+    "occupancy": "n / m",
+    "loadFactor": "معامل الحمل α",
+    "loadWarning": "معامل حمل مرتفع (α ≥ 0.70) — يُنصح بإعادة التجزئة",
+    "tombstones": "شواهد الحذف",
+    "collisions": "التصادمات",
+    "probes": "الاستقصاءات"
+  },
+  "stage": {
+    "probePathLabel": "مسار الاستقصاء",
+    "slotEmpty": "فارغ",
+    "slotDeleted": "DEL",
+    "slotDeletedTitle": "خانة محذوفة (شاهد حذف)",
+    "chainNull": "NULL",
+    "bucketAria": "الدلو {{index}}",
+    "slotAriaEmpty": "الخانة {{index}}: فارغة",
+    "slotAriaDeleted": "الخانة {{index}}: شاهد حذف",
+    "slotAriaOccupied": "الخانة {{index}}: المفتاح {{key}}",
+    "legendAria": "دليل حالات الخانات",
+    "legendEmpty": "فارغ",
+    "legendOccupied": "مشغول",
+    "legendDeleted": "شاهد حذف (DEL)",
+    "legendActive": "استقصاء نشط",
+    "legendTarget": "أُدرج / وُجد",
+    "legendCollision": "تصادم",
+    "legendChain": "دلو ← سلسلة مرتبطة ← NULL"
+  },
+  "code": {
+    "toggleOpen": "إخفاء الشرح البرمجي",
+    "toggleClosed": "إظهار الشرح البرمجي",
+    "opLabel": "{{strategy}} · {{op}}",
+    "ops": {
+      "insert": "إدراج",
+      "search": "بحث",
+      "delete": "حذف",
+      "rehash": "إعادة تجزئة"
+    }
+  },
+  "errors": {
+    "emptyKey": "أدخل مفتاحاً صحيحاً أولاً.",
+    "invalidKey": "أدخل مفتاحاً صحيحاً صالحاً.",
+    "integerOnly": "تُقبل الأعداد الصحيحة فقط (بما فيها 0 والأعداد السالبة).",
+    "tableFull": "الجدول ممتلئ. أعد التجزئة لتوسيع السعة.",
+    "probeCycle": "تكرر مسار الاستقصاء دون إيجاد خانة فارغة. أعد التجزئة للتوسيع."
+  },
+  "steps": {
+    "computeHash": "حساب {{formula}} للمفتاح {{key}} — البدء من الفهرس {{index}}.",
+    "duplicateFound": "المفتاح {{key}} موجود بالفعل في الفهرس {{index}}؛ تم تخطي الإدراج المكرر.",
+    "chainCheckNode": "العقدة {{pos}} في الدلو {{index}} تحمل {{existing}} ≠ {{key}}؛ متابعة فحص السلسلة.",
+    "insertChainEmpty": "الدلو {{index}} كان فارغاً؛ تم إدراج المفتاح {{key}} كأول عقدة.",
+    "insertChainAppend": "تصادم في الدلو {{index}}: تمت إضافة المفتاح {{key}} إلى السلسلة (الطول {{length}}).",
+    "probeCollision": "استقصاء #{{step}}: الخانة {{index}} مشغولة بالمفتاح {{existing}} — تصادم، الانتقال للخانة التالية.",
+    "tombstoneRemember": "الخانة {{index}} شاهد حذف (DEL) — يتم حفظها كأول خانة قابلة لإعادة الاستخدام مع مواصلة فحص التكرار.",
+    "tombstoneSkip": "الخانة {{index}} شاهد حذف (DEL) — الإبقاء على الخانة {{firstIndex}} كهدف ومواصلة فحص التكرار.",
+    "insertEmpty": "الخانة {{index}} فارغة؛ تم إدراج المفتاح {{key}}.",
+    "insertReuseTombstone": "الوصول إلى الخانة الفارغة {{emptyIndex}} دون تكرار؛ تم إدراج المفتاح {{key}} في شاهد الحذف المحفوظ {{index}}.",
+    "insertReuseAfterScan": "اكتمل فحص جميع الخانات الممكنة دون تكرار؛ تم إدراج المفتاح {{key}} في شاهد الحذف {{index}}.",
+    "probeCycle": "تكرر مسار الاستقصاء عند الخانة {{index}} بعد {{probes}} محاولات أثناء إدراج {{key}} — أعد التجزئة للتوسيع.",
+    "tableFull": "جميع الخانات ({{capacity}}) مشغولة؛ تعذّر إدراج المفتاح {{key}}. أعد التجزئة للتوسيع.",
+    "searchFoundChain": "تم العثور على المفتاح {{key}} في الدلو {{index}} عند الموضع {{pos}}.",
+    "searchNotFoundChain": "الوصول لنهاية الدلو {{index}}؛ المفتاح {{key}} غير موجود في الجدول.",
+    "searchCycleStop": "تكرر مسار الاستقصاء عند الخانة {{index}}؛ المفتاح {{key}} غير موجود في الجدول.",
+    "searchEmptyStop": "الخانة {{index}} فارغة — إيقاف البحث؛ المفتاح {{key}} غير موجود في الجدول.",
+    "searchSkipTombstone": "الخانة {{index}} شاهد حذف (DEL) — تجاوزها ومواصلة البحث عن {{key}}.",
+    "searchFound": "تم العثور على المفتاح {{key}} في الخانة {{index}} بعد {{probes}} محاولات استقصاء.",
+    "searchMismatch": "الخانة {{index}} تحمل {{existing}} ≠ {{key}}؛ مواصلة الاستقصاء.",
+    "searchExhausted": "تم فحص جميع الخانات ({{capacity}})؛ المفتاح {{key}} غير موجود في الجدول.",
+    "deleteChain": "تم فك ارتباط المفتاح {{key}} من الدلو {{index}}.",
+    "deleteTombstone": "تم حذف المفتاح {{key}} في الخانة {{index}} بوسمها DELETED (شاهد حذف) للحفاظ على سلاسل الاستقصاء.",
+    "deleteNotFound": "المفتاح {{key}} غير موجود؛ لم يتم حذف شيء.",
+    "rehashStart": "إعادة التجزئة من m = {{oldM}} إلى العدد الأولي m = {{newM}}: نقل {{count}} مفاتيح نشطة وإزالة {{purged}} شواهد حذف.",
+    "rehashMove": "إعادة إدراج المفتاح {{key}} في الفهرس {{index}} ({{formula}}).",
+    "rehashDone": "اكتملت إعادة التجزئة: تم تخزين {{count}} مفاتيح في m = {{newM}} خانات دون أي شواهد حذف.",
+    "sampleLoaded": "تم تحميل مفاتيح العينة [{{keys}}] في جدول بحجم m = {{capacity}}.",
+    "cleared": "تم مسح جدول التجزئة (m = {{capacity}})."
+  }
+}

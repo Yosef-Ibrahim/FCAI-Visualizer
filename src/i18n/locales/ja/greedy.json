@@ -1,0 +1,128 @@
+{
+  "title": "貪欲法 (Greedy)",
+  "subtitle": "局所最適な選択をステップごとに追い、貪欲選択性が成り立つ条件と失敗する反例を確認します。",
+  "algos": {
+    "activity-selection": {
+      "name": "区間スケジューリング（活動選択）",
+      "shortDesc": "終了時刻が最も早い順に並べ、重複しない活動を順次採用します。",
+      "complexityNote": "終了時刻によるソートが支配的 · 交換論法により最適性が証明可能"
+    },
+    "fractional-knapsack": {
+      "name": "分数ナップサック問題",
+      "shortDesc": "価値／重さ比が高い順に並べ、満杯になるまで全体または一部を詰めます。",
+      "complexityNote": "価値密度の降順に選択 · 品目を分割できるため貪欲法が常に最適"
+    },
+    "greedy-coin-change": {
+      "name": "貪欲コイン両替",
+      "shortDesc": "残額以下の最大硬貨を選び続け、動的計画法の最適解と比較します。",
+      "complexityNote": "標準的な硬貨系では最適 · [1, 3, 4] のような非標準系では最適解を逃す場合あり"
+    }
+  },
+  "controls": {
+    "algorithm": "アルゴリズム",
+    "parameters": "入力パラメータ",
+    "playback": "再生コントロール",
+    "speed": "速度",
+    "stepCounter": "ステップ {{current}} / {{total}}",
+    "resetDefaults": "初期値に戻す",
+    "apply": "入力を適用",
+    "showCode": "コードを表示",
+    "hideCode": "コードを隠す",
+    "loadFailingCase": "失敗例を読み込む ([1, 3, 4], 6)",
+    "loadCanonicalCase": "標準硬貨を読み込む ([1, 5, 10, 25], 41)",
+    "activitiesLabel": "活動 (名前:開始:終了)",
+    "activitiesHint": "カンマ区切り・最大12件（開始 < 終了）",
+    "capacity": "容量 W",
+    "itemsLabel": "品目 (名前:重さ:価値)",
+    "itemsHint": "カンマ区切り・最大10件（重さは正の値）",
+    "coinsLabel": "硬貨の額面",
+    "coinsHint": "正の整数を最大8個（例: 1, 5, 10, 25）",
+    "amountLabel": "目標金額 (0–200)"
+  },
+  "views": {
+    "activity": {
+      "title": "区間タイムライン",
+      "accepted": "採用",
+      "rejected": "重複",
+      "active": "確認中",
+      "lastFinish": "直前の終了",
+      "selectedCount": "採用数",
+      "statusAccepted": "採用",
+      "statusRejected": "重複",
+      "statusActive": "確認中",
+      "statusPending": "待機中",
+      "noneYet": "—"
+    },
+    "knapsack": {
+      "title": "密度順リストと充填バー",
+      "fillBarLabel": "ナップサック充填率",
+      "capacityUsed": "使用容量",
+      "totalValue": "総価値",
+      "ratio": "比率",
+      "weight": "重さ",
+      "value": "価値",
+      "taken": "採用",
+      "skipped": "スキップ（満杯）",
+      "pending": "待機中",
+      "wholeTag": "100%",
+      "fractionTag": "{{percent}}%"
+    },
+    "coin": {
+      "title": "硬貨の選択と残額",
+      "target": "目標",
+      "remaining": "残額",
+      "covered": "支払済み",
+      "coinsUsed": "使用枚数",
+      "denomination": "硬貨 {{value}}",
+      "countBadge": "×{{count}}",
+      "pickedSequence": "選んだ硬貨の列",
+      "emptyPicked": "まだ硬貨を選んでいません",
+      "greedyLabel": "貪欲法の解",
+      "dpOptLabel": "DP の最適解",
+      "coinsSummary": "{{count}} 枚 [{{coins}}]",
+      "unreachedSummary": "失敗（残額 {{remaining}}）",
+      "impossibleSummary": "到達不能",
+      "verdictOptimalTitle": "貪欲法が最適解と一致",
+      "verdictOptimalBody": "この硬貨系と目標金額では、最大額面から選ぶ戦略が最小枚数を達成します。",
+      "verdictSuboptimalTitle": "反例：貪欲法は非最適",
+      "verdictSuboptimalBody": "最初に硬貨 {{first}} を選んだため、最適 {{optCount}} 枚ではなく {{greedyCount}} 枚を要しました。",
+      "verdictFailedTitle": "反例：貪欲法が行き詰まりました",
+      "verdictFailedBody": "DP には {{optCount}} 枚の厳密解がありますが、貪欲法は残額 {{remaining}} を残して停止しました。",
+      "verdictImpossibleTitle": "厳密な組み合わせが存在しません",
+      "verdictImpossibleBody": "与えられた額面では貪欲法でも動的計画法でも目標金額を作れません。"
+    }
+  },
+  "related": {
+    "title": "AlgoVs 内の関連貪欲アルゴリズム",
+    "dijkstra": "ダイクストラ法（最短経路）",
+    "dijkstraDesc": "未確定の最短距離頂点を貪欲に確定",
+    "mstCompare": "プリム法とクラスカル法 (MST)",
+    "mstCompareDesc": "比較ページで最小全域木の貪欲戦略を確認",
+    "huffman": "ハフマン符号化",
+    "huffmanDesc": "最小頻度の2記号を貪欲に統合"
+  },
+  "errors": {
+    "invalidInput": "入力値を確認してもう一度お試しください。",
+    "invalidActivities": "名前:開始:終了 の形式で1〜12件入力してください（開始 < 終了）。",
+    "invalidItems": "名前:重さ:価値 の形式で1〜10件入力してください（重さ・容量は正の値）。",
+    "invalidCoins": "正の整数の額面を1〜8個、目標金額を0〜200で入力してください。"
+  },
+  "steps": {
+    "activitySort": "{{count}} 件の活動を終了時刻の昇順に並べ替えました。",
+    "activityAccept": "{{name}} [{{start}}, {{end}}] を採用（開始 {{start}} ≥ 直前終了 {{prevEnd}}）。",
+    "activityReject": "{{name}} [{{start}}, {{end}}] を棄却 — 直前の終了時刻 {{lastEnd}} と重複。",
+    "activityDone": "完了！重複しない {{count}} 件の活動を選択しました: {{selected}}。",
+    "fracSort": "{{count}} 品目を価値／重さ比の降順に並べ替えました（容量 {{capacity}}）。",
+    "fracSkipFull": "{{name}} をスキップ — ナップサックはすでに満杯（{{capacity}}）です。",
+    "fracTakeWhole": "{{name}} を 100% 採用（重さ {{weight}}、価値 {{value}}、比 {{ratio}}）。残容量: {{remaining}}。",
+    "fracTakePart": "{{name}} を {{percent}}% 採用（{{takenWeight}}/{{weight}} → +{{gainedValue}}）。ナップサックが満杯です。",
+    "fracDone": "完了！最大価値 = {{totalValue}}（容量 {{usedWeight}}/{{capacity}} 使用）。",
+    "coinSort": "目標 {{amount}} に対し額面を降順に並べました [{{coins}}]。",
+    "coinSkip": "硬貨 {{coin}} をスキップ — 残額 {{remaining}} より大きいため。",
+    "coinPick": "硬貨 {{coin}} を選択 → 残額 {{remaining}}（計 {{count}} 枚）。",
+    "coinDoneOptimal": "完了！貪欲法で最適解を発見: {{count}} 枚 [{{coins}}]。",
+    "coinDoneSuboptimal": "貪欲法は {{greedyCount}} 枚 [{{greedyCoins}}] ですが、DP 最適解は {{optCount}} 枚 [{{optCoins}}] です。",
+    "coinDoneFailedWithOpt": "目標 {{amount}} で貪欲法は残額 {{remaining}} を残して失敗しましたが、DP は {{optCount}} 枚 [{{optCoins}}] で解けます。",
+    "coinDoneImpossible": "与えられた硬貨では目標金額 {{amount}} を作れません。"
+  }
+}

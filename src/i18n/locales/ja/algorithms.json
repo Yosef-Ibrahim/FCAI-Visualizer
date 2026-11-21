@@ -26,5 +26,12 @@
   "dijkstra": { "name": "ダイクストラ法 — 最短経路" },
   "prim": { "name": "プリム法 — 最小全域木" },
   "kruskal": { "name": "クラスカル法 — 最小全域木" },
+  "fibonacci-dp": { "name": "フィボナッチ数列（DP）" },
+  "knapsack-01": { "name": "0/1 ナップサック問題" },
+  "lcs": { "name": "最長共通部分列（LCS）" },
+  "coin-change-dp": { "name": "コイン問題（最小枚数）" },
+  "activity-selection": { "name": "活動選択問題" },
+  "fractional-knapsack": { "name": "分数ナップサック問題" },
+  "greedy-coin-change": { "name": "貪欲コイン問題" },
   "compare": { "name": "アルゴリズム比較" }
 }

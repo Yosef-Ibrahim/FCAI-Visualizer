@@ -1,0 +1,128 @@
+{
+  "title": "Greedy Algorithms",
+  "subtitle": "Step through locally optimal choices, track feasibility constraints, and see where the greedy-choice property holds — or breaks.",
+  "algos": {
+    "activity-selection": {
+      "name": "Activity Selection",
+      "shortDesc": "Sort intervals by earliest finish time and accept every non-overlapping activity.",
+      "complexityNote": "Sorting by earliest finish time dominates · Greedy exchange argument proves optimality"
+    },
+    "fractional-knapsack": {
+      "name": "Fractional Knapsack",
+      "shortDesc": "Order items by value/weight density and pack whole or fractional portions until full.",
+      "complexityNote": "Orders items by value-to-weight density descending · Optimal because items are divisible"
+    },
+    "greedy-coin-change": {
+      "name": "Greedy Coin Change",
+      "shortDesc": "Repeatedly pick the largest fitting coin and compare against the DP global optimum.",
+      "complexityNote": "Optimal on canonical coin systems (e.g. US coins) · Can fail on non-canonical sets like [1, 3, 4]"
+    }
+  },
+  "controls": {
+    "algorithm": "Algorithm",
+    "parameters": "Input parameters",
+    "playback": "Playback",
+    "speed": "Speed",
+    "stepCounter": "Step {{current}} / {{total}}",
+    "resetDefaults": "Reset defaults",
+    "apply": "Apply input",
+    "showCode": "Show code",
+    "hideCode": "Hide code",
+    "loadFailingCase": "Load failing case ([1, 3, 4], 6)",
+    "loadCanonicalCase": "Load US coins ([1, 5, 10, 25], 41)",
+    "activitiesLabel": "Activities (name:start:end)",
+    "activitiesHint": "Comma-separated, up to 12 intervals with start < end",
+    "capacity": "Capacity W",
+    "itemsLabel": "Items (name:weight:value)",
+    "itemsHint": "Comma-separated, up to 10 items with positive weights",
+    "coinsLabel": "Coin denominations",
+    "coinsHint": "Up to 8 positive integers, e.g. 1, 5, 10, 25",
+    "amountLabel": "Target amount (0–200)"
+  },
+  "views": {
+    "activity": {
+      "title": "Interval schedule timeline",
+      "accepted": "Accepted",
+      "rejected": "Conflict",
+      "active": "Inspecting",
+      "lastFinish": "Last finish",
+      "selectedCount": "Selected",
+      "statusAccepted": "Accepted",
+      "statusRejected": "Overlaps",
+      "statusActive": "Checking",
+      "statusPending": "Queued",
+      "noneYet": "—"
+    },
+    "knapsack": {
+      "title": "Density-ordered items & fill",
+      "fillBarLabel": "Knapsack capacity fill",
+      "capacityUsed": "Capacity used",
+      "totalValue": "Total value",
+      "ratio": "Ratio",
+      "weight": "Weight",
+      "value": "Value",
+      "taken": "Taken",
+      "skipped": "Skipped (full)",
+      "pending": "Pending",
+      "wholeTag": "100%",
+      "fractionTag": "{{percent}}%"
+    },
+    "coin": {
+      "title": "Denomination selection & remainder",
+      "target": "Target",
+      "remaining": "Remaining",
+      "covered": "Covered",
+      "coinsUsed": "Coins used",
+      "denomination": "Coin {{value}}",
+      "countBadge": "×{{count}}",
+      "pickedSequence": "Picked sequence",
+      "emptyPicked": "No coins picked yet",
+      "greedyLabel": "Greedy pick",
+      "dpOptLabel": "DP optimum",
+      "coinsSummary": "{{count}} coins [{{coins}}]",
+      "unreachedSummary": "Failed (rem {{remaining}})",
+      "impossibleSummary": "Unreachable",
+      "verdictOptimalTitle": "Greedy matches the global optimum",
+      "verdictOptimalBody": "For these denominations and target, taking the largest fitting coin achieves the exact minimum coin count.",
+      "verdictSuboptimalTitle": "Counterexample: greedy is suboptimal",
+      "verdictSuboptimalBody": "The largest-first choice committed to coin {{first}} too early, using {{greedyCount}} coins instead of the optimal {{optCount}}.",
+      "verdictFailedTitle": "Counterexample: greedy got stuck",
+      "verdictFailedBody": "Greedy left remainder {{remaining}}, even though an exact {{optCount}}-coin DP solution exists.",
+      "verdictImpossibleTitle": "No exact combination exists",
+      "verdictImpossibleBody": "Neither greedy nor dynamic programming can form this exact target with the given denominations."
+    }
+  },
+  "related": {
+    "title": "Related greedy algorithms in AlgoVs",
+    "dijkstra": "Dijkstra's Shortest Path",
+    "dijkstraDesc": "Greedily settles the closest unvisited vertex",
+    "mstCompare": "Prim & Kruskal MST",
+    "mstCompareDesc": "Explore greedy spanning-tree strategies in Compare",
+    "huffman": "Huffman Coding",
+    "huffmanDesc": "Greedily merges the two lowest-frequency symbols"
+  },
+  "errors": {
+    "invalidInput": "Please check your input values and try again.",
+    "invalidActivities": "Enter 1–12 intervals as Name:Start:End with finite start < end.",
+    "invalidItems": "Enter 1–10 items as Name:Weight:Value with positive weights and capacity.",
+    "invalidCoins": "Enter 1–8 positive integer denominations and an integer target 0–200."
+  },
+  "steps": {
+    "activitySort": "Sorted {{count}} activities by earliest finish time ascending.",
+    "activityAccept": "Accept {{name}} [{{start}}, {{end}}] since start {{start}} ≥ last finish {{prevEnd}}.",
+    "activityReject": "Reject {{name}} [{{start}}, {{end}}] — conflicts with previous finish at {{lastEnd}}.",
+    "activityDone": "Done! Selected {{count}} non-overlapping activities: {{selected}}.",
+    "fracSort": "Sorted {{count}} items by value/weight ratio descending (capacity {{capacity}}).",
+    "fracSkipFull": "Skip {{name}} — knapsack is already at full capacity ({{capacity}}).",
+    "fracTakeWhole": "Take 100% of {{name}} (w={{weight}}, v={{value}}, ratio={{ratio}}). Remaining capacity: {{remaining}}.",
+    "fracTakePart": "Take {{percent}}% of {{name}} ({{takenWeight}}/{{weight}} weight → +{{gainedValue}} value). Knapsack full.",
+    "fracDone": "Done! Maximum value = {{totalValue}} using {{usedWeight}}/{{capacity}} capacity.",
+    "coinSort": "Sorted denominations descending [{{coins}}] for target {{amount}}.",
+    "coinSkip": "Skip coin {{coin}} — exceeds remaining amount {{remaining}}.",
+    "coinPick": "Pick coin {{coin}} → remaining {{remaining}} ({{count}} coins used).",
+    "coinDoneOptimal": "Done! Greedy found an optimal solution: {{count}} coins [{{coins}}].",
+    "coinDoneSuboptimal": "Greedy used {{greedyCount}} coins [{{greedyCoins}}], while DP optimal uses {{optCount}} coins [{{optCoins}}].",
+    "coinDoneFailedWithOpt": "Greedy stopped with remainder {{remaining}} for target {{amount}}, whereas DP solves it in {{optCount}} coins [{{optCoins}}].",
+    "coinDoneImpossible": "Target {{amount}} cannot be formed with the given denominations."
+  }
+}

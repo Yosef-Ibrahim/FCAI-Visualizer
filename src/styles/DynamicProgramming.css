@@ -1,0 +1,628 @@
+/* ── Dynamic Programming Workbench ─────────────────────────────────────────── */
+/* Uses exclusively AlgoVs design-system CSS variables for light & dark themes. */
+
+.dp-workbench {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  min-height: 100%;
+  width: 100%;
+  max-width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: clip;
+}
+
+/* ── Left scrollable control rail ── */
+.dp-controls-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px 16px;
+  background: var(--surface);
+  border-inline-end: 1px solid var(--border);
+  overflow-y: auto;
+  max-height: calc(100vh - var(--header-h));
+}
+
+.dp-pane-header h1 {
+  margin: 0 0 4px;
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.dp-pane-header p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.dp-control-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.dp-section-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dp-section-label {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.dp-step-badge {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+
+/* Algorithm selector buttons */
+.dp-algo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dp-algo-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--text);
+  text-align: start;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.dp-algo-btn:hover {
+  border-color: var(--accent);
+}
+
+.dp-algo-btn.is-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+}
+
+.dp-algo-btn-title {
+  font-family: var(--font-head);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.dp-algo-btn.is-active .dp-algo-btn-title {
+  color: var(--accent);
+}
+
+.dp-algo-btn-desc {
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* Parameter form */
+.dp-param-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.dp-field input {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+
+.dp-field input:focus {
+  border-color: var(--accent);
+}
+
+.dp-field-hint {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.dp-error-msg {
+  margin: 0;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--accent2);
+  background: color-mix(in srgb, var(--accent2) 10%, var(--surface));
+  color: var(--accent2);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.dp-form-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dp-form-actions .btn {
+  flex: 1 1 auto;
+  min-height: 36px;
+  font-size: 12.5px;
+  padding: 6px 10px;
+}
+
+/* Playback controls */
+.dp-playback-bar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.dp-icon-btn {
+  padding: 0 9px;
+  min-height: 36px;
+}
+
+.dp-icon-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.dp-play-btn {
+  flex: 1;
+  min-height: 36px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+}
+
+.dp-scrubber-wrap input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.dp-speed-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.dp-speed-row input[type="range"] {
+  flex: 1;
+  accent-color: var(--accent);
+}
+
+.dp-speed-val {
+  min-width: 28px;
+  text-align: end;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.dp-traceback-btn {
+  width: 100%;
+  min-height: 36px;
+  font-size: 12.5px;
+}
+
+/* Compact complexity card inside sidebar */
+.dp-controls-pane .panel-card {
+  padding: 12px;
+  box-shadow: none;
+  background: var(--surface2);
+}
+
+.dp-controls-pane .panel-card h3 {
+  margin: 0 0 8px;
+  padding-bottom: 6px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dp-controls-pane .complexity-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px 10px;
+  font-size: 12px;
+}
+
+.dp-controls-pane .complexity-label {
+  color: var(--text-muted);
+}
+
+.dp-controls-pane .complexity-value {
+  color: var(--accent3);
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+/* ── Right main stage ── */
+.dp-stage-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px;
+  min-width: 0;
+  overflow-y: auto;
+  max-height: calc(100vh - var(--header-h));
+}
+
+.dp-stage-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Flush inline telemetry / recurrence strip attached to top of stage */
+.dp-telemetry-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  padding: 11px 16px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+.dp-telemetry-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dp-telemetry-item--recurrence {
+  flex: 1 1 260px;
+}
+
+.dp-telemetry-key {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.dp-phase-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.dp-phase-pill--fill {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+}
+
+.dp-phase-pill--traceback {
+  border-color: var(--accent3);
+  color: var(--accent3);
+  background: color-mix(in srgb, var(--accent3) 14%, var(--surface));
+}
+
+.dp-phase-pill--done {
+  border-color: var(--accent3);
+  color: var(--surface);
+  background: var(--accent3);
+}
+
+.dp-recurrence-code {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text);
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.dp-result-val {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent3);
+}
+
+.dp-narration {
+  padding: 10px 16px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--accent) 4%, var(--surface));
+}
+
+/* ── Matrix Grid View ── */
+.dp-matrix-shell {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dp-matrix-scroll {
+  padding: 18px 16px;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.dp-grid {
+  display: grid;
+  gap: 5px;
+  width: max-content;
+  min-width: 100%;
+}
+
+.dp-row-group {
+  display: contents;
+}
+
+.dp-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.14s ease;
+}
+
+.dp-cell--corner,
+.dp-cell--colhead,
+.dp-cell--rowhead {
+  background: var(--surface2);
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  font-size: 12px;
+}
+
+.dp-cell--rowhead {
+  justify-content: flex-start;
+  padding-inline: 10px;
+  white-space: nowrap;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.dp-cell--data {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: default;
+}
+
+.dp-cell--data.is-empty {
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--surface2) 55%, var(--surface));
+}
+
+.dp-cell--data.is-inf {
+  color: var(--text-muted);
+}
+
+.dp-cell--data.is-traceback {
+  border-color: var(--accent3);
+  background: color-mix(in srgb, var(--accent3) 18%, var(--surface));
+  color: var(--text);
+}
+
+.dp-cell--data.is-dependency {
+  border-color: var(--accent4);
+  border-width: 2px;
+  background: color-mix(in srgb, var(--accent4) 18%, var(--surface));
+  color: var(--text);
+}
+
+.dp-cell--data.is-active {
+  border-color: var(--accent);
+  border-width: 2px;
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  color: var(--text);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.dp-cell-dir {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--accent3);
+  font-weight: 800;
+}
+
+.dp-cell--data.is-active .dp-cell-dir {
+  color: var(--accent);
+}
+
+/* Matrix footer: legend + cell inspector */
+.dp-matrix-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding: 10px 16px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.dp-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.dp-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+}
+
+.dp-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+}
+
+.dp-swatch--active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 28%, var(--surface));
+}
+
+.dp-swatch--dep {
+  border-color: var(--accent4);
+  background: color-mix(in srgb, var(--accent4) 24%, var(--surface));
+}
+
+.dp-swatch--trace {
+  border-color: var(--accent3);
+  background: color-mix(in srgb, var(--accent3) 24%, var(--surface));
+}
+
+.dp-swatch--empty {
+  border-color: var(--border);
+  background: var(--surface2);
+}
+
+.dp-inspect-readout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+}
+
+.dp-inspect-val {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Collapsible Code drawer */
+.dp-code-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dp-code-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-head);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.dp-code-toggle:hover {
+  border-color: var(--accent);
+  background: var(--surface2);
+}
+
+.dp-code-toggle-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dp-code-panel-wrap .panel-card {
+  padding: 14px;
+  box-shadow: none;
+}
+
+/* ── Responsive stacking below 900px ── */
+@media (max-width: 900px) {
+  .dp-workbench {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: auto;
+  }
+
+  .dp-controls-pane {
+    max-height: 44vh;
+    border-inline-end: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dp-stage-pane {
+    max-height: none;
+    padding: 14px 12px;
+  }
+
+  .dp-telemetry-bar {
+    padding: 10px 12px;
+    gap: 8px 12px;
+  }
+
+  .dp-matrix-scroll {
+    padding: 12px 10px;
+  }
+}

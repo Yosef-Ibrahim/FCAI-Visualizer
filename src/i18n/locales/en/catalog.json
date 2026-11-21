@@ -30,6 +30,11 @@
       "eyebrow": "Information theory course",
       "title": "Information Theory & Data Compression",
       "description": "Explore how information is represented efficiently through lossless and lossy compression, with interactive algorithm visualizations."
+    },
+    "algorithms": {
+      "eyebrow": "Algorithms course",
+      "title": "Algorithm Analysis & Design",
+      "description": "Master core problem-solving paradigms by stepping through dynamic programming recurrences and greedy decision rules."
     }
   },
   "topic": {
@@ -157,6 +162,60 @@
         "DPCM",
         "Linear prediction",
         "DCT + quantization"
+      ]
+    },
+    "hashing": {
+      "title": "Hashing",
+      "description": "Map keys into buckets and trace separate chaining, open-addressing probes, tombstones, and rehashing.",
+      "tags": [
+        "Chaining",
+        "Open addressing",
+        "Rehashing"
+      ]
+    },
+    "suffix-trie": {
+      "title": "Suffix Trie",
+      "description": "Index every suffix of a string to trace substring search and occurrence counting.",
+      "tags": [
+        "All suffixes",
+        "Substring search",
+        "O(n²) nodes"
+      ]
+    },
+    "suffix-tree": {
+      "title": "Suffix Tree",
+      "description": "Compress unary chains into labeled edges to shrink suffix storage to linear node count.",
+      "tags": [
+        "Path compression",
+        "Edge labels",
+        "O(n) nodes"
+      ]
+    },
+    "suffix-array": {
+      "title": "Suffix Array",
+      "description": "Sort suffix offsets lexicographically, compute Kasai's LCP array, and binary-search patterns.",
+      "tags": [
+        "Sorted suffixes",
+        "Kasai LCP",
+        "Binary search"
+      ]
+    },
+    "dynamic-programming": {
+      "title": "Dynamic Programming",
+      "description": "Fill 1D and 2D recurrence tables, inspect subproblem dependencies, and trace optimal solutions.",
+      "tags": [
+        "0/1 Knapsack",
+        "LCS",
+        "Coin Change"
+      ]
+    },
+    "greedy": {
+      "title": "Greedy Algorithms",
+      "description": "Apply locally optimal choices to activity selection, fractional knapsack, and coin-change counterexamples.",
+      "tags": [
+        "Activity selection",
+        "Fractional knapsack",
+        "Counterexamples"
       ]
     }
   },

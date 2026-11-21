@@ -1,0 +1,98 @@
+{
+  "title": "動的計画法 (DP)",
+  "subtitle": "重複する部分問題をボトムアップで構築し、状態依存と最適解のトレースバックを観察します。",
+  "algos": {
+    "fibonacci-dp": {
+      "name": "フィボナッチ数列（表計算）",
+      "shortDesc": "F(i) が F(i−1) と F(i−2) を再利用する1次元ボトムアップ表。",
+      "complexityNote": "ボトムアップ表計算で指数時間 O(2ⁿ) を回避 · 2変数のみで O(1) 空間も可能"
+    },
+    "knapsack-01": {
+      "name": "0/1 ナップサック問題",
+      "shortDesc": "選ぶ／選ばないを比較する2次元テーブルと最適品目のトレースバック。",
+      "complexityNote": "容量 W に対する擬多項式時間 · トレースバックで最適な品目集合を復元"
+    },
+    "lcs": {
+      "name": "最長共通部分列 (LCS)",
+      "shortDesc": "文字一致の対角遷移・不一致の選択と部分列復元を可視化する2次元グリッド。",
+      "complexityNote": "m, n は文字列長 · 一致時は対角遷移、不一致時は上と左の最大値"
+    },
+    "coin-change-dp": {
+      "name": "コイン両替問題（最小枚数）",
+      "shortDesc": "∞ で初期化した1次元テーブルで貪欲法が失敗する入力でも最適解を保証。",
+      "complexityNote": "n は硬貨種類数、A は目標金額 · 常に全体の最小硬貨枚数を保証"
+    }
+  },
+  "controls": {
+    "algorithm": "アルゴリズム",
+    "parameters": "入力パラメータ",
+    "playback": "再生コントロール",
+    "speed": "速度",
+    "stepCounter": "ステップ {{current}} / {{total}}",
+    "jumpToTraceback": "トレースバックへ移動",
+    "resetDefaults": "初期値に戻す",
+    "apply": "入力を適用",
+    "showCode": "コードを表示",
+    "hideCode": "コードを隠す",
+    "fibN": "目標 n (1–12)",
+    "capacity": "容量 W (0–12)",
+    "items": "品目 (名前:重さ:価値)",
+    "itemsHint": "カンマ区切り・最大6件（例: A:1:1, B:3:4, C:4:5, D:5:7）",
+    "stringA": "文字列 A（最大10文字）",
+    "stringB": "文字列 B（最大10文字）",
+    "coins": "硬貨の額面",
+    "coinsHint": "正の整数を最大6個（例: 1, 3, 4）",
+    "targetAmount": "目標金額 (0–20)"
+  },
+  "telemetry": {
+    "phase": "フェーズ",
+    "recurrence": "現在の漸化式",
+    "result": "結果",
+    "inspectCell": "フォーカス中のセル",
+    "pending": "—",
+    "cellInspect": "セル ({{row}}, {{col}}) = {{value}}",
+    "phases": {
+      "init": "初期化",
+      "fill": "表の充填",
+      "traceback": "トレースバック",
+      "done": "完了"
+    },
+    "legend": {
+      "active": "現在のセル",
+      "dependency": "依存セル",
+      "traceback": "復元経路",
+      "empty": "未計算"
+    }
+  },
+  "errors": {
+    "invalidInput": "入力値を確認してもう一度お試しください。",
+    "invalidItems": "名前:重さ:価値 の形式で1〜6件入力してください（重さは正の整数）。",
+    "invalidCoins": "正の整数の硬貨額面を1〜6個入力してください。"
+  },
+  "steps": {
+    "fibInit": "Fibonacci({{n}}) 用にサイズ {{size}} の1次元DPテーブルを初期化します。",
+    "fibBase": "基底ケース: dp[{{index}}] = {{value}}。",
+    "fibFill": "dp[{{i}}] = dp[{{prev1Index}}] ({{prev1}}) + dp[{{prev2Index}}] ({{prev2}}) = {{value}} を計算します。",
+    "fibDone": "完了！Fibonacci({{n}}) = {{result}}。",
+    "knapsackInit": "品目数 {{count}}・容量 {{capacity}} の ({{rows}} × {{cols}}) テーブルを 0 で初期化します。",
+    "knapsackNoFit": "品目 {{item}}（重さ {{weight}}）は容量 {{w}} を超えるため、スキップ値 {{skipVal}} を引き継ぎます。",
+    "knapsackTake": "w={{w}} の品目 {{item}}: 選ぶ ({{takeVal}}) > 選ばない ({{skipVal}}) → dp[{{i}}][{{w}}] = {{best}}。",
+    "knapsackSkip": "w={{w}} の品目 {{item}}: 選ばない ({{skipVal}}) ≥ 選ぶ ({{takeVal}}) → dp[{{i}}][{{w}}] = {{best}}。",
+    "knapsackTraceTake": "({{i}}, {{w}}) の復元: {{item}}（重さ {{weight}}・価値 {{value}}）を採用し、容量 {{nextW}} へ移動します。",
+    "knapsackTraceSkip": "({{i}}, {{w}}) の復元: 上のセルと同じ値のため {{item}} は採用しません。",
+    "knapsackDone": "完了！最大価値 = {{maxValue}}、選択品目 [{{items}}]（重さ {{totalWeight}}/{{capacity}}）。",
+    "lcsInit": "\"{{a}}\" と \"{{b}}\" の ({{rows}} × {{cols}}) LCS テーブルを初期化します。",
+    "lcsMatch": "文字一致 ('{{chA}}' = '{{chB}}'): 左上から +1 して dp[{{i}}][{{j}}] = {{value}}。",
+    "lcsMismatch": "不一致 ('{{chA}}' ≠ '{{chB}}'): dp[{{i}}][{{j}}] = max(上 {{up}}, 左 {{left}}) = {{value}}。",
+    "lcsTraceMatch": "({{i}}, {{j}}) の復元: '{{ch}}' が一致 — 記録して対角へ進みます。",
+    "lcsTraceUp": "({{i}}, {{j}}) の復元: 上の行 {{nextI}} へ移動します。",
+    "lcsTraceLeft": "({{i}}, {{j}}) の復元: 左の列 {{nextJ}} へ移動します。",
+    "lcsDone": "完了！LCS 長 = {{length}}、部分列 = \"{{subsequence}}\"。",
+    "coinInit": "硬貨 [{{coins}}] に対し dp[0] = 0、dp[1..{{amount}}] = ∞ で初期化します。",
+    "coinFill": "金額 {{amount}}: dp[{{prev}}] に硬貨 {{coin}} を足して最小 {{value}} 枚になります。",
+    "coinUnreachableCell": "金額 {{amount}}: 到達可能な組み合わせがなく ∞ のままです。",
+    "coinTrace": "金額 {{current}} の復元: 硬貨 {{coin}} を選び、残り {{next}}。",
+    "coinDone": "完了！金額 {{amount}} の最小硬貨枚数は {{minCoins}} 枚（[{{picked}}]）。",
+    "coinDoneUnreachable": "完了！硬貨 [{{coins}}] では金額 {{amount}} を作れません。"
+  }
+}

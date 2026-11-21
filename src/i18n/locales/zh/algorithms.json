@@ -26,5 +26,12 @@
   "dijkstra": { "name": "Dijkstra 最短路径" },
   "prim": { "name": "Prim — 最小生成树" },
   "kruskal": { "name": "Kruskal — 最小生成树" },
+  "fibonacci-dp": { "name": "斐波那契数列（动态规划）" },
+  "knapsack-01": { "name": "0/1 背包问题" },
+  "lcs": { "name": "最长公共子序列（LCS）" },
+  "coin-change-dp": { "name": "硬币找零（最少硬币数）" },
+  "activity-selection": { "name": "活动选择问题" },
+  "fractional-knapsack": { "name": "分数背包问题" },
+  "greedy-coin-change": { "name": "贪心硬币找零" },
   "compare": { "name": "算法对比" }
 }

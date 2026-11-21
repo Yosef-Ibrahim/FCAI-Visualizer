@@ -101,7 +101,7 @@
 .section-eyebrow, .course-section-heading > div > span { color: #8298aa; font-size: 9px; font-weight: 850; letter-spacing: .15em; }
 .home-section-heading h2, .course-section-heading h2 { margin: 5px 0 0; color: var(--text); font: 800 24px/1.2 var(--font-head); letter-spacing: -.035em; }
 .home-section-heading > p, .course-section-heading > p { max-width: 380px; margin: 0 0 2px; color: var(--text-muted); font-size: 11px; line-height: 1.6; }
-.course-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
+.course-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px; }
 .course-card {
   position: relative;
   display: flex;
@@ -119,6 +119,7 @@
 .course-card--blue { --course-color: #1769aa; --course-tint: #eaf4fc; }
 .course-card--gold { --course-color: #aa7b16; --course-tint: #fbf5e8; }
 .course-card--violet { --course-color: #7054ad; --course-tint: #f1edfa; }
+.course-card--emerald { --course-color: #16876b; --course-tint: #e8f5f1; }
 .course-card-topline { display: flex; align-items: center; justify-content: space-between; }
 .course-card-icon { display: grid; width: 47px; height: 47px; place-items: center; border-radius: 14px; background: var(--course-tint); color: var(--course-color); }
 .course-card-cta { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid var(--border); border-radius: 11px; color: #7a93a7; transition: .2s; }
@@ -170,6 +171,7 @@
 .course-overview--blue { --overview-color: #1769aa; --overview-tint: #f0f7fc; }
 .course-overview--gold { --overview-color: #aa7b16; --overview-tint: #fbf7ed; }
 .course-overview--violet { --overview-color: #7054ad; --overview-tint: #f4f1fb; }
+.course-overview--emerald { --overview-color: #16876b; --overview-tint: #eaf6f1; }
 .course-overview-copy { position: relative; z-index: 2; max-width: 680px; }
 .course-overview-eyebrow { color: var(--overview-color); }
 .course-overview-copy h1 { margin: 12px 0 8px; color: var(--text); font: 850 clamp(28px, 4vw, 40px)/1.1 var(--font-head); letter-spacing: -.05em; }

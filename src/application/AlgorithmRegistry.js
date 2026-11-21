@@ -3,6 +3,8 @@ import { LinearSearch, BinarySearch, JumpSearch } from './algorithms/searching';
 import { BSTree, AVLTree, HeapTree } from './algorithms/trees';
 import { BFS, DFS, Dijkstra, Prim, Kruskal } from './algorithms/graphs';
 import { ArrayDS, StackDS, QueueDS, SinglyLinkedList, DoublyLinkedList, CircularLinkedList, OrderedLinkedList } from './algorithms/dataStructures';
+import { FibonacciDP, Knapsack01, LCS, CoinChangeDP } from './algorithms/dp';
+import { ActivitySelection, FractionalKnapsack, GreedyCoinChange } from './algorithms/greedy';
 
 const _registry = new Map();
 
@@ -15,6 +17,8 @@ function register(algorithm) {
  BSTree, AVLTree, HeapTree,
  BFS, DFS, Dijkstra, Prim, Kruskal,
  ArrayDS, StackDS, QueueDS, SinglyLinkedList, DoublyLinkedList, CircularLinkedList, OrderedLinkedList,
+ FibonacciDP, Knapsack01, LCS, CoinChangeDP,
+ ActivitySelection, FractionalKnapsack, GreedyCoinChange,
 ].forEach(Algo => register(new Algo()));
 
 export function getAlgorithm(id) {
