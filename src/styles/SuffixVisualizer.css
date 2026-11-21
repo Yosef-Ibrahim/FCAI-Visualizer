@@ -1,0 +1,930 @@
+/* ── Suffix Suite (Suffix Trie, Suffix Tree, Suffix Array + LCP) ────────────
+ * Precision Algorithm Workbench — strictly scoped `.suffix-*` rules using only
+ * AlgoVs theme tokens. Two-column desktop layout, stacked <= 900px, zero
+ * horizontal overflow at 390px mobile.
+ */
+
+.suffix-page {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+/* ── Left Control Panel ─────────────────────────────────────────────────── */
+
+.suffix-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 300px;
+  min-width: 0;
+  padding: 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-inline-end: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.suffix-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.suffix-heading h1 {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.suffix-heading p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.suffix-section {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+}
+
+.suffix-label {
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.suffix-input-row {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+}
+
+.suffix-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.suffix-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.85;
+}
+
+.suffix-input:focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  outline-offset: 1px;
+}
+
+.suffix-input.has-error {
+  border-color: var(--accent2);
+}
+
+.suffix-help {
+  color: var(--text-muted);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.suffix-error {
+  color: var(--accent2);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.suffix-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.suffix-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.suffix-chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.suffix-chip.is-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.suffix-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.suffix-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface2));
+}
+
+.suffix-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.suffix-btn-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--surface);
+}
+
+[data-theme="dark"] .suffix-btn-primary {
+  color: var(--bg);
+}
+
+.suffix-btn-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 88%, var(--text));
+  border-color: var(--accent);
+}
+
+.suffix-btn-subtle {
+  width: 100%;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.suffix-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: start;
+}
+
+.suffix-toggle-btn[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+}
+
+.suffix-search-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.suffix-search-badge.is-found {
+  border-color: var(--accent3);
+  background: color-mix(in srgb, var(--accent3) 12%, var(--surface));
+  color: var(--accent3);
+}
+
+.suffix-search-badge.is-miss {
+  border-color: var(--accent2);
+  background: color-mix(in srgb, var(--accent2) 10%, var(--surface));
+  color: var(--accent2);
+}
+
+/* ── Playback Controls ──────────────────────────────────────────────────── */
+
+.suffix-playback-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.suffix-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.suffix-icon-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.suffix-icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.suffix-icon-btn.is-play {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--surface);
+}
+
+[data-theme="dark"] .suffix-icon-btn.is-play {
+  color: var(--bg);
+}
+
+.suffix-scrubber-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.suffix-scrubber {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.suffix-step-counter {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.suffix-speed-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.suffix-speed-btn {
+  min-height: 30px;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.suffix-speed-btn[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+}
+
+.suffix-narration {
+  padding: 10px 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.suffix-narration p {
+  margin: 0;
+  color: var(--text);
+  font-size: 12.5px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.suffix-complexity {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* ── Right Stage ────────────────────────────────────────────────────────── */
+
+.suffix-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+  padding: 12px 14px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* Flush inline telemetry & cross-link ribbon */
+.suffix-ribbon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.suffix-telemetry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.suffix-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.suffix-stat strong {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.suffix-stat.is-highlight strong {
+  color: var(--accent3);
+}
+
+.suffix-switcher-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.suffix-space-pill {
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.suffix-switcher {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.suffix-switch-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.suffix-switch-link:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.suffix-switch-link.is-current {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color: var(--accent);
+}
+
+/* Viewport & stage body */
+.suffix-viewport-shell {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.suffix-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 4px 2px 0;
+  color: var(--text-muted);
+  font-size: 11.5px;
+}
+
+.suffix-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.suffix-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
+.suffix-dot.is-active { background: var(--accent); }
+.suffix-dot.is-created { background: var(--accent4); }
+.suffix-dot.is-match { background: var(--accent3); }
+.suffix-dot.is-leaf { background: var(--accent2); }
+
+/* ── SVG Styling for Suffix Trie & Suffix Tree ──────────────────────────── */
+
+.suffix-svg-edge {
+  stroke: color-mix(in srgb, var(--text-muted) 45%, var(--border));
+  stroke-width: 1.75;
+  fill: none;
+  transition: stroke 0.18s, stroke-width 0.18s;
+}
+
+.suffix-svg-edge.is-active {
+  stroke: var(--accent);
+  stroke-width: 2.6;
+}
+
+.suffix-svg-edge.is-created {
+  stroke: var(--accent4);
+  stroke-width: 2.6;
+}
+
+.suffix-svg-edge.is-match {
+  stroke: var(--accent3);
+  stroke-width: 2.8;
+}
+
+.suffix-trie-node circle {
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--text-muted) 55%, var(--border));
+  stroke-width: 1.75;
+  transition: fill 0.18s, stroke 0.18s;
+}
+
+.suffix-trie-node text {
+  fill: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.suffix-trie-node.is-root circle {
+  fill: var(--surface2);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.suffix-trie-node.is-active circle {
+  fill: color-mix(in srgb, var(--accent) 16%, var(--surface));
+  stroke: var(--accent);
+  stroke-width: 2.3;
+}
+
+.suffix-trie-node.is-created circle {
+  fill: color-mix(in srgb, var(--accent4) 20%, var(--surface));
+  stroke: var(--accent4);
+  stroke-width: 2.5;
+}
+
+.suffix-trie-node.is-match circle {
+  fill: color-mix(in srgb, var(--accent3) 18%, var(--surface));
+  stroke: var(--accent3);
+  stroke-width: 2.5;
+}
+
+.suffix-trie-node.is-leaf circle {
+  stroke-dasharray: 3 2;
+}
+
+.suffix-leaf-badge rect {
+  fill: color-mix(in srgb, var(--accent2) 14%, var(--surface));
+  stroke: var(--accent2);
+  stroke-width: 1.25;
+}
+
+.suffix-leaf-badge.is-match rect {
+  fill: color-mix(in srgb, var(--accent3) 18%, var(--surface));
+  stroke: var(--accent3);
+}
+
+.suffix-leaf-badge text {
+  fill: var(--accent2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.suffix-leaf-badge.is-match text {
+  fill: var(--accent3);
+}
+
+/* Suffix Tree edge label pills (masked SVG rect behind text) */
+.suffix-edge-pill rect {
+  fill: var(--surface);
+  stroke: var(--border);
+  stroke-width: 1.25;
+}
+
+.suffix-edge-pill text {
+  fill: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.suffix-edge-pill.is-active rect {
+  fill: color-mix(in srgb, var(--accent) 13%, var(--surface));
+  stroke: var(--accent);
+}
+
+.suffix-edge-pill.is-active text {
+  fill: var(--accent);
+}
+
+.suffix-edge-pill.is-created rect {
+  fill: color-mix(in srgb, var(--accent4) 16%, var(--surface));
+  stroke: var(--accent4);
+}
+
+.suffix-edge-pill.is-created text {
+  fill: var(--accent4);
+}
+
+.suffix-edge-pill.is-match rect {
+  fill: color-mix(in srgb, var(--accent3) 16%, var(--surface));
+  stroke: var(--accent3);
+}
+
+.suffix-edge-pill.is-match text {
+  fill: var(--accent3);
+}
+
+/* Suffix Tree internal dot nodes & leaf nodes */
+.suffix-tree-dot circle {
+  fill: var(--surface2);
+  stroke: var(--text-muted);
+  stroke-width: 2;
+}
+
+.suffix-tree-dot.is-root circle {
+  fill: var(--surface);
+  stroke: var(--accent);
+  stroke-width: 2.2;
+}
+
+.suffix-tree-dot.is-active circle {
+  fill: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  stroke: var(--accent);
+}
+
+.suffix-tree-dot.is-split circle {
+  fill: color-mix(in srgb, var(--accent4) 24%, var(--surface));
+  stroke: var(--accent4);
+  stroke-width: 2.6;
+}
+
+.suffix-tree-dot.is-match circle {
+  fill: color-mix(in srgb, var(--accent3) 22%, var(--surface));
+  stroke: var(--accent3);
+}
+
+.suffix-tree-dot text {
+  fill: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.suffix-tree-leaf rect {
+  fill: color-mix(in srgb, var(--accent2) 12%, var(--surface));
+  stroke: var(--accent2);
+  stroke-width: 1.6;
+}
+
+.suffix-tree-leaf.is-created rect {
+  fill: color-mix(in srgb, var(--accent4) 20%, var(--surface));
+  stroke: var(--accent4);
+  stroke-width: 2.2;
+}
+
+.suffix-tree-leaf.is-match rect {
+  fill: color-mix(in srgb, var(--accent3) 20%, var(--surface));
+  stroke: var(--accent3);
+  stroke-width: 2.2;
+}
+
+.suffix-tree-leaf text {
+  fill: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* ── Suffix Array + LCP Declarative Table ───────────────────────────────── */
+
+.suffix-sa-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 12px;
+}
+
+.suffix-phase-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 11.5px;
+}
+
+.suffix-kasai-pill {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+
+.suffix-table-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.suffix-sa-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.suffix-sa-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.suffix-sa-table tbody td {
+  padding: 7px 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.suffix-sa-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.suffix-sa-table tbody tr.is-active {
+  background: color-mix(in srgb, var(--accent) 11%, var(--surface));
+}
+
+.suffix-sa-table tbody tr.is-lcp-pair {
+  background: color-mix(in srgb, var(--accent4) 11%, var(--surface));
+}
+
+.suffix-sa-table tbody tr.is-matched {
+  background: color-mix(in srgb, var(--accent3) 14%, var(--surface));
+}
+
+.suffix-sa-table tbody tr.is-out-of-window {
+  opacity: 0.45;
+}
+
+.suffix-rank-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.suffix-ptr-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.suffix-ptr-pill.is-lo {
+  background: color-mix(in srgb, var(--accent4) 22%, var(--surface));
+  color: var(--accent4);
+}
+
+.suffix-ptr-pill.is-mid {
+  background: color-mix(in srgb, var(--accent) 20%, var(--surface));
+  color: var(--accent);
+}
+
+.suffix-ptr-pill.is-hi {
+  background: color-mix(in srgb, var(--accent2) 18%, var(--surface));
+  color: var(--accent2);
+}
+
+.suffix-sa-val {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.suffix-lcp-val {
+  color: var(--text-muted);
+}
+
+.suffix-lcp-val.is-max {
+  color: var(--accent3);
+  font-weight: 700;
+}
+
+.suffix-text-cell {
+  letter-spacing: 0.03em;
+}
+
+.suffix-prefix-lcp {
+  padding: 1px 2px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent4) 24%, var(--surface));
+  color: var(--text);
+  font-weight: 700;
+}
+
+.suffix-prefix-match {
+  padding: 1px 2px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent3) 26%, var(--surface));
+  color: var(--text);
+  font-weight: 700;
+}
+
+.suffix-sentinel-char {
+  color: var(--accent4);
+  font-weight: 700;
+}
+
+/* Screen-reader-only outline */
+.suffix-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Responsive Breakpoints ─────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .suffix-page {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .suffix-panel {
+    width: 100%;
+    max-height: 44vh;
+    border-inline-end: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .suffix-stage {
+    min-height: 460px;
+    overflow: visible;
+  }
+
+  .suffix-viewport-shell {
+    min-height: 340px;
+  }
+}
+
+@media (max-width: 480px) {
+  .suffix-panel {
+    padding: 12px;
+  }
+
+  .suffix-stage {
+    padding: 10px;
+  }
+
+  .suffix-ribbon {
+    padding: 8px 10px;
+  }
+
+  .suffix-space-pill {
+    white-space: normal;
+    line-height: 1.35;
+  }
+
+  .suffix-sa-table thead th,
+  .suffix-sa-table tbody td {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+}
