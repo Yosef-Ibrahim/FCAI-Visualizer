@@ -1,0 +1,129 @@
+{
+  "title": "ハッシュテーブル",
+  "subtitle": "ハッシュ関数、衝突解決法、プローブ経路、削除マーク（トゥームストーン）、リハッシュを視覚的に追跡します。",
+  "controlsAria": "ハッシュテーブルの操作パネル",
+  "stageAria": "ハッシュテーブルの可視化エリア",
+  "strategies": {
+    "label": "衝突解決法",
+    "chaining": "チェイン法",
+    "linear": "線形探索法",
+    "quadratic": "二次探索法",
+    "double": "ダブルハッシュ法",
+    "hint": {
+      "chaining": "各バケットが衝突したキーを連結リストで保持します。",
+      "linear": "連続するスロットを調べます: (h(k) + i) mod m。",
+      "quadratic": "二乗ステップで移動します: (h(k) + i²) mod m。",
+      "double": "第2ハッシュ幅で移動します: (h₁(k) + i · h₂(k)) mod m。"
+    }
+  },
+  "tableSize": {
+    "label": "素数テーブルサイズ (m)",
+    "rehashedBadge": "m = {{m}} に拡張済み"
+  },
+  "operations": {
+    "label": "整数キー",
+    "placeholder": "例: 23, 0, -5",
+    "insert": "挿入",
+    "search": "探索",
+    "delete": "削除",
+    "rehash": "リハッシュ",
+    "rehashTitle": "2m 以上の最小素数に拡張し削除マークを一掃します",
+    "sample": "サンプル",
+    "clear": "クリア"
+  },
+  "playback": {
+    "label": "再生コントロール",
+    "start": "最初のステップへ",
+    "previous": "前のステップ",
+    "play": "再生",
+    "pause": "一時停止",
+    "next": "次のステップ",
+    "end": "最後のステップへ",
+    "speed": "再生速度",
+    "slow": "遅い",
+    "normal": "標準",
+    "fast": "速い",
+    "stepCounter": "ステップ {{current}} / {{total}}",
+    "ready": "待機中",
+    "narrationLabel": "ステップ解説",
+    "idleMessage": "整数キーの挿入・探索・削除を行うか、サンプルを読み込んでハッシュ処理を段階的に確認しましょう。"
+  },
+  "telemetry": {
+    "ariaLabel": "ハッシュテーブルの統計",
+    "formula": "ハッシュ",
+    "occupancy": "n / m",
+    "loadFactor": "負荷率 α",
+    "loadWarning": "高負荷率 (α ≥ 0.70) — リハッシュを推奨します",
+    "tombstones": "削除マーク",
+    "collisions": "衝突",
+    "probes": "プローブ数"
+  },
+  "stage": {
+    "probePathLabel": "プローブ列",
+    "slotEmpty": "空",
+    "slotDeleted": "DEL",
+    "slotDeletedTitle": "削除済みトゥームストーンスロット",
+    "chainNull": "NULL",
+    "bucketAria": "バケット {{index}}",
+    "slotAriaEmpty": "スロット {{index}}: 空",
+    "slotAriaDeleted": "スロット {{index}}: 削除マーク",
+    "slotAriaOccupied": "スロット {{index}}: キー {{key}}",
+    "legendAria": "スロット状態の凡例",
+    "legendEmpty": "空",
+    "legendOccupied": "使用中",
+    "legendDeleted": "削除マーク (DEL)",
+    "legendActive": "探索中",
+    "legendTarget": "挿入 / 発見",
+    "legendCollision": "衝突",
+    "legendChain": "バケット → 連結リスト → NULL"
+  },
+  "code": {
+    "toggleOpen": "コード解説を隠す",
+    "toggleClosed": "コード解説を表示",
+    "opLabel": "{{strategy}} · {{op}}",
+    "ops": {
+      "insert": "挿入",
+      "search": "探索",
+      "delete": "削除",
+      "rehash": "リハッシュ"
+    }
+  },
+  "errors": {
+    "emptyKey": "整数キーを入力してください。",
+    "invalidKey": "有効な整数キーを入力してください。",
+    "integerOnly": "整数のみ入力できます（0 や負数も可）。",
+    "tableFull": "テーブルが満杯です。リハッシュして拡張してください。",
+    "probeCycle": "プローブ列が循環し空きスロットが見つかりませんでした。リハッシュしてください。"
+  },
+  "steps": {
+    "computeHash": "キー {{key}} に対し {{formula}} を計算 — インデックス {{index}} から開始します。",
+    "duplicateFound": "キー {{key}} は既にインデックス {{index}} に存在するため、重複挿入をスキップします。",
+    "chainCheckNode": "バケット {{index}} のノード {{pos}} は {{existing}} ≠ {{key}}；チェインを次へ進みます。",
+    "insertChainEmpty": "バケット {{index}} は空でした；キー {{key}} を先頭ノードとして挿入しました。",
+    "insertChainAppend": "バケット {{index}} で衝突：キー {{key}} をチェイン末尾に追加しました（長さ {{length}}）。",
+    "probeCollision": "プローブ #{{step}}：スロット {{index}} は {{existing}} が占有中 — 衝突のため次を探索します。",
+    "tombstoneRemember": "スロット {{index}} は削除マーク (DEL) — 最初の再利用候補として記録し、重複確認を続けます。",
+    "tombstoneSkip": "スロット {{index}} は削除マーク (DEL) — 挿入先候補 {{firstIndex}} を維持したまま重複確認を続けます。",
+    "insertEmpty": "スロット {{index}} は空です；キー {{key}} を挿入しました。",
+    "insertReuseTombstone": "重複なしで空スロット {{emptyIndex}} に到達；記録した削除マーク {{index}} にキー {{key}} を挿入しました。",
+    "insertReuseAfterScan": "到達可能な全スロットで重複なし；記録した削除マーク {{index}} にキー {{key}} を挿入しました。",
+    "probeCycle": "キー {{key}} の挿入中、{{probes}} 回のプローブ後にスロット {{index}} で循環しました — リハッシュしてください。",
+    "tableFull": "全 {{capacity}} スロットが満杯のためキー {{key}} を挿入できません。リハッシュして拡張してください。",
+    "searchFoundChain": "バケット {{index}} の位置 {{pos}} でキー {{key}} を発見しました。",
+    "searchNotFoundChain": "バケット {{index}} の末尾に到達；キー {{key}} は存在しません。",
+    "searchCycleStop": "スロット {{index}} でプローブが循環しました；キー {{key}} はテーブルに存在しません。",
+    "searchEmptyStop": "スロット {{index}} は空です — 探索終了；キー {{key}} はテーブルに存在しません。",
+    "searchSkipTombstone": "スロット {{index}} は削除マーク (DEL) — 通過してキー {{key}} の探索を続けます。",
+    "searchFound": "{{probes}} 回のプローブ後、スロット {{index}} でキー {{key}} を発見しました。",
+    "searchMismatch": "スロット {{index}} は {{existing}} ≠ {{key}}；次のスロットをプローブします。",
+    "searchExhausted": "全 {{capacity}} スロットを探索しましたが、キー {{key}} は見つかりませんでした。",
+    "deleteChain": "バケット {{index}} からキー {{key}} のノードを切り離しました。",
+    "deleteTombstone": "スロット {{index}} のキー {{key}} を DELETED（削除マーク）に変更し、プローブ連鎖を保ちます。",
+    "deleteNotFound": "キー {{key}} は見つかりませんでした；削除は行われていません。",
+    "rehashStart": "m = {{oldM}} から素数 m = {{newM}} へリハッシュ：有効キー {{count}} 件を再配置し、削除マーク {{purged}} 件を消去します。",
+    "rehashMove": "キー {{key}} をインデックス {{index}} に再挿入しました（{{formula}}）。",
+    "rehashDone": "リハッシュ完了：{{count}} 件のキーを m = {{newM}} スロットへ配置し、削除マークは 0 件になりました。",
+    "sampleLoaded": "サンプルキー [{{keys}}] をサイズ m = {{capacity}} のテーブルに読み込みました。",
+    "cleared": "ハッシュテーブルをクリアしました（m = {{capacity}}）。"
+  }
+}
