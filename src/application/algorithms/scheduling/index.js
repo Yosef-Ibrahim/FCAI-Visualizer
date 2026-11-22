@@ -6,7 +6,7 @@ import { PriorityScheduling } from './PriorityScheduling';
 import { RoundRobin } from './RoundRobin';
 import { MultilevelQueue } from './MultilevelQueue';
 import { MultilevelFeedbackQueue } from './MultilevelFeedbackQueue';
-import { SCHEDULING_PRESETS, normalizeSchedulingInput } from './schedulingUtils';
+import { SCHEDULING_PRESETS, normalizeSchedulingInput, generateRandomWorkload } from './schedulingUtils';
 
 const COMPARABLE_SCHEDULERS = [
   new FCFS(),
@@ -46,4 +46,5 @@ export {
   MultilevelFeedbackQueue,
   SCHEDULING_PRESETS,
   normalizeSchedulingInput,
+  generateRandomWorkload,
 };

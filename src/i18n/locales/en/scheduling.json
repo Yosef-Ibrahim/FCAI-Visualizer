@@ -57,6 +57,10 @@
   "controls": {
     "algorithm": "Scheduler",
     "presets": "Lecture presets",
+    "generateRandom": "Random",
+    "processCount": "Processes",
+    "editWorkload": "Edit processes",
+    "closeEditor": "Close editor",
     "options": "Scheduler options",
     "quantum": "Time quantum (q)",
     "quantumHint": "Integer between 1 and 30 time units",
@@ -121,6 +125,7 @@
     "empty": "Step forward or press Play to execute the first CPU slice.",
     "idleLabel": "IDLE",
     "totalSpan": "Total time: {{time}}",
+    "progress": "t = {{current}} / {{total}}",
     "ariaLabel": "CPU scheduling Gantt chart",
     "sliceTooltip": "{{pid}}: t = {{start}} to {{end}} (duration {{duration}})"
   },

@@ -57,6 +57,10 @@
   "controls": {
     "algorithm": "المُجدول",
     "presets": "أمثلة المحاضرة",
+    "generateRandom": "بيانات عشوائية",
+    "processCount": "العمليات",
+    "editWorkload": "تعديل العمليات",
+    "closeEditor": "إغلاق المحرر",
     "options": "خيارات المُجدول",
     "quantum": "الشريحة الزمنية (q)",
     "quantumHint": "عدد صحيح بين 1 و30 وحدة زمنية",
@@ -121,6 +125,7 @@
     "empty": "تقدّم خطوة أو اضغط تشغيل لتنفيذ أول شريحة على المعالج.",
     "idleLabel": "خامل",
     "totalSpan": "الزمن الكلي: {{time}}",
+    "progress": "t = {{current}} / {{total}}",
     "ariaLabel": "مخطط جانت لجدولة المعالج",
     "sliceTooltip": "{{pid}}: من t = {{start}} إلى {{end}} (المدة {{duration}})"
   },

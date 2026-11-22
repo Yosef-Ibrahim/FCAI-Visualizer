@@ -18,28 +18,36 @@ function getProcColorIndex(pid) {
 
 export default function GanttChartView({
   gantt = [],
+  fullGantt = [],
   runningPid = null,
   currentTime = 0,
   algoId = 'fcfs',
+  stepIdx = 0,
+  totalSteps = 1,
+  onScrub,
 }) {
   const t = useT('scheduling');
   const showQueueBadge = algoId === 'mlq' || algoId === 'mlfq';
 
-  const totalEnd = gantt.length > 0 ? gantt[gantt.length - 1].end : currentTime;
+  const sourceGantt = fullGantt.length > 0 ? fullGantt : gantt;
+  const fullEnd = sourceGantt.length > 0 ? sourceGantt[sourceGantt.length - 1].end : currentTime;
+  const executedEnd = gantt.length > 0 ? gantt[gantt.length - 1].end : 0;
 
   return (
-    <section className="sched-gantt-section" aria-label={t('gantt.ariaLabel')}>
-      <div className="sched-section-head">
+    <section className="sched-card sched-gantt-card" aria-label={t('gantt.ariaLabel')}>
+      <div className="sched-card-head">
         <div>
-          <h3 className="sched-section-title">{t('gantt.title')}</h3>
-          <p className="sched-section-sub">{t('gantt.subtitle')}</p>
+          <h3 className="sched-card-title">{t('gantt.title')}</h3>
+          <p className="sched-card-sub">{t('gantt.subtitle')}</p>
         </div>
-        <span className="sched-span-badge ltr-keep">
-          {t('gantt.totalSpan', { time: totalEnd })}
-        </span>
+        <div className="sched-gantt-badges ltr-keep">
+          <span className="sched-span-badge">
+            {t('gantt.progress', { current: Math.min(currentTime, fullEnd), total: fullEnd })}
+          </span>
+        </div>
       </div>
 
-      {gantt.length === 0 ? (
+      {sourceGantt.length === 0 ? (
         <div className="sched-gantt-empty ltr-keep">
           <span className="sched-gantt-origin">t = 0</span>
           <p>{t('gantt.empty')}</p>
@@ -47,21 +55,31 @@ export default function GanttChartView({
       ) : (
         <div className="sched-gantt-scroll ltr-keep">
           <div className="sched-gantt-track" role="list" aria-label={t('gantt.ariaLabel')}>
-            {gantt.map((seg, idx) => {
+            {sourceGantt.map((seg, idx) => {
               const duration = Math.max(1, seg.end - seg.start);
               const isIdle = !seg.pid || String(seg.pid).toUpperCase() === 'IDLE';
               const colorIdx = isIdle ? 0 : getProcColorIndex(seg.pid);
+
+              // Compare against executed progress so the full chart stays visible from t = 0
+              // while executed slices illuminate vividly and upcoming slices stay softly outlined.
+              const isExecuted = seg.end <= executedEnd && gantt.length > 0;
+              const isPartial = !isExecuted && seg.start < executedEnd && executedEnd < seg.end;
+              const isUpcoming = !isExecuted && !isPartial;
               const isLatestRunning = (
-                idx === gantt.length - 1
-                && !isIdle
+                !isIdle
+                && !isUpcoming
                 && runningPid === seg.pid
                 && seg.end === currentTime
               );
-              const prevEnd = idx > 0 ? gantt[idx - 1].end : null;
+
+              const prevEnd = idx > 0 ? sourceGantt[idx - 1].end : null;
               const showStartTick = idx === 0 || (prevEnd !== null && prevEnd !== seg.start);
-              const isLast = idx === gantt.length - 1;
-              const minPx = Math.max(46, Math.min(140, duration * 16));
+              const isLast = idx === sourceGantt.length - 1;
+              const minPx = Math.max(48, Math.min(130, duration * 15));
               const label = isIdle ? t('gantt.idleLabel') : seg.pid;
+              const fillPct = isPartial
+                ? Math.round(((executedEnd - seg.start) / duration) * 100)
+                : 100;
 
               return (
                 <div
@@ -74,6 +92,7 @@ export default function GanttChartView({
                     className={[
                       'sched-gantt-block',
                       isIdle ? 'is-idle' : `sched-proc-c${colorIdx}`,
+                      isUpcoming ? 'is-upcoming' : '',
                       isLatestRunning ? 'is-running' : '',
                     ].filter(Boolean).join(' ')}
                     title={t('gantt.sliceTooltip', {
@@ -83,10 +102,17 @@ export default function GanttChartView({
                       duration,
                     })}
                   >
+                    {isPartial && (
+                      <span
+                        className="sched-gantt-partial-fill"
+                        style={{ width: `${fillPct}%` }}
+                        aria-hidden="true"
+                      />
+                    )}
                     <span className="sched-gantt-pid">{label}</span>
                     <span className="sched-gantt-meta">
                       {showQueueBadge && !isIdle && seg.queueLevel !== null && seg.queueLevel !== undefined
-                        ? `Q${seg.queueLevel} · ${duration}`
+                        ? `Q${seg.queueLevel} · ${duration}u`
                         : `${duration}u`}
                     </span>
                   </div>
@@ -107,6 +133,23 @@ export default function GanttChartView({
               );
             })}
           </div>
+        </div>
+      )}
+
+      {typeof onScrub === 'function' && totalSteps > 1 && (
+        <div className="sched-gantt-scrubber">
+          <input
+            type="range"
+            className="sched-scrubber-input"
+            min={0}
+            max={totalSteps - 1}
+            value={stepIdx}
+            aria-label={t('controls.playback')}
+            onChange={(e) => onScrub(Number(e.target.value))}
+          />
+          <span className="sched-scrubber-hint ltr-keep">
+            {t('controls.stepCounter', { current: stepIdx + 1, total: totalSteps })}
+          </span>
         </div>
       )}
     </section>

@@ -1,21 +1,19 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Play,
   Pause,
   SkipBack,
   SkipForward,
   RotateCcw,
-  ChevronsRight,
+  FastForward,
+  Shuffle,
+  SlidersHorizontal,
   Plus,
   Trash2,
-  Code2,
-  ChevronDown,
-  ChevronUp,
+  X,
   BookOpen,
   BarChart3,
-  CheckCircle2,
-  AlertTriangle,
 } from 'lucide-react';
 import {
   FCFS,
@@ -25,8 +23,7 @@ import {
   RoundRobin,
   MultilevelQueue,
   MultilevelFeedbackQueue,
-  SCHEDULING_PRESETS,
-  compareSchedulersOnWorkload,
+  generateRandomWorkload,
 } from '../../../application/algorithms/scheduling';
 import { useLang } from '../../../hooks/useLang';
 import { useT } from '../../../hooks/useT';
@@ -39,7 +36,7 @@ import CodePanel from '../../../components/shared/CodePanel';
 import ComplexityPanel from '../../../components/sorting/ComplexityPanel';
 import '../../../styles/CpuScheduling.css';
 
-const SCHED_ALGORITHMS = [
+const SCHEDULER_INSTANCES = [
   new FCFS(),
   new SJF(),
   new SRTF(),
@@ -49,42 +46,53 @@ const SCHED_ALGORITHMS = [
   new MultilevelFeedbackQueue(),
 ];
 
-const SCHED_BY_ID = Object.fromEntries(SCHED_ALGORITHMS.map((a) => [a.id, a]));
-const SCHED_ROUTE_PREFIX = '/courses/operating-systems/cpu-scheduling';
+const SCHEDULER_BY_ID = Object.fromEntries(SCHEDULER_INSTANCES.map((s) => [s.id, s]));
+const SCHEDULER_IDS = SCHEDULER_INSTANCES.map((s) => s.id);
+const ROUTE_PREFIX = '/courses/operating-systems/cpu-scheduling';
 const MAX_PROCESSES = 8;
+const PROCESS_COUNTS = [3, 4, 5, 6, 7];
 
 function cloneInput(input) {
   return {
-    processes: (input?.processes ?? []).map((p) => ({
+    processes: (input.processes || []).map((p) => ({
       pid: p.pid,
-      arrival: Number(p.arrival ?? 0),
-      burst: Number(p.burst ?? 1),
-      priority: Number(p.priority ?? 1),
-      queue: Number(p.queue ?? 0),
+      arrival: p.arrival,
+      burst: p.burst,
+      priority: p.priority ?? 1,
+      queue: p.queue ?? 0,
     })),
-    quantum: input?.quantum ?? 4,
-    preemptive: Boolean(input?.preemptive),
-    mlfqQuanta: Array.isArray(input?.mlfqQuanta)
-      ? [Number(input.mlfqQuanta[0] ?? 8), Number(input.mlfqQuanta[1] ?? 16)]
-      : [8, 16],
+    quantum: input.quantum ?? 4,
+    preemptive: Boolean(input.preemptive),
+    mlfqQuanta: Array.isArray(input.mlfqQuanta) ? [...input.mlfqQuanta] : [8, 16],
   };
 }
 
 function inputToDraft(input) {
-  const safe = cloneInput(input);
   return {
-    processes: safe.processes.map((p) => ({
+    rows: (input.processes || []).map((p) => ({
       pid: p.pid,
-      arrival: String(p.arrival),
-      burst: String(p.burst),
-      priority: String(p.priority),
-      queue: String(p.queue),
+      arrival: String(p.arrival ?? 0),
+      burst: String(p.burst ?? 1),
+      priority: String(p.priority ?? 1),
+      queue: p.queue === 1 ? 1 : 0,
     })),
-    quantum: String(safe.quantum),
-    preemptive: safe.preemptive,
-    mlfqQ0: String(safe.mlfqQuanta[0]),
-    mlfqQ1: String(safe.mlfqQuanta[1]),
+    quantum: String(input.quantum ?? 4),
+    preemptive: Boolean(input.preemptive),
+    mlfqQ0: String(input.mlfqQuanta?.[0] ?? 8),
+    mlfqQ1: String(input.mlfqQuanta?.[1] ?? 16),
   };
+}
+
+function nextPid(rows) {
+  let maxNum = 0;
+  for (const row of rows) {
+    const match = String(row.pid || '').match(/\d+/);
+    if (match) {
+      const n = Number(match[0]);
+      if (Number.isFinite(n) && n > maxNum) maxNum = n;
+    }
+  }
+  return `P${maxNum + 1}`;
 }
 
 function parseStrictInt(raw) {
@@ -95,568 +103,368 @@ function parseStrictInt(raw) {
   return num;
 }
 
-function nextPidFor(processes) {
-  const existing = new Set(processes.map((p) => p.pid));
-  for (let i = 1; i <= 20; i += 1) {
-    const candidate = `P${i}`;
-    if (!existing.has(candidate)) return candidate;
-  }
-  return `P${processes.length + 1}`;
+function formatMetric(value, suffix = '') {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return '—';
+  const num = Number(value);
+  const rounded = Number.isInteger(num) ? String(num) : num.toFixed(2);
+  return `${rounded}${suffix}`;
 }
 
-function fmtMetric(val, suffix = '') {
-  if (val === null || val === undefined || Number.isNaN(Number(val))) return '—';
-  const num = Number(val);
-  const text = Number.isInteger(num) ? String(num) : Number(num.toFixed(2)).toString();
-  return `${text}${suffix}`;
+function buildInitialInputs() {
+  return Object.fromEntries(
+    SCHEDULER_INSTANCES.map((s) => [s.id, cloneInput(s.getDefaultInput())]),
+  );
 }
 
-function resolvePresetKey(labelKey) {
-  if (!labelKey) return '';
-  return labelKey.startsWith('scheduling:')
-    ? labelKey.slice('scheduling:'.length)
-    : labelKey;
-}
-
-function validateAndParseDraft(draft, algoId, t) {
-  if (!draft.processes || draft.processes.length === 0) {
-    return { error: t('errors.minProcesses') };
-  }
-  if (draft.processes.length > MAX_PROCESSES) {
-    return { error: t('errors.maxProcesses') };
-  }
-
-  const parsedProcs = [];
-  for (const row of draft.processes) {
-    const arrival = parseStrictInt(row.arrival);
-    if (arrival === null || arrival < 0) {
-      return { error: t('errors.invalidArrival', { pid: row.pid }) };
-    }
-    const burst = parseStrictInt(row.burst);
-    if (burst === null || burst < 1 || burst > 100) {
-      return { error: t('errors.invalidBurst', { pid: row.pid }) };
-    }
-    const priority = parseStrictInt(row.priority);
-    if (priority === null || priority < 1) {
-      return { error: t('errors.invalidPriority', { pid: row.pid }) };
-    }
-    const queue = parseStrictInt(row.queue);
-    parsedProcs.push({
-      pid: row.pid,
-      arrival,
-      burst,
-      priority,
-      queue: queue === 1 ? 1 : 0,
-    });
-  }
-
-  let quantum;
-  if (algoId === 'round-robin' || algoId === 'mlq') {
-    const parsedQ = parseStrictInt(draft.quantum);
-    if (parsedQ === null || parsedQ < 1 || parsedQ > 30) {
-      return { error: t('errors.invalidQuantum') };
-    }
-    quantum = parsedQ;
-  } else {
-    const fallbackQ = parseStrictInt(draft.quantum);
-    quantum = fallbackQ && fallbackQ >= 1 && fallbackQ <= 30 ? fallbackQ : 4;
-  }
-
-  let mlfqQuanta = [8, 16];
-  if (algoId === 'mlfq') {
-    const q0 = parseStrictInt(draft.mlfqQ0);
-    const q1 = parseStrictInt(draft.mlfqQ1);
-    if (q0 === null || q0 < 1 || q0 > 30 || q1 === null || q1 < 1 || q1 > 30) {
-      return { error: t('errors.invalidMlfqQuanta') };
-    }
-    mlfqQuanta = [q0, q1];
-  }
-
-  return {
-    input: {
-      processes: parsedProcs,
-      quantum,
-      preemptive: Boolean(draft.preemptive),
-      mlfqQuanta,
-    },
-  };
+function buildInitialDrafts(inputs) {
+  return Object.fromEntries(
+    SCHEDULER_IDS.map((id) => [id, inputToDraft(inputs[id])]),
+  );
 }
 
 export default function CpuScheduling() {
   const { algo: urlAlgo } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const t = useT('scheduling');
   const [lang, setLang] = useLang('js');
 
-  const resolvedUrlAlgo = urlAlgo && SCHED_BY_ID[urlAlgo] ? urlAlgo : null;
+  const resolvedUrlAlgo = urlAlgo && SCHEDULER_BY_ID[urlAlgo] ? urlAlgo : null;
   const [selectedAlgo, setSelectedAlgo] = useState(resolvedUrlAlgo ?? 'fcfs');
   const activeAlgoId = resolvedUrlAlgo ?? selectedAlgo;
-  const algorithm = SCHED_BY_ID[activeAlgoId];
+  const scheduler = SCHEDULER_BY_ID[activeAlgoId];
 
-  const [lastAlgoId, setLastAlgoId] = useState(activeAlgoId);
+  const [inputsByAlgo, setInputsByAlgo] = useState(buildInitialInputs);
+  const [draftsByAlgo, setDraftsByAlgo] = useState(() => buildInitialDrafts(buildInitialInputs()));
+  const [processCount, setProcessCount] = useState(4);
+  const [showEditor, setShowEditor] = useState(false);
+  const [inputError, setInputError] = useState('');
+
   const [stepIdx, setStepIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(5);
-  const [inputError, setInputError] = useState('');
   const [infoTab, setInfoTab] = useState('overview');
-  const [showCode, setShowCode] = useState(() => (
-    typeof window !== 'undefined' ? window.innerWidth >= 900 : true
-  ));
-
-  const [inputsByAlgo, setInputsByAlgo] = useState(() => (
-    Object.fromEntries(
-      SCHED_ALGORITHMS.map((a) => [a.id, cloneInput(a.getDefaultInput())]),
-    )
-  ));
-
-  const [draftsByAlgo, setDraftsByAlgo] = useState(() => (
-    Object.fromEntries(
-      SCHED_ALGORITHMS.map((a) => [a.id, inputToDraft(a.getDefaultInput())]),
-    )
-  ));
-
-  const [activePresetByAlgo, setActivePresetByAlgo] = useState(() => (
-    Object.fromEntries(
-      SCHED_ALGORITHMS.map((a) => [a.id, SCHEDULING_PRESETS?.[a.id]?.[0]?.id ?? null]),
-    )
-  ));
-
-  if (activeAlgoId !== lastAlgoId) {
-    setLastAlgoId(activeAlgoId);
-    setStepIdx(0);
-    setIsPlaying(false);
-    setInputError('');
-  }
 
   const activeInput = inputsByAlgo[activeAlgoId];
   const activeDraft = draftsByAlgo[activeAlgoId];
-  const activePresets = SCHEDULING_PRESETS?.[activeAlgoId] ?? [];
-  const activePresetId = activePresetByAlgo[activeAlgoId];
 
   const steps = useMemo(
-    () => algorithm.generateSteps(activeInput),
-    [algorithm, activeInput],
+    () => scheduler.generateSteps(activeInput),
+    [scheduler, activeInput],
   );
 
-  const safeIdx = Math.min(stepIdx, Math.max(0, steps.length - 1));
-  const currentStep = steps[safeIdx] ?? steps[0];
-  const sched = currentStep?.sched;
-  const metrics = sched?.metrics ?? {};
-  const phaseKey = sched?.phase ?? 'init';
+  const safeStepIdx = Math.min(Math.max(0, stepIdx), Math.max(0, steps.length - 1));
+  const activeStep = steps[safeStepIdx] ?? steps[0] ?? null;
+  const finalStep = steps[steps.length - 1] ?? activeStep;
+  const sched = activeStep?.sched ?? null;
+  const fullGantt = finalStep?.sched?.gantt ?? [];
 
-  // Playback timer
+  const prevAlgoRef = useRef(activeAlgoId);
+  useEffect(() => {
+    if (prevAlgoRef.current !== activeAlgoId) {
+      prevAlgoRef.current = activeAlgoId;
+      setStepIdx(0);
+      setIsPlaying(false);
+      setInputError('');
+    }
+  }, [activeAlgoId]);
+
   useEffect(() => {
     if (!isPlaying) return undefined;
-    if (safeIdx >= steps.length - 1) {
-      const stopId = setTimeout(() => setIsPlaying(false), 0);
-      return () => clearTimeout(stopId);
+    if (safeStepIdx >= steps.length - 1) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- stop playback when trace ends
+      setIsPlaying(false);
+      return undefined;
     }
-    const delayMs = Math.max(130, 1150 - speed * 100);
-    const id = setTimeout(() => {
+    const delayMs = Math.max(120, Math.round(1350 - speed * 115));
+    const timer = setTimeout(() => {
       setStepIdx((prev) => Math.min(prev + 1, steps.length - 1));
     }, delayMs);
-    return () => clearTimeout(id);
-  }, [isPlaying, safeIdx, steps.length, speed]);
+    return () => clearTimeout(timer);
+  }, [isPlaying, safeStepIdx, steps.length, speed]);
 
   const handleSelectAlgo = useCallback((nextId) => {
-    if (!SCHED_BY_ID[nextId]) return;
+    if (!SCHEDULER_BY_ID[nextId]) return;
+    setIsPlaying(false);
+    setStepIdx(0);
+    setInputError('');
     setSelectedAlgo(nextId);
+    navigate(`${ROUTE_PREFIX}/${nextId}`);
+  }, [navigate]);
+
+  const commitInput = useCallback((algoId, nextInput) => {
+    const clean = cloneInput(nextInput);
+    setInputsByAlgo((prev) => ({ ...prev, [algoId]: clean }));
+    setDraftsByAlgo((prev) => ({ ...prev, [algoId]: inputToDraft(clean) }));
     setStepIdx(0);
     setIsPlaying(false);
     setInputError('');
-    if (location.pathname.startsWith(SCHED_ROUTE_PREFIX)) {
-      navigate(`${SCHED_ROUTE_PREFIX}/${nextId}`, { replace: true });
-    }
-  }, [location.pathname, navigate]);
+  }, []);
 
-  const updateDraft = (updater) => {
-    setDraftsByAlgo((prev) => ({
-      ...prev,
-      [activeAlgoId]: updater(prev[activeAlgoId]),
-    }));
+  const handleGenerateRandom = useCallback((countOverride) => {
+    const targetCount = countOverride ?? processCount;
+    const generated = generateRandomWorkload(activeAlgoId, targetCount, {
+      quantum: activeInput.quantum,
+      preemptive: activeInput.preemptive,
+      mlfqQuanta: activeInput.mlfqQuanta,
+    });
+    commitInput(activeAlgoId, generated);
+  }, [activeAlgoId, activeInput.mlfqQuanta, activeInput.preemptive, activeInput.quantum, commitInput, processCount]);
+
+  const handleProcessCountChange = (nextCount) => {
+    setProcessCount(nextCount);
+    handleGenerateRandom(nextCount);
   };
 
-  const handleProcessFieldChange = (rowIdx, field, value) => {
-    setInputError('');
-    updateDraft((draft) => ({
-      ...draft,
-      processes: draft.processes.map((row, idx) => (
-        idx === rowIdx ? { ...row, [field]: value } : row
-      )),
-    }));
-  };
-
-  const handleAddProcess = () => {
-    if (activeDraft.processes.length >= MAX_PROCESSES) return;
-    setInputError('');
-    updateDraft((draft) => ({
-      ...draft,
-      processes: [
-        ...draft.processes,
-        {
-          pid: nextPidFor(draft.processes),
-          arrival: '0',
-          burst: '4',
-          priority: String(draft.processes.length + 1),
-          queue: '0',
-        },
-      ],
-    }));
-  };
-
-  const handleRemoveProcess = (rowIdx) => {
-    if (activeDraft.processes.length <= 1) return;
-    setInputError('');
-    updateDraft((draft) => ({
-      ...draft,
-      processes: draft.processes.filter((_, idx) => idx !== rowIdx),
-    }));
-  };
-
-  const handleTogglePriorityMode = (nextPreemptive) => {
-    const nextDraft = { ...activeDraft, preemptive: nextPreemptive };
-    setDraftsByAlgo((prev) => ({ ...prev, [activeAlgoId]: nextDraft }));
-    const result = validateAndParseDraft(nextDraft, activeAlgoId, t);
-    if (!result.error) {
-      setInputsByAlgo((prev) => ({ ...prev, [activeAlgoId]: result.input }));
-      setActivePresetByAlgo((prev) => ({ ...prev, [activeAlgoId]: null }));
+  const handleInlineQuantumChange = (raw) => {
+    updateDraft((d) => ({ ...d, quantum: raw }));
+    const parsed = parseStrictInt(raw);
+    if (parsed !== null && parsed >= 1 && parsed <= 30) {
+      setInputsByAlgo((prev) => ({
+        ...prev,
+        [activeAlgoId]: { ...prev[activeAlgoId], quantum: parsed },
+      }));
       setStepIdx(0);
       setIsPlaying(false);
       setInputError('');
     }
   };
 
+  const handleInlineMlfqChange = (which, raw) => {
+    updateDraft((d) => ({ ...d, [which]: raw }));
+    const q0 = parseStrictInt(which === 'mlfqQ0' ? raw : activeDraft.mlfqQ0);
+    const q1 = parseStrictInt(which === 'mlfqQ1' ? raw : activeDraft.mlfqQ1);
+    if (q0 !== null && q1 !== null && q0 >= 1 && q0 <= 30 && q1 >= 1 && q1 <= 30) {
+      setInputsByAlgo((prev) => ({
+        ...prev,
+        [activeAlgoId]: { ...prev[activeAlgoId], mlfqQuanta: [q0, q1] },
+      }));
+      setStepIdx(0);
+      setIsPlaying(false);
+      setInputError('');
+    }
+  };
+
+  const handleTogglePreemptive = (isPreemptive) => {
+    const next = { ...activeInput, preemptive: isPreemptive };
+    commitInput(activeAlgoId, next);
+  };
+
+  const updateDraft = (updater) => {
+    setDraftsByAlgo((prev) => ({
+      ...prev,
+      [activeAlgoId]: updater(prev[activeAlgoId]),
+    }));
+    setInputError('');
+  };
+
+  const handleRowFieldChange = (rowIdx, field, value) => {
+    updateDraft((draft) => ({
+      ...draft,
+      rows: draft.rows.map((r, i) => (i === rowIdx ? { ...r, [field]: value } : r)),
+    }));
+  };
+
+  const handleAddProcess = () => {
+    if (activeDraft.rows.length >= MAX_PROCESSES) {
+      setInputError(t('errors.maxProcesses'));
+      return;
+    }
+    const lastArrival = parseStrictInt(activeDraft.rows[activeDraft.rows.length - 1]?.arrival) ?? 0;
+    const newRow = {
+      pid: nextPid(activeDraft.rows),
+      arrival: String(lastArrival + 1),
+      burst: '4',
+      priority: String(Math.min(5, activeDraft.rows.length + 1)),
+      queue: activeDraft.rows.length % 2,
+    };
+    updateDraft((draft) => ({
+      ...draft,
+      rows: [...draft.rows, newRow],
+    }));
+  };
+
+  const handleRemoveProcess = (rowIdx) => {
+    if (activeDraft.rows.length <= 1) {
+      setInputError(t('errors.minProcesses'));
+      return;
+    }
+    updateDraft((draft) => ({
+      ...draft,
+      rows: draft.rows.filter((_, i) => i !== rowIdx),
+    }));
+  };
+
   const handleApplyWorkload = (event) => {
     event?.preventDefault();
-    setInputError('');
-
-    const parsed = validateAndParseDraft(activeDraft, activeAlgoId, t);
-    if (parsed.error) {
-      setInputError(parsed.error);
+    const { rows, quantum: qRaw, preemptive, mlfqQ0, mlfqQ1 } = activeDraft;
+    if (!rows || rows.length < 1) {
+      setInputError(t('errors.minProcesses'));
+      return;
+    }
+    if (rows.length > MAX_PROCESSES) {
+      setInputError(t('errors.maxProcesses'));
       return;
     }
 
-    try {
-      algorithm.generateSteps(parsed.input);
-      setInputsByAlgo((prev) => ({ ...prev, [activeAlgoId]: parsed.input }));
-      setActivePresetByAlgo((prev) => ({ ...prev, [activeAlgoId]: null }));
+    const parsedProcesses = [];
+    for (let i = 0; i < rows.length; i += 1) {
+      const row = rows[i];
+      const pid = (row.pid || `P${i + 1}`).trim() || `P${i + 1}`;
+      const arrival = parseStrictInt(row.arrival);
+      if (arrival === null || arrival < 0) {
+        setInputError(t('errors.invalidArrival', { pid }));
+        return;
+      }
+      const burst = parseStrictInt(row.burst);
+      if (burst === null || burst < 1 || burst > 100) {
+        setInputError(t('errors.invalidBurst', { pid }));
+        return;
+      }
+      const priority = activeAlgoId === 'priority' ? parseStrictInt(row.priority) : (parseStrictInt(row.priority) ?? 1);
+      if (priority === null || priority < 1) {
+        setInputError(t('errors.invalidPriority', { pid }));
+        return;
+      }
+      const queue = row.queue === 1 ? 1 : 0;
+      parsedProcesses.push({ pid, arrival, burst, priority, queue });
+    }
+
+    let quantum = activeInput.quantum ?? 4;
+    if (activeAlgoId === 'round-robin' || activeAlgoId === 'mlq') {
+      const q = parseStrictInt(qRaw);
+      if (q === null || q < 1 || q > 30) {
+        setInputError(t('errors.invalidQuantum'));
+        return;
+      }
+      quantum = q;
+    }
+
+    let mlfqQuanta = activeInput.mlfqQuanta ?? [8, 16];
+    if (activeAlgoId === 'mlfq') {
+      const q0 = parseStrictInt(mlfqQ0);
+      const q1 = parseStrictInt(mlfqQ1);
+      if (q0 === null || q1 === null || q0 < 1 || q0 > 30 || q1 < 1 || q1 > 30) {
+        setInputError(t('errors.invalidMlfqQuanta'));
+        return;
+      }
+      mlfqQuanta = [q0, q1];
+    }
+
+    commitInput(activeAlgoId, {
+      processes: parsedProcesses,
+      quantum,
+      preemptive: activeAlgoId === 'priority' ? Boolean(preemptive) : false,
+      mlfqQuanta,
+    });
+  };
+
+  const handlePlayPause = () => {
+    if (safeStepIdx >= steps.length - 1) {
       setStepIdx(0);
-      setIsPlaying(false);
-    } catch {
-      setInputError(t('errors.applyFailed'));
+      setIsPlaying(true);
+    } else {
+      setIsPlaying((prev) => !prev);
     }
   };
 
-  const handleLoadPreset = (preset) => {
-    const cloned = cloneInput(preset.input);
-    setInputsByAlgo((prev) => ({ ...prev, [activeAlgoId]: cloned }));
-    setDraftsByAlgo((prev) => ({ ...prev, [activeAlgoId]: inputToDraft(cloned) }));
-    setActivePresetByAlgo((prev) => ({ ...prev, [activeAlgoId]: preset.id }));
-    setInputError('');
-    setStepIdx(0);
+  const handleStepBack = () => {
     setIsPlaying(false);
+    setStepIdx((prev) => Math.max(0, prev - 1));
   };
 
-  const handleResetDefault = () => {
-    const def = cloneInput(algorithm.getDefaultInput());
-    setInputsByAlgo((prev) => ({ ...prev, [activeAlgoId]: def }));
-    setDraftsByAlgo((prev) => ({ ...prev, [activeAlgoId]: inputToDraft(def) }));
-    setActivePresetByAlgo((prev) => ({
-      ...prev,
-      [activeAlgoId]: SCHEDULING_PRESETS?.[activeAlgoId]?.[0]?.id ?? null,
-    }));
-    setInputError('');
-    setStepIdx(0);
+  const handleStepForward = () => {
     setIsPlaying(false);
+    setStepIdx((prev) => Math.min(steps.length - 1, prev + 1));
+  };
+
+  const handleRestart = () => {
+    setIsPlaying(false);
+    setStepIdx(0);
+  };
+
+  const handleJumpToEnd = () => {
+    setIsPlaying(false);
+    setStepIdx(Math.max(0, steps.length - 1));
+  };
+
+  const handleScrub = (idx) => {
+    setIsPlaying(false);
+    setStepIdx(idx);
   };
 
   const codeByLang = useMemo(() => {
-    const raw = algorithm.codeSnippets ?? {};
+    if (!scheduler.codeSnippets) return null;
     return Object.fromEntries(
-      Object.entries(raw).map(([k, lines]) => [
-        k,
-        Array.isArray(lines) ? lines.join('\n') : String(lines),
-      ]),
+      Object.entries(scheduler.codeSnippets).map(([key, lines]) => [key, lines.join('\n')]),
     );
-  }, [algorithm]);
+  }, [scheduler]);
 
-  const activeCodeLine = currentStep?.codeLines?.[lang] ?? currentStep?.codeLine ?? -1;
-  const explanation = algorithm.explanation ?? {};
+  const activeLine = activeStep?.codeLines?.[lang] ?? activeStep?.codeLine ?? -1;
+  const metrics = sched?.metrics ?? {
+    avgWaiting: 0,
+    avgTurnaround: 0,
+    avgResponse: 0,
+    cpuUtilization: 0,
+    throughput: 0,
+    contextSwitches: 0,
+    totalTime: 0,
+    busyTime: 0,
+  };
+  const explanation = scheduler.explanation;
+  const narration = activeStep ? stepText(activeStep) : '';
+  const phaseKey = sched?.phase ?? 'init';
+
   const showPriorityCol = activeAlgoId === 'priority';
   const showQueueCol = activeAlgoId === 'mlq';
 
-  const cpuDisplay = sched?.runningPid
-    ? sched.runningPid
-    : (phaseKey === 'idle' ? t('telemetry.idle') : t('telemetry.none'));
-
   return (
-    <div className="sched-workbench animate-in">
-      {/* ── Left Scrollable Control Rail ── */}
-      <aside className="sched-controls-pane" aria-label={t('controls.workload')}>
-        <header className="sched-pane-header">
-          <h1>{t('title')}</h1>
-          <p>{t('subtitle')}</p>
-        </header>
+    <div className="sched-page">
+      {/* Header matching Sorting page rhythm */}
+      <header className="sched-header">
+        <div className="sched-header-title">
+          <h2>{t(`algos.${activeAlgoId}.fullName`)}</h2>
+          <span className="sched-header-desc">{t(`algos.${activeAlgoId}.shortDesc`)}</span>
+        </div>
 
-        {/* 1. Algorithm Selector */}
-        <section className="sched-control-section">
-          <h2 className="sched-section-label">{t('controls.algorithm')}</h2>
-          <div className="sched-algo-grid" role="tablist" aria-label={t('controls.algorithm')}>
-            {SCHED_ALGORITHMS.map((algo) => {
-              const isSelected = algo.id === activeAlgoId;
-              return (
-                <button
-                  key={algo.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={isSelected}
-                  className={`sched-algo-btn${isSelected ? ' is-active' : ''}`}
-                  onClick={() => handleSelectAlgo(algo.id)}
-                  title={t(`algos.${algo.id}.fullName`)}
-                >
-                  <span className="sched-algo-btn-name">{t(`algos.${algo.id}.name`)}</span>
-                  <span className="sched-algo-btn-sub">{t(`algos.${algo.id}.fullName`)}</span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
+        <div className="sched-header-narration" aria-live="polite" aria-atomic="true">
+          <span className={`sched-phase-pill sched-phase-pill--${phaseKey}`}>
+            {t(`phases.${phaseKey}`)}
+          </span>
+          <span className="sched-narration-text">{narration}</span>
+          {sched?.formulaHint && (
+            <code className="sched-formula-chip ltr-keep">{sched.formulaHint}</code>
+          )}
+        </div>
+      </header>
 
-        {/* 2. Lecture Presets */}
-        {activePresets.length > 0 && (
-          <section className="sched-control-section">
-            <h2 className="sched-section-label">{t('controls.presets')}</h2>
-            <div className="sched-preset-list">
-              {activePresets.map((preset) => {
-                const isSelected = activePresetId === preset.id;
-                const key = resolvePresetKey(preset.labelKey);
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    className={`sched-preset-btn${isSelected ? ' is-active' : ''}`}
-                    aria-pressed={isSelected}
-                    onClick={() => handleLoadPreset(preset)}
-                  >
-                    {t(key, { defaultValue: preset.id })}
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-        )}
-
-        {/* 3. Algorithm-specific options + Process Table Form */}
-        <section className="sched-control-section">
-          <form className="sched-workload-form" onSubmit={handleApplyWorkload}>
-            {(activeAlgoId === 'round-robin' || activeAlgoId === 'mlq') && (
-              <div className="sched-option-block">
-                <label className="sched-field">
-                  <span>{t('controls.quantum')}</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={30}
-                    step={1}
-                    className="ltr-keep"
-                    value={activeDraft.quantum}
-                    onChange={(e) => {
-                      setInputError('');
-                      updateDraft((d) => ({ ...d, quantum: e.target.value }));
-                    }}
-                  />
-                  <small className="sched-field-hint">{t('controls.quantumHint')}</small>
-                </label>
-              </div>
-            )}
-
-            {activeAlgoId === 'mlfq' && (
-              <div className="sched-option-block">
-                <div className="sched-inline-fields">
-                  <label className="sched-field">
-                    <span>{t('controls.mlfqQ0')}</span>
-                    <input
-                      type="number"
-                      min={1}
-                      max={30}
-                      step={1}
-                      className="ltr-keep"
-                      value={activeDraft.mlfqQ0}
-                      onChange={(e) => {
-                        setInputError('');
-                        updateDraft((d) => ({ ...d, mlfqQ0: e.target.value }));
-                      }}
-                    />
-                  </label>
-                  <label className="sched-field">
-                    <span>{t('controls.mlfqQ1')}</span>
-                    <input
-                      type="number"
-                      min={1}
-                      max={30}
-                      step={1}
-                      className="ltr-keep"
-                      value={activeDraft.mlfqQ1}
-                      onChange={(e) => {
-                        setInputError('');
-                        updateDraft((d) => ({ ...d, mlfqQ1: e.target.value }));
-                      }}
-                    />
-                  </label>
-                </div>
-                <small className="sched-field-hint">{t('controls.mlfqQ2Note')}</small>
-              </div>
-            )}
-
-            {activeAlgoId === 'priority' && (
-              <div className="sched-option-block">
-                <span className="sched-sub-label">{t('controls.priorityMode')}</span>
-                <div className="sched-segmented" role="group" aria-label={t('controls.priorityMode')}>
-                  <button
-                    type="button"
-                    aria-pressed={!activeDraft.preemptive}
-                    className={`sched-seg-btn${!activeDraft.preemptive ? ' is-active' : ''}`}
-                    onClick={() => handleTogglePriorityMode(false)}
-                  >
-                    {t('controls.nonPreemptive')}
-                  </button>
-                  <button
-                    type="button"
-                    aria-pressed={activeDraft.preemptive}
-                    className={`sched-seg-btn${activeDraft.preemptive ? ' is-active' : ''}`}
-                    onClick={() => handleTogglePriorityMode(true)}
-                  >
-                    {t('controls.preemptive')}
-                  </button>
-                </div>
-                <small className="sched-field-hint">{t('controls.priorityHint')}</small>
-              </div>
-            )}
-
-            {/* Process Table Editor */}
-            <div className="sched-section-row">
-              <h2 className="sched-section-label">{t('controls.workload')}</h2>
-              <span className="sched-step-badge ltr-keep">
-                {t('controls.workloadCount', { count: activeDraft.processes.length })}
-              </span>
-            </div>
-
-            <div className="sched-editor-table-wrap ltr-keep">
-              <div
-                className={`sched-editor-grid sched-editor-head${
-                  showPriorityCol || showQueueCol ? ' has-extra' : ''
-                }`}
+      {/* Single Clean Horizontal Control Bar (no second sidebar!) */}
+      <section className="sched-toolbar" aria-label={t('controls.algorithm')}>
+        {/* Row 1: 7 Scheduler Tabs */}
+        <div className="sched-algo-tabs" role="tablist" aria-label={t('controls.algorithm')}>
+          {SCHEDULER_IDS.map((id) => {
+            const isActive = id === activeAlgoId;
+            return (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                className={`sched-algo-tab${isActive ? ' is-active' : ''}`}
+                onClick={() => handleSelectAlgo(id)}
               >
-                <span>{t('controls.colPid')}</span>
-                <span>{t('controls.colArrival')}</span>
-                <span>{t('controls.colBurst')}</span>
-                {showPriorityCol && <span>{t('controls.colPriority')}</span>}
-                {showQueueCol && <span>{t('controls.colQueue')}</span>}
-                <span aria-hidden="true" />
-              </div>
+                {t(`algos.${id}.name`)}
+              </button>
+            );
+          })}
+        </div>
 
-              <div className="sched-editor-rows">
-                {activeDraft.processes.map((row, idx) => (
-                  <div
-                    key={row.pid}
-                    className={`sched-editor-grid sched-editor-row${
-                      showPriorityCol || showQueueCol ? ' has-extra' : ''
-                    }`}
-                  >
-                    <span className="sched-editor-pid">{row.pid}</span>
-                    <input
-                      type="number"
-                      min={0}
-                      step={1}
-                      aria-label={`${row.pid} ${t('table.arrival')}`}
-                      value={row.arrival}
-                      onChange={(e) => handleProcessFieldChange(idx, 'arrival', e.target.value)}
-                    />
-                    <input
-                      type="number"
-                      min={1}
-                      max={100}
-                      step={1}
-                      aria-label={`${row.pid} ${t('table.burst')}`}
-                      value={row.burst}
-                      onChange={(e) => handleProcessFieldChange(idx, 'burst', e.target.value)}
-                    />
-                    {showPriorityCol && (
-                      <input
-                        type="number"
-                        min={1}
-                        step={1}
-                        aria-label={`${row.pid} ${t('table.priority')}`}
-                        value={row.priority}
-                        onChange={(e) => handleProcessFieldChange(idx, 'priority', e.target.value)}
-                      />
-                    )}
-                    {showQueueCol && (
-                      <select
-                        aria-label={`${row.pid} ${t('table.queue')}`}
-                        value={row.queue}
-                        onChange={(e) => handleProcessFieldChange(idx, 'queue', e.target.value)}
-                      >
-                        <option value="0">{t('controls.queueFg')}</option>
-                        <option value="1">{t('controls.queueBg')}</option>
-                      </select>
-                    )}
-                    <button
-                      type="button"
-                      className="sched-row-remove"
-                      aria-label={t('controls.removeProcess', { pid: row.pid })}
-                      aria-disabled={activeDraft.processes.length <= 1}
-                      onClick={() => handleRemoveProcess(idx)}
-                      title={t('controls.removeProcess', { pid: row.pid })}
-                    >
-                      <Trash2 size={13} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
+        {/* Row 2: Playback + Random + Inline Options + Edit Processes */}
+        <div className="sched-toolbar-controls">
+          <div className="sched-ctrl-cluster">
             <button
               type="button"
-              className="btn sched-add-btn"
-              aria-disabled={activeDraft.processes.length >= MAX_PROCESSES}
-              onClick={handleAddProcess}
-            >
-              <Plus size={14} />
-              {t('controls.addProcess')}
-            </button>
-
-            {inputError && (
-              <p className="sched-error-msg" role="alert">{inputError}</p>
-            )}
-
-            <div className="sched-form-actions">
-              <button type="submit" className="btn primary">
-                {t('controls.applyWorkload')}
-              </button>
-              <button type="button" className="btn" onClick={handleResetDefault}>
-                <RotateCcw size={14} />
-                {t('controls.resetDefault')}
-              </button>
-            </div>
-          </form>
-        </section>
-
-        {/* 4. Playback Controls */}
-        <section className="sched-control-section">
-          <div className="sched-section-row">
-            <h2 className="sched-section-label">{t('controls.playback')}</h2>
-            <span className="sched-step-badge ltr-keep">
-              {t('controls.stepCounter', { current: safeIdx + 1, total: steps.length })}
-            </span>
-          </div>
-
-          <div className="sched-playback-bar">
-            <button
-              type="button"
-              className="btn sched-icon-btn"
-              onClick={() => { setIsPlaying(false); setStepIdx(0); }}
+              className="sched-icon-btn"
+              onClick={handleRestart}
               aria-label={t('controls.restart')}
               title={t('controls.restart')}
             >
@@ -664,162 +472,340 @@ export default function CpuScheduling() {
             </button>
             <button
               type="button"
-              className="btn sched-icon-btn"
-              onClick={() => { setIsPlaying(false); setStepIdx((p) => Math.max(0, p - 1)); }}
+              className="sched-icon-btn"
+              onClick={handleStepBack}
+              aria-disabled={safeStepIdx <= 0}
               aria-label={t('controls.stepBack')}
-              aria-disabled={safeIdx <= 0}
               title={t('controls.stepBack')}
             >
               <SkipBack size={15} />
             </button>
             <button
               type="button"
-              className="btn primary sched-play-btn"
-              onClick={() => {
-                if (safeIdx >= steps.length - 1) setStepIdx(0);
-                setIsPlaying((p) => !p);
-              }}
+              className="sched-btn sched-btn--primary"
+              onClick={handlePlayPause}
             >
               {isPlaying ? <Pause size={15} /> : <Play size={15} />}
-              {isPlaying ? t('controls.pause') : t('controls.play')}
+              <span>{isPlaying ? t('controls.pause') : t('controls.play')}</span>
             </button>
             <button
               type="button"
-              className="btn sched-icon-btn"
-              onClick={() => { setIsPlaying(false); setStepIdx((p) => Math.min(steps.length - 1, p + 1)); }}
+              className="sched-icon-btn"
+              onClick={handleStepForward}
+              aria-disabled={safeStepIdx >= steps.length - 1}
               aria-label={t('controls.stepForward')}
-              aria-disabled={safeIdx >= steps.length - 1}
               title={t('controls.stepForward')}
             >
               <SkipForward size={15} />
             </button>
             <button
               type="button"
-              className="btn sched-icon-btn"
-              onClick={() => { setIsPlaying(false); setStepIdx(Math.max(0, steps.length - 1)); }}
+              className="sched-icon-btn"
+              onClick={handleJumpToEnd}
+              aria-disabled={safeStepIdx >= steps.length - 1}
               aria-label={t('controls.jumpToEnd')}
-              aria-disabled={safeIdx >= steps.length - 1}
               title={t('controls.jumpToEnd')}
             >
-              <ChevronsRight size={15} />
+              <FastForward size={15} />
+            </button>
+
+            <label className="sched-speed-inline">
+              <span>{t('controls.speed')}</span>
+              <input
+                type="range"
+                min={1}
+                max={10}
+                value={speed}
+                onChange={(e) => setSpeed(Number(e.target.value))}
+              />
+              <span className="ltr-keep">{speed}x</span>
+            </label>
+          </div>
+
+          <div className="sched-ctrl-divider" aria-hidden="true" />
+
+          <div className="sched-ctrl-cluster">
+            <button
+              type="button"
+              className="sched-btn sched-btn--accent"
+              onClick={() => handleGenerateRandom()}
+            >
+              <Shuffle size={15} />
+              <span>{t('controls.generateRandom')}</span>
+            </button>
+
+            <label className="sched-inline-field">
+              <span>{t('controls.processCount')}</span>
+              <select
+                className="sched-select"
+                value={processCount}
+                onChange={(e) => handleProcessCountChange(Number(e.target.value))}
+              >
+                {PROCESS_COUNTS.map((cnt) => (
+                  <option key={cnt} value={cnt}>{cnt}</option>
+                ))}
+              </select>
+            </label>
+
+            {(activeAlgoId === 'round-robin' || activeAlgoId === 'mlq') && (
+              <label className="sched-inline-field">
+                <span>{t('controls.quantum')}</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={30}
+                  step={1}
+                  className="sched-num-input ltr-keep"
+                  value={activeDraft.quantum}
+                  onChange={(e) => handleInlineQuantumChange(e.target.value)}
+                />
+              </label>
+            )}
+
+            {activeAlgoId === 'mlfq' && (
+              <>
+                <label className="sched-inline-field">
+                  <span>{t('controls.mlfqQ0')}</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={30}
+                    step={1}
+                    className="sched-num-input ltr-keep"
+                    value={activeDraft.mlfqQ0}
+                    onChange={(e) => handleInlineMlfqChange('mlfqQ0', e.target.value)}
+                  />
+                </label>
+                <label className="sched-inline-field">
+                  <span>{t('controls.mlfqQ1')}</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={30}
+                    step={1}
+                    className="sched-num-input ltr-keep"
+                    value={activeDraft.mlfqQ1}
+                    onChange={(e) => handleInlineMlfqChange('mlfqQ1', e.target.value)}
+                  />
+                </label>
+              </>
+            )}
+
+            {activeAlgoId === 'priority' && (
+              <div className="sched-seg-inline" role="group" aria-label={t('controls.priorityMode')}>
+                <button
+                  type="button"
+                  className={`sched-seg-btn${!activeInput.preemptive ? ' is-active' : ''}`}
+                  aria-pressed={!activeInput.preemptive}
+                  onClick={() => handleTogglePreemptive(false)}
+                >
+                  {t('controls.nonPreemptive')}
+                </button>
+                <button
+                  type="button"
+                  className={`sched-seg-btn${activeInput.preemptive ? ' is-active' : ''}`}
+                  aria-pressed={Boolean(activeInput.preemptive)}
+                  onClick={() => handleTogglePreemptive(true)}
+                >
+                  {t('controls.preemptive')}
+                </button>
+              </div>
+            )}
+
+            <button
+              type="button"
+              className={`sched-btn${showEditor ? ' is-active' : ''}`}
+              aria-expanded={showEditor}
+              onClick={() => setShowEditor((prev) => !prev)}
+            >
+              {showEditor ? <X size={15} /> : <SlidersHorizontal size={15} />}
+              <span>{showEditor ? t('controls.closeEditor') : t('controls.editWorkload')}</span>
             </button>
           </div>
+        </div>
 
-          <div className="sched-scrubber-wrap">
-            <input
-              type="range"
-              min={0}
-              max={Math.max(0, steps.length - 1)}
-              value={safeIdx}
-              aria-label={t('controls.playback')}
-              onChange={(e) => {
-                setIsPlaying(false);
-                setStepIdx(Number(e.target.value));
-              }}
-            />
-          </div>
-
-          <label className="sched-speed-row">
-            <span>{t('controls.speed')}</span>
-            <input
-              type="range"
-              min={1}
-              max={10}
-              value={speed}
-              onChange={(e) => setSpeed(Number(e.target.value))}
-            />
-            <span className="sched-speed-val ltr-keep">{speed}×</span>
-          </label>
-        </section>
-      </aside>
-
-      {/* ── Right Workbench Stage ── */}
-      <main className="sched-stage-pane">
-        <div className="sched-stage-card">
-          {/* 1. Flush Inline Telemetry Bar */}
-          <div className="sched-telemetry-bar">
-            <div className="sched-telemetry-cell">
-              <span className="sched-telemetry-key">{t('telemetry.clock')}</span>
-              <strong className="sched-telemetry-val sched-telemetry-val--accent ltr-keep">
-                t = {sched?.time ?? 0}
-              </strong>
-            </div>
-            <div className="sched-telemetry-cell">
-              <span className="sched-telemetry-key">{t('telemetry.cpu')}</span>
-              <strong className="sched-telemetry-val ltr-keep">{cpuDisplay}</strong>
-            </div>
-            <div className="sched-telemetry-cell">
-              <span className="sched-telemetry-key">{t('telemetry.avgWaiting')}</span>
-              <strong className="sched-telemetry-val sched-telemetry-val--emerald ltr-keep">
-                {fmtMetric(metrics.avgWaiting)}
-              </strong>
-            </div>
-            <div className="sched-telemetry-cell">
-              <span className="sched-telemetry-key">{t('telemetry.avgTurnaround')}</span>
-              <strong className="sched-telemetry-val ltr-keep">
-                {fmtMetric(metrics.avgTurnaround)}
-              </strong>
-            </div>
-            <div className="sched-telemetry-cell">
-              <span className="sched-telemetry-key">{t('telemetry.avgResponse')}</span>
-              <strong className="sched-telemetry-val ltr-keep">
-                {fmtMetric(metrics.avgResponse)}
-              </strong>
-            </div>
-            <div className="sched-telemetry-cell">
-              <span className="sched-telemetry-key">{t('telemetry.cpuUtil')}</span>
-              <strong className="sched-telemetry-val ltr-keep">
-                {fmtMetric(metrics.cpuUtilization, '%')}
-              </strong>
-            </div>
-            <div className="sched-telemetry-cell">
-              <span className="sched-telemetry-key">{t('telemetry.throughput')}</span>
-              <strong className="sched-telemetry-val ltr-keep">
-                {fmtMetric(metrics.throughput)}
-              </strong>
-            </div>
-            <div className="sched-telemetry-cell">
-              <span className="sched-telemetry-key">{t('telemetry.contextSwitches')}</span>
-              <strong className="sched-telemetry-val ltr-keep">
-                {fmtMetric(metrics.contextSwitches)}
-              </strong>
-            </div>
-          </div>
-
-          {/* 2. Step Narration & Formula Bar */}
-          <div className="sched-narration-bar">
-            <div className="sched-narration-main">
-              <span className={`sched-phase-pill sched-phase-pill--${phaseKey}`}>
-                {t(`phases.${phaseKey}`, { defaultValue: phaseKey })}
+        {/* Optional Collapsible Custom Process Editor */}
+        {showEditor && (
+          <form className="sched-editor-drawer" onSubmit={handleApplyWorkload} noValidate>
+            <div className="sched-editor-head">
+              <strong>{t('controls.workload')}</strong>
+              <span className="sched-editor-count ltr-keep">
+                {t('controls.workloadCount', { count: activeDraft.rows.length })}
               </span>
-              <p className="sched-narration-text" aria-live="polite">
-                {stepText(currentStep)}
-              </p>
+              {activeAlgoId === 'priority' && (
+                <span className="sched-editor-note">{t('controls.priorityHint')}</span>
+              )}
+              {activeAlgoId === 'mlfq' && (
+                <span className="sched-editor-note">{t('controls.mlfqQ2Note')}</span>
+              )}
             </div>
-            {sched?.formulaHint && (
-              <code className="sched-formula-hint ltr-keep">{sched.formulaHint}</code>
+
+            <div className="sched-editor-chips ltr-keep">
+              {activeDraft.rows.map((row, idx) => (
+                <div key={`${row.pid}-${idx}`} className="sched-editor-card">
+                  <div className="sched-editor-card-top">
+                    <span className="sched-editor-pid">{row.pid}</span>
+                    <button
+                      type="button"
+                      className="sched-row-remove"
+                      onClick={() => handleRemoveProcess(idx)}
+                      aria-label={t('controls.removeProcess', { pid: row.pid })}
+                      aria-disabled={activeDraft.rows.length <= 1}
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+
+                  <div className="sched-editor-fields">
+                    <label>
+                      <span>{t('controls.colArrival')}</span>
+                      <input
+                        type="number"
+                        min={0}
+                        max={200}
+                        step={1}
+                        className="sched-cell-input"
+                        value={row.arrival}
+                        onChange={(e) => handleRowFieldChange(idx, 'arrival', e.target.value)}
+                      />
+                    </label>
+                    <label>
+                      <span>{t('controls.colBurst')}</span>
+                      <input
+                        type="number"
+                        min={1}
+                        max={100}
+                        step={1}
+                        className="sched-cell-input"
+                        value={row.burst}
+                        onChange={(e) => handleRowFieldChange(idx, 'burst', e.target.value)}
+                      />
+                    </label>
+                    {showPriorityCol && (
+                      <label>
+                        <span>{t('controls.colPriority')}</span>
+                        <input
+                          type="number"
+                          min={1}
+                          max={20}
+                          step={1}
+                          className="sched-cell-input"
+                          value={row.priority}
+                          onChange={(e) => handleRowFieldChange(idx, 'priority', e.target.value)}
+                        />
+                      </label>
+                    )}
+                    {showQueueCol && (
+                      <label>
+                        <span>{t('controls.colQueue')}</span>
+                        <select
+                          className="sched-cell-input"
+                          value={row.queue}
+                          onChange={(e) => handleRowFieldChange(idx, 'queue', Number(e.target.value))}
+                        >
+                          <option value={0}>{t('controls.queueFg')}</option>
+                          <option value={1}>{t('controls.queueBg')}</option>
+                        </select>
+                      </label>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {inputError && (
+              <p className="sched-error-msg" role="alert">{inputError}</p>
             )}
+
+            <div className="sched-editor-footer">
+              <button
+                type="button"
+                className="sched-btn"
+                onClick={handleAddProcess}
+                aria-disabled={activeDraft.rows.length >= MAX_PROCESSES}
+              >
+                <Plus size={14} />
+                <span>{t('controls.addProcess')}</span>
+              </button>
+              <button type="submit" className="sched-btn sched-btn--primary">
+                {t('controls.applyWorkload')}
+              </button>
+            </div>
+          </form>
+        )}
+      </section>
+
+      {/* Main Two-Column Split — Left Hero Visualizations, Right Independent Side Panel */}
+      <div className="sched-workspace">
+        {/* LEFT COLUMN: Telemetry + Gantt Chart + Ready Queues + Process Trace Table */}
+        <main className="sched-viz-col">
+          {/* Compact Inline Telemetry Strip */}
+          <div className="sched-telemetry-bar" aria-label={t('title')}>
+            <div className="sched-metric">
+              <span className="sched-metric-label">{t('telemetry.clock')}</span>
+              <strong className="sched-metric-value ltr-keep">t = {sched?.time ?? 0}</strong>
+            </div>
+            <div className="sched-metric">
+              <span className="sched-metric-label">{t('telemetry.cpu')}</span>
+              <strong className={`sched-metric-value ltr-keep${sched?.runningPid ? ' is-accent' : ''}`}>
+                {sched?.runningPid ?? (phaseKey === 'idle' ? t('telemetry.idle') : t('telemetry.none'))}
+              </strong>
+            </div>
+            <div className="sched-metric">
+              <span className="sched-metric-label">{t('telemetry.avgWaiting')}</span>
+              <strong className="sched-metric-value is-good ltr-keep">
+                {formatMetric(metrics.avgWaiting)}
+              </strong>
+            </div>
+            <div className="sched-metric">
+              <span className="sched-metric-label">{t('telemetry.avgTurnaround')}</span>
+              <strong className="sched-metric-value ltr-keep">
+                {formatMetric(metrics.avgTurnaround)}
+              </strong>
+            </div>
+            <div className="sched-metric">
+              <span className="sched-metric-label">{t('telemetry.avgResponse')}</span>
+              <strong className="sched-metric-value ltr-keep">
+                {formatMetric(metrics.avgResponse)}
+              </strong>
+            </div>
+            <div className="sched-metric">
+              <span className="sched-metric-label">{t('telemetry.cpuUtil')}</span>
+              <strong className="sched-metric-value ltr-keep">
+                {formatMetric(metrics.cpuUtilization, '%')}
+              </strong>
+            </div>
+            <div className="sched-metric">
+              <span className="sched-metric-label">{t('telemetry.contextSwitches')}</span>
+              <strong className="sched-metric-value ltr-keep">
+                {metrics.contextSwitches}
+              </strong>
+            </div>
           </div>
 
-          {/* 3. Focal Element — Gantt Chart */}
+          {/* Hero Gantt Chart — Always Visible From t = 0 */}
           <GanttChartView
             gantt={sched?.gantt ?? []}
+            fullGantt={fullGantt}
             runningPid={sched?.runningPid ?? null}
             currentTime={sched?.time ?? 0}
             algoId={activeAlgoId}
+            stepIdx={safeStepIdx}
+            totalSteps={steps.length}
+            onScrub={handleScrub}
           />
 
-          {/* 4. Live CPU & Ready Queue(s) */}
+          {/* Active CPU & Ready Queue(s) */}
           <ReadyQueueView
-            readyQueues={sched?.readyQueues ?? []}
             runningPid={sched?.runningPid ?? null}
             activeQueueLevel={sched?.activeQueueLevel ?? null}
+            readyQueues={sched?.readyQueues ?? []}
             processes={sched?.processes ?? []}
-            algoId={activeAlgoId}
             phase={phaseKey}
+            algoId={activeAlgoId}
           />
 
-          {/* 5. Per-Process Tracing Table */}
+          {/* Per-Process Trace Table */}
           <ProcessTraceTable
             processes={sched?.processes ?? []}
             highlightPid={sched?.highlightPid ?? null}
@@ -827,40 +813,21 @@ export default function CpuScheduling() {
             metrics={metrics}
             algoId={activeAlgoId}
           />
-        </div>
+        </main>
 
-        {/* 6. Bottom Code Tracing + Explanation & Deterministic Evaluation Grid */}
-        <div className="sched-bottom-grid">
-          {/* Left: 5-Language Live Code Tracing (expanded by default on desktop) */}
-          <div className="sched-code-column">
-            <button
-              type="button"
-              className="sched-code-toggle"
-              aria-expanded={showCode}
-              onClick={() => setShowCode((v) => !v)}
-            >
-              <span className="sched-code-toggle-left">
-                <Code2 size={16} />
-                {showCode ? t('controls.hideCode') : t('controls.showCode')}
-              </span>
-              {showCode ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </button>
-
-            {showCode && (
-              <div className="sched-code-pane">
-                <CodePanel
-                  codeByLang={codeByLang}
-                  codeSnippet={codeByLang?.[lang] || ''}
-                  activeLine={activeCodeLine}
-                  lang={lang}
-                  setLang={setLang}
-                />
-              </div>
-            )}
+        {/* RIGHT COLUMN: Code Tracing + Independent Overview/Compare Tabs */}
+        <aside className="sched-side-col">
+          <div className="sched-code-card">
+            <CodePanel
+              codeByLang={codeByLang}
+              codeSnippet={codeByLang?.[lang] || ''}
+              activeLine={activeLine}
+              lang={lang}
+              setLang={setLang}
+            />
           </div>
 
-          {/* Right: Explanation + Complexity & Deterministic Evaluation */}
-          <section className="sched-info-column" aria-label={t('panel.overviewTab')}>
+          <section className="sched-card sched-info-card">
             <div className="sched-info-tabs" role="tablist">
               <button
                 type="button"
@@ -870,7 +837,7 @@ export default function CpuScheduling() {
                 onClick={() => setInfoTab('overview')}
               >
                 <BookOpen size={14} />
-                {t('panel.overviewTab')}
+                <span>{t('panel.overviewTab')}</span>
               </button>
               <button
                 type="button"
@@ -880,76 +847,63 @@ export default function CpuScheduling() {
                 onClick={() => setInfoTab('compare')}
               >
                 <BarChart3 size={14} />
-                {t('panel.compareTab')}
+                <span>{t('panel.compareTab')}</span>
               </button>
             </div>
 
             {infoTab === 'overview' ? (
               <div className="sched-overview-body">
-                <div className="sched-explain-card">
-                  <h3>{explanation.title || t(`algos.${activeAlgoId}.fullName`)}</h3>
-                  <p className="sched-explain-summary">
-                    {explanation.summary
-                      || (explanation.body ? String(explanation.body).replace(/<[^>]*>/g, '') : t(`algos.${activeAlgoId}.shortDesc`))}
-                  </p>
+                {explanation && (
+                  <>
+                    <p className="sched-overview-summary">{explanation.summary}</p>
 
-                  {Array.isArray(explanation.formulas) && explanation.formulas.length > 0 && (
-                    <div className="sched-explain-block">
-                      <h4>{t('panel.formulas')}</h4>
-                      <div className="sched-formula-list ltr-keep">
-                        {explanation.formulas.map((formula, idx) => (
-                          <code key={idx} className="sched-formula-chip">{formula}</code>
-                        ))}
+                    {explanation.formulas?.length > 0 && (
+                      <div className="sched-overview-block">
+                        <h4>{t('panel.formulas')}</h4>
+                        <div className="sched-formula-list ltr-keep">
+                          {explanation.formulas.map((f) => (
+                            <code key={f} className="sched-formula-item">{f}</code>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {Array.isArray(explanation.keyPoints) && explanation.keyPoints.length > 0 && (
-                    <div className="sched-explain-block">
-                      <h4>{t('panel.keyPoints')}</h4>
-                      <ul className="sched-bullet-list">
-                        {explanation.keyPoints.map((pt, idx) => (
-                          <li key={idx}>{pt}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                    {explanation.keyPoints?.length > 0 && (
+                      <div className="sched-overview-block">
+                        <h4>{t('panel.keyPoints')}</h4>
+                        <ul className="sched-overview-list">
+                          {explanation.keyPoints.map((pt) => (
+                            <li key={pt}>{pt}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
-                  {((Array.isArray(explanation.pros) && explanation.pros.length > 0)
-                    || (Array.isArray(explanation.cons) && explanation.cons.length > 0)) && (
-                    <div className="sched-tradeoffs-grid">
-                      {Array.isArray(explanation.pros) && explanation.pros.length > 0 && (
-                        <div className="sched-tradeoff-col sched-tradeoff-col--pro">
-                          <h4>
-                            <CheckCircle2 size={13} aria-hidden="true" />
-                            {t('panel.pros')}
-                          </h4>
-                          <ul>
-                            {explanation.pros.map((item, idx) => (
-                              <li key={idx}>{item}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      {Array.isArray(explanation.cons) && explanation.cons.length > 0 && (
-                        <div className="sched-tradeoff-col sched-tradeoff-col--con">
-                          <h4>
-                            <AlertTriangle size={13} aria-hidden="true" />
-                            {t('panel.cons')}
-                          </h4>
-                          <ul>
-                            {explanation.cons.map((item, idx) => (
-                              <li key={idx}>{item}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
+                    {(explanation.pros?.length > 0 || explanation.cons?.length > 0) && (
+                      <div className="sched-procon-grid">
+                        {explanation.pros?.length > 0 && (
+                          <div className="sched-procon-col sched-procon-col--pro">
+                            <h4>{t('panel.pros')}</h4>
+                            <ul>
+                              {explanation.pros.map((item) => <li key={item}>{item}</li>)}
+                            </ul>
+                          </div>
+                        )}
+                        {explanation.cons?.length > 0 && (
+                          <div className="sched-procon-col sched-procon-col--con">
+                            <h4>{t('panel.cons')}</h4>
+                            <ul>
+                              {explanation.cons.map((item) => <li key={item}>{item}</li>)}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
 
                 <div className="sched-complexity-wrap">
-                  <ComplexityPanel complexity={algorithm.complexity} />
+                  <ComplexityPanel complexity={scheduler.complexity} algoId={activeAlgoId} />
                 </div>
               </div>
             ) : (
@@ -959,12 +913,11 @@ export default function CpuScheduling() {
                 preemptive={Boolean(activeInput.preemptive)}
                 activeAlgoId={activeAlgoId}
                 onSelectAlgo={handleSelectAlgo}
-                compareFn={compareSchedulersOnWorkload}
               />
             )}
           </section>
-        </div>
-      </main>
+        </aside>
+      </div>
     </div>
   );
 }

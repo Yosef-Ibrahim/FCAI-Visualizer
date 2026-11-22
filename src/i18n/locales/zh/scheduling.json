@@ -57,6 +57,10 @@
   "controls": {
     "algorithm": "调度算法",
     "presets": "课堂预设",
+    "generateRandom": "随机生成",
+    "processCount": "进程数",
+    "editWorkload": "编辑进程",
+    "closeEditor": "收起编辑",
     "options": "调度参数",
     "quantum": "时间片 (q)",
     "quantumHint": "1 到 30 之间的整数",
@@ -121,6 +125,7 @@
     "empty": "点击“下一步”或“播放”以执行第一个 CPU 时间片。",
     "idleLabel": "空闲",
     "totalSpan": "总时长：{{time}}",
+    "progress": "t = {{current}} / {{total}}",
     "ariaLabel": "CPU 调度甘特图",
     "sliceTooltip": "{{pid}}：t = {{start}} 至 {{end}}（时长 {{duration}}）"
   },

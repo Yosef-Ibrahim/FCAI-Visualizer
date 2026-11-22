@@ -402,6 +402,43 @@ export function sameLine(line) {
   return { js: line, python: line, cpp: line, java: line, csharp: line };
 }
 
+function randInt(min, max, rng = Math.random) {
+  return Math.floor(rng() * (max - min + 1)) + min;
+}
+
+export function generateRandomWorkload(algoId = 'fcfs', count = 4, options = {}) {
+  const rng = typeof options.rng === 'function' ? options.rng : Math.random;
+  const safeCount = Math.min(MAX_PROCESSES, Math.max(2, Math.floor(Number(count) || 4)));
+  const isMlfq = algoId === 'mlfq';
+  const isMlq = algoId === 'mlq';
+
+  let arrival = 0;
+  const processes = [];
+  for (let i = 0; i < safeCount; i += 1) {
+    if (i > 0) {
+      arrival += randInt(0, 3, rng);
+    }
+    const burst = isMlfq
+      ? (i === 0 ? randInt(16, 28, rng) : randInt(3, 18, rng))
+      : randInt(2, 12, rng);
+    const priority = randInt(1, Math.max(4, safeCount), rng);
+    let queue = 0;
+    if (isMlq) {
+      if (i === 0) queue = 0;
+      else if (i === 1) queue = 1;
+      else queue = randInt(0, 1, rng);
+    }
+    processes.push(makeProc(`P${i + 1}`, arrival, burst, priority, queue));
+  }
+
+  return {
+    processes,
+    quantum: options.quantum ?? 4,
+    preemptive: Boolean(options.preemptive),
+    mlfqQuanta: options.mlfqQuanta ?? [8, 16],
+  };
+}
+
 export function createSchedStep({
   msg,
   msgKey,

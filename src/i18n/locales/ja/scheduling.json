@@ -57,6 +57,10 @@
   "controls": {
     "algorithm": "スケジューラ",
     "presets": "講義プリセット",
+    "generateRandom": "ランダム生成",
+    "processCount": "プロセス数",
+    "editWorkload": "プロセス編集",
+    "closeEditor": "編集を閉じる",
     "options": "スケジューラ設定",
     "quantum": "タイムクォンタム (q)",
     "quantumHint": "1〜30 の整数で指定",
@@ -121,6 +125,7 @@
     "empty": "「1 ステップ進む」または「再生」を押して最初の CPU スライスを実行します。",
     "idleLabel": "IDLE",
     "totalSpan": "合計時間: {{time}}",
+    "progress": "t = {{current}} / {{total}}",
     "ariaLabel": "CPU スケジューリング ガントチャート",
     "sliceTooltip": "{{pid}}: t = {{start}} 〜 {{end}}（期間 {{duration}}）"
   },
