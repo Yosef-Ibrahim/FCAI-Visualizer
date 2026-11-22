@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { initTreeVisualizer } from '../../algorithms/trees/treeVisualizer';
+import DataStructureCodePanel from './DataStructureCodePanel';
 import '../../styles/TreeVisualizer.css';
 
 export default function TreeVisualizerPage({ fixedType }) {
@@ -20,5 +21,11 @@ export default function TreeVisualizerPage({ fixedType }) {
     };
   }, [treeType]);
 
-  return <div ref={containerRef} className="tree-page tree-page--course" />;
+  const structure = treeType === 'rbt' ? 'red-black-tree' : treeType;
+  return (
+    <div>
+      <div ref={containerRef} className="tree-page tree-page--course" />
+      <DataStructureCodePanel structure={structure} />
+    </div>
+  );
 }

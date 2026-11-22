@@ -551,6 +551,24 @@ export const HASH_CODE_SNIPPETS = Object.freeze({
   double: makeOpenAddressingSnippets('double'),
 });
 
+function getHashJavaSnippet(strategy, op) {
+  if (op === 'insert') return strategy === 'chaining'
+    ? 'boolean insert(List<Integer>[] buckets, int key, int m) {\n    int idx = ((key % m) + m) % m;\n    if (buckets[idx].contains(key)) return false;\n    buckets[idx].add(key);\n    return true;\n}'
+    : 'boolean insert(Integer[] slots, int key, int m) {\n    int h1 = ((key % m) + m) % m;\n    for (int i = 0; i < m; i++) {\n        int idx = (h1 + i) % m;\n        if (slots[idx] == null) { slots[idx] = key; return true; }\n    }\n    return false;\n}';
+  if (op === 'search') return 'boolean search(List<Integer>[] buckets, int key, int m) {\n    int idx = ((key % m) + m) % m;\n    return buckets[idx].contains(key);\n}';
+  if (op === 'delete') return 'boolean deleteKey(List<Integer>[] buckets, int key, int m) {\n    int idx = ((key % m) + m) % m;\n    return buckets[idx].remove(Integer.valueOf(key));\n}';
+  return 'void rehash(List<Integer>[] fresh, List<Integer>[] old, int m) {\n    for (var bucket : old)\n        for (int key : bucket)\n            fresh[((key % m) + m) % m].add(key);\n}';
+}
+
+function getHashCSharpSnippet(strategy, op) {
+  if (op === 'insert') return strategy === 'chaining'
+    ? 'bool Insert(List<int>[] buckets, int key, int m) {\n    int idx = ((key % m) + m) % m;\n    if (buckets[idx].Contains(key)) return false;\n    buckets[idx].Add(key);\n    return true;\n}'
+    : 'bool Insert(int?[] slots, int key, int m) {\n    int h1 = ((key % m) + m) % m;\n    for (int i = 0; i < m; i++) {\n        int idx = (h1 + i) % m;\n        if (slots[idx] is null) { slots[idx] = key; return true; }\n    }\n    return false;\n}';
+  if (op === 'search') return 'bool Search(List<int>[] buckets, int key, int m) {\n    int idx = ((key % m) + m) % m;\n    return buckets[idx].Contains(key);\n}';
+  if (op === 'delete') return 'bool DeleteKey(List<int>[] buckets, int key, int m) {\n    int idx = ((key % m) + m) % m;\n    return buckets[idx].Remove(key);\n}';
+  return 'void Rehash(List<int>[] fresh, List<int>[] old, int m) {\n    foreach (var bucket in old)\n        foreach (int key in bucket)\n            fresh[((key % m) + m) % m].Add(key);\n}';
+}
+
 /** Convenience helper returning joined code strings for `CodePanel`. */
 export function getHashCodeByLang(strategy, op) {
   const safeStrategy = HASH_STRATEGIES.includes(strategy) ? strategy : 'linear';
@@ -560,6 +578,8 @@ export function getHashCodeByLang(strategy, op) {
     js: entry.js.join('\n'),
     python: entry.python.join('\n'),
     cpp: entry.cpp.join('\n'),
+    java: getHashJavaSnippet(safeStrategy, safeOp),
+    csharp: getHashCSharpSnippet(safeStrategy, safeOp),
   };
 }
 

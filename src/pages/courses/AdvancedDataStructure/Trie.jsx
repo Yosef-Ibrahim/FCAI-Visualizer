@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pause, Play, RotateCcw, Search, SkipBack, SkipForward, Sparkles, Trash2 } from 'lucide-react';
 import { Trie } from '../../../algorithms/trees/Trie';
 import { useT } from '../../../hooks/useT';
+import DataStructureCodePanel from '../../../components/shared/DataStructureCodePanel';
 import '../../../styles/TrieVisualizer.css';
 
 const STEP_DELAYS = [1800, 1000, 380];
@@ -439,6 +440,7 @@ export default function TrieVisualizer() {
           </div>
         </footer>
       </section>
+      <DataStructureCodePanel structure="trie" />
     </div>
   );
 }

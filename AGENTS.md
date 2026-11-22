@@ -277,3 +277,22 @@ existing pattern exactly:
   canvas transform on resize, and disconnect observers/listeners in destroy().
 - Run npm run verify and inspect desktop, tablet, and mobile layouts before
   claiming responsive behaviour is verified.
+
+## Advanced data-structure code walkthroughs
+
+- Multi-language walkthrough snippets are kept in
+  `src/data/advancedDataStructureCodeSnippets.js` and re-exported through the
+  existing `codeSnippets` map in `src/data/algorithmData.js`.
+- Covered structures include BST, AVL, Binary Tree, Red-Black Tree, B-Tree,
+  Trie, Suffix Trie, Suffix Tree, Suffix Array, and Hash Table.
+- Each structure exposes readable JavaScript, Python, C++, Java, and C#
+  examples for core operations or traversals. Hash-table snippets are also
+  generated in `src/algorithms/dataStructures/HashTable.js`, including Java
+  and C# variants for the existing CodePanel integration.
+- `src/components/shared/DataStructureCodePanel.jsx` is the shared UI adapter:
+  it reads persisted language state through `useLang` and renders existing
+  `CodePanel` tabs. It is used by tree, B-Tree, Trie, and suffix visualizers;
+  `TreeVisualizerPage` also selects the matching BST, AVL, or Red-Black snippet.
+- The implementation remains data-driven and reuses the existing language-tab,
+  persistence, and visualizer conventions instead of changing application
+  architecture or moving algorithm logic into React components.

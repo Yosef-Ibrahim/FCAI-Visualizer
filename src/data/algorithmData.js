@@ -4,6 +4,7 @@ import {
   dpGreedyAlgoNames,
   dpGreedyCodeSnippets,
 } from './algorithmDesignData';
+import { advancedDataStructureCodeSnippets } from './advancedDataStructureCodeSnippets';
 
 export const complexity = {
   // ── Sorting: best / avg / worst / space ──
@@ -27,6 +28,13 @@ export const complexity = {
   'doubly-ll':   {access:'O(n)',    search:'O(n)',      insert:'O(1)',       delete:'O(1)',    space:'O(n)',  note:'Delete at known node O(1) · Bidirectional traversal'},
   'circular-ll': {access:'O(n)',    search:'O(n)',      insert:'O(1)',       delete:'O(n)',    space:'O(n)',  note:'Last node points to head · Useful for round-robin'},
   'ordered-ll':  {access:'O(n)',    search:'O(n)',      insert:'O(n)',       delete:'O(n)',    space:'O(n)',  note:'Always sorted · Insert scans to find position'},
+  'hash-table':  {access:'O(1)',    search:'O(1)',      insert:'O(1)',       delete:'O(1)',    space:'O(n)',  note:'Average-case hash operations · Collision strategy determines worst case'},
+  'red-black-tree': {access:'O(log n)',search:'O(log n)',insert:'O(log n)',delete:'O(log n)',space:'O(n)',note:'Self-balancing BST · Black-height invariant'},
+  'b-tree':      {access:'O(log n)',search:'O(log n)',  insert:'O(log n)',   delete:'O(log n)',space:'O(n)', note:'Multi-way search tree · Optimized for block storage'},
+  trie:          {access:'O(L)',    search:'O(L)',      insert:'O(L)',       delete:'O(L)',    space:'O(ALPHABET × nodes)', note:'L = key length'},
+  'suffix-trie': {access:'O(m)',    search:'O(m)',      insert:'O(n²)',      delete:'O(n)',    space:'O(n²)', note:'m = pattern length · n = text length'},
+  'suffix-tree': {access:'O(m)',    search:'O(m)',      insert:'O(n)',       delete:'O(n)',    space:'O(n)', note:'Compressed suffix trie · m = pattern length'},
+  'suffix-array':{access:'O(m log n)',search:'O(m log n)',insert:'O(n log n)',delete:'O(n)',space:'O(n)',note:'Sorted suffix indices · m = pattern length'},
   // ── Trees: access / search / insert / delete / space ──
   bst:           {access:'O(log n)',search:'O(log n)',  insert:'O(log n)',   delete:'O(log n)',space:'O(n)', note:'Balanced: O(log n) · Skewed (worst): O(n)'},
   avl:           {access:'O(log n)',search:'O(log n)',  insert:'O(log n)',   delete:'O(log n)',space:'O(n)', note:'Self-balancing BST · Rotations keep height O(log n)'},
@@ -74,6 +82,8 @@ export const algoNames = {
   'singly-ll':'Singly Linked List', 'doubly-ll':'Doubly Linked List',
   'circular-ll':'Circular Linked List', 'ordered-ll':'Ordered Linked List',
   bst:'Binary Search Tree', avl:'AVL Tree', 'heap-tree':'Heap Tree', 'binary-tree':'Binary Tree Traversal',
+  'hash-table':'Hash Table', 'red-black-tree':'Red-Black Tree', 'b-tree':'B-Tree',
+  trie:'Trie', 'suffix-trie':'Suffix Trie', 'suffix-tree':'Suffix Tree', 'suffix-array':'Suffix Array',
   bfs:'Breadth-First Search', dfs:'Depth-First Search', dijkstra:'Dijkstra Shortest Path',
   prim:'Prim — Minimum Spanning Tree', kruskal:'Kruskal — Minimum Spanning Tree',
   compare:'Algorithm Comparison',
@@ -1231,5 +1241,6 @@ export const codeSnippets = {
       '}',
     ],
   },
+  ...advancedDataStructureCodeSnippets,
   ...dpGreedyCodeSnippets,
 };

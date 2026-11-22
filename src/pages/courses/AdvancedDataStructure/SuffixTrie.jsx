@@ -19,6 +19,7 @@ import IndexedTextStrip from '../../../components/shared/IndexedTextStrip';
 import SvgCameraViewport from '../../../components/shared/SvgCameraViewport';
 import { useT } from '../../../hooks/useT';
 import { stepText } from '../../../i18n/stepText';
+import DataStructureCodePanel from '../../../components/shared/DataStructureCodePanel';
 import '../../../styles/SuffixVisualizer.css';
 
 const STEP_DELAYS = [1400, 750, 280];
@@ -590,6 +591,7 @@ export default function SuffixTriePage() {
           </span>
         </div>
       </section>
+      <DataStructureCodePanel structure="suffix-trie" />
     </div>
   );
 }
