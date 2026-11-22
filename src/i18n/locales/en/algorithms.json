@@ -33,5 +33,12 @@
   "activity-selection": { "name": "Activity Selection" },
   "fractional-knapsack": { "name": "Fractional Knapsack" },
   "greedy-coin-change": { "name": "Greedy Coin Change" },
+  "fcfs": { "name": "First-Come, First-Served (FCFS)" },
+  "sjf": { "name": "Shortest-Job-First (SJF)" },
+  "srtf": { "name": "Shortest-Remaining-Time-First (SRTF)" },
+  "priority": { "name": "Priority Scheduling" },
+  "round-robin": { "name": "Round Robin (RR)" },
+  "mlq": { "name": "Multilevel Queue (MLQ)" },
+  "mlfq": { "name": "Multilevel Feedback Queue (MLFQ)" },
   "compare": { "name": "Algorithm Comparison" }
 }

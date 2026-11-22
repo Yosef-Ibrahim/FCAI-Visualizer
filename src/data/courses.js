@@ -1,6 +1,7 @@
 import {
   Binary,
   Compass,
+  Cpu,
   FileArchive,
   GitBranch,
   Grid3x3,
@@ -191,6 +192,26 @@ export const algorithmDesignCourse = {
       route: '/courses/algorithms/greedy',
       icon: Zap,
       tags: ['Activity selection', 'Fractional knapsack', 'Counterexamples'],
+    },
+  ],
+};
+
+export const operatingSystemsCourse = {
+  id: 'operating-systems',
+  title: 'Operating Systems',
+  eyebrow: 'Systems course',
+  description: 'Explore how the OS kernel allocates CPU time across processes through interactive Gantt charts, ready queues, and live code tracing.',
+  icon: Cpu,
+  color: 'coral',
+  lessonCount: 1,
+  topics: [
+    {
+      id: 'cpu-scheduling',
+      title: 'CPU Scheduling',
+      description: 'Trace FCFS, SJF, SRTF, Priority, Round Robin, MLQ, and MLFQ with Gantt charts, metrics, and 5-language code tracing.',
+      route: '/courses/operating-systems/cpu-scheduling',
+      icon: Cpu,
+      tags: ['7 schedulers', 'Gantt & queues', 'Code tracing'],
     },
   ],
 };

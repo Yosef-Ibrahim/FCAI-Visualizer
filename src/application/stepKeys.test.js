@@ -39,7 +39,7 @@ const compressionSteps = () => [
 beforeAll(async () => {
   // The locale bundles are loaded lazily by i18next — wait for them, otherwise
   // every lookup would fall back to the raw key.
-  await i18n.loadNamespaces(['steps', 'catalog', 'hashing', 'suffix', 'dp', 'greedy']);
+  await i18n.loadNamespaces(['steps', 'catalog', 'hashing', 'suffix', 'dp', 'greedy', 'scheduling']);
 });
 
 describe('translation keys used by the algorithms', () => {

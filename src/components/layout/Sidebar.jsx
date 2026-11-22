@@ -5,6 +5,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Compass,
+  Cpu,
   FileArchive,
   GitBranch,
   Grid3x3,
@@ -67,6 +68,14 @@ const COURSE_LINKS = [
     children: [
       { key: 'dynamic-programming', to: '/courses/algorithms/dynamic-programming', icon: Grid3x3 },
       { key: 'greedy', to: '/courses/algorithms/greedy', icon: Zap },
+    ],
+  },
+  {
+    key: 'operating-systems',
+    to: '/courses/operating-systems',
+    icon: Cpu,
+    children: [
+      { key: 'cpu-scheduling', to: '/courses/operating-systems/cpu-scheduling', icon: Cpu },
     ],
   },
   {

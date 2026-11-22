@@ -6,6 +6,7 @@ import {
   algorithmDesignCourse,
   dataStructureCourse,
   informationTheoryCourse,
+  operatingSystemsCourse,
 } from '../data/courses';
 import { useT } from '../hooks/useT';
 import '../styles/CourseCatalog.css';
@@ -78,6 +79,7 @@ export default function Home() {
           <CourseCard course={dataStructureCourse} to="/courses/data-structure" />
           <CourseCard course={advancedDataStructureCourse} to="/courses/advanced-data-structure" />
           <CourseCard course={algorithmDesignCourse} to="/courses/algorithms" />
+          <CourseCard course={operatingSystemsCourse} to="/courses/operating-systems" />
           <CourseCard course={informationTheoryCourse} to="/courses/information-theory-compression" />
         </div>
       </section>
