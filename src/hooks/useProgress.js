@@ -9,6 +9,7 @@ const DEFAULT_PROGRESS = {
     trees: { total: 0, correct: 0, streak: 0, difficulty: 'easy' },
     graphs: { total: 0, correct: 0, streak: 0, difficulty: 'easy' },
   },
+  mastery: {},
   history: [],
   settings: {
     soundEnabled: true,
@@ -41,14 +42,22 @@ export function useProgress() {
     }
   }, [progress]);
 
-  const recordAnswer = useCallback((topic, isCorrect, difficulty) => {
+  const recordAnswer = useCallback((topic, isCorrect, difficulty, questionId) => {
     setProgress((prev) => {
       const topicScore = prev.scores[topic] || { total: 0, correct: 0, streak: 0, difficulty: 'easy' };
       const newStreak = isCorrect ? topicScore.streak + 1 : 0;
       const newDifficulty = calculateNewDifficulty(topicScore.difficulty, isCorrect, newStreak);
-      
+      const topicMastery = prev.mastery?.[topic] || {};
+      const previousMastery = questionId ? topicMastery[questionId] || {
+        attempts: 0,
+        correct: 0,
+        incorrect: 0,
+        streak: 0,
+        difficulty,
+      } : null;
+
       const newHistory = [
-        { topic, isCorrect, difficulty, timestamp: Date.now() },
+        { topic, questionId, isCorrect, difficulty, timestamp: Date.now() },
         ...prev.history.slice(0, 49),
       ];
 
@@ -63,6 +72,20 @@ export function useProgress() {
             difficulty: newDifficulty,
           },
         },
+        mastery: questionId ? {
+          ...prev.mastery,
+          [topic]: {
+            ...topicMastery,
+            [questionId]: {
+              ...previousMastery,
+              attempts: previousMastery.attempts + 1,
+              correct: previousMastery.correct + (isCorrect ? 1 : 0),
+              incorrect: previousMastery.incorrect + (isCorrect ? 0 : 1),
+              streak: isCorrect ? previousMastery.streak + 1 : 0,
+              difficulty,
+            },
+          },
+        } : prev.mastery,
         history: newHistory,
       };
     });

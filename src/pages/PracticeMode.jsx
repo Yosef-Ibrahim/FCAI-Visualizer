@@ -1,95 +1,83 @@
 import { useState, useCallback } from 'react';
-import QuizPanel from '../components/ai/QuizPanel';
-import TracePanel from '../components/ai/TracePanel';
-import ScoreBoard from '../components/ai/ScoreBoard';
+import { RotateCcw } from 'lucide-react';
+import QuizPanel from '../components/practice/QuizPanel';
+import ScoreBoard from '../components/practice/ScoreBoard';
+import { buildPracticeSession } from '../application/quiz/BuildPracticeSessionUseCase';
+import { questionRepository } from '../application/quiz/QuestionRepository';
 import { useProgress } from '../hooks/useProgress';
 import { useT } from '../hooks/useT';
 import '../styles/Training.css';
 
 const TOPICS = {
-  sorting: { icon: '⊞' },
-  searching: { icon: '⌕' },
-  trees: { icon: '⬡' },
-  graphs: { icon: '◇' },
+  sorting: { icon: '⊞', course: 'Data Structures' },
+  searching: { icon: '⌕', course: 'Data Structures' },
+  graphs: { icon: '◇', course: 'Data Structures' },
+  trees: { icon: '⬡', course: 'Advanced Data Structures' },
 };
-
-const TOPIC_COLORS = {
-  sorting: { bg: 'rgba(108, 99, 255, 0.15)', border: '#6c63ff', text: '#6c63ff' },
-  searching: { bg: 'rgba(255, 101, 132, 0.15)', border: '#ff6584', text: '#ff6584' },
-  trees: { bg: 'rgba(67, 217, 173, 0.15)', border: '#43d9ad', text: '#43d9ad' },
-  graphs: { bg: 'rgba(247, 197, 159, 0.15)', border: '#f7c59f', text: '#f7c59f' },
-};
-
-const MODES = [
-  { id: 'quiz', icon: '⊕' },
-  { id: 'trace', icon: '⟳', comingSoon: true },
-];
 
 export default function PracticeMode() {
   const t = useT('practice');
-  const [selectedMode, setSelectedMode] = useState(null);
-  const [selectedTopic, setSelectedTopic] = useState('sorting');
-  const [showTopicSelect, setShowTopicSelect] = useState(true);
-  const { progress, recordAnswer, getDifficulty, getStats, resetProgress } = useProgress();
-
+  const [selectedTopic, setSelectedTopic] = useState(null);
+  const [session, setSession] = useState(null);
+  const { progress, recordAnswer, getStats, resetProgress } = useProgress();
   const stats = getStats();
 
-  const handleStart = (modeId) => {
-    if (modeId === 'trace') return;
-    setSelectedMode(modeId);
-    setShowTopicSelect(true);
-  };
+  const startSession = useCallback((topicId) => {
+    const questions = questionRepository.getQuestions(topicId);
+    const topicStats = progress.scores[topicId];
+    const recentIds = progress.history
+      .filter((item) => item.topic === topicId && item.questionId)
+      .slice(0, 10)
+      .map((item) => item.questionId);
 
-  const handleTopicSelect = () => {
-    setShowTopicSelect(false);
-  };
+    setSelectedTopic(topicId);
+    setSession(buildPracticeSession({
+      questions,
+      stats: topicStats,
+      mastery: progress.mastery?.[topicId],
+      recentIds,
+    }));
+  }, [progress]);
 
-  const handleBack = () => {
-    if (!showTopicSelect) {
-      setShowTopicSelect(true);
-    } else {
-      setSelectedMode(null);
-    }
-  };
-
-  const handleComplete = useCallback((topic, isCorrect) => {
-    recordAnswer(topic, isCorrect, 'medium');
+  const handleAnswer = useCallback((topic, isCorrect, question) => {
+    recordAnswer(topic, isCorrect, question?.difficulty || 'medium', question?.id);
   }, [recordAnswer]);
 
-  if (!selectedMode) {
+  if (session) {
     return (
       <div className="training-page">
-        <header className="training-header">
-          <h1 className="training-title">
-            {t('title')}
-          </h1>
-          <p className="training-subtitle">
-            {t('subtitle')}
-          </p>
-        </header>
+        <button className="btn btn-outline practice-back" onClick={() => setSession(null)}>
+          ← {t('backToMenu')}
+        </button>
+        <div className="stage-heading">
+          <p className="eyebrow">{TOPICS[selectedTopic].course}</p>
+          <h1>{TOPICS[selectedTopic].icon} {t(`topics.${selectedTopic}`)} Practice</h1>
+          <p>Ten questions selected from this topic. Missed questions will return more often in future sessions.</p>
+        </div>
+        <QuizPanel
+          topic={selectedTopic}
+          sessionQuestions={session}
+          onComplete={handleAnswer}
+          onSessionComplete={() => setSession(null)}
+        />
+      </div>
+    );
+  }
 
-        <ScoreBoard stats={stats} onClear={resetProgress} />
-
-        <div className="training-grid">
-          {MODES.map((mode, index) => (
-            <button
-              key={mode.id}
-              type="button"
-              className={`training-card ${mode.comingSoon ? 'coming-soon' : ''}`}
-              onClick={() => { if (mode.comingSoon) return; handleStart(mode.id); }}
-              aria-disabled={mode.comingSoon || undefined}
-              data-label={mode.comingSoon ? t('comingSoon') : undefined}
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <span className="training-card-icon">
-                {mode.icon}
-              </span>
-              <span className="training-card-title">{t(`modes.${mode.id}.title`)}</span>
-              <span className="training-card-desc">
-                {t(`modes.${mode.id}.description`)}
-              </span>
-            </button>
-          ))}
+  if (selectedTopic) {
+    const count = questionRepository.getQuestions(selectedTopic).length;
+    return (
+      <div className="training-page">
+        <button className="btn btn-outline practice-back" onClick={() => setSelectedTopic(null)}>
+          ← {t('backToMenu')}
+        </button>
+        <div className="session-start-card">
+          <p className="eyebrow">{TOPICS[selectedTopic].course}</p>
+          <h1>{TOPICS[selectedTopic].icon} {t(`topics.${selectedTopic}`)}</h1>
+          <p>{count} reviewed questions are available now. Each session contains up to 10 questions and never asks you to choose an artificial question type.</p>
+          <button className="btn btn-primary" onClick={() => startSession(selectedTopic)}>
+            Start Practice
+          </button>
         </div>
       </div>
     );
@@ -97,94 +85,29 @@ export default function PracticeMode() {
 
   return (
     <div className="training-page">
-      <button
-        className="btn btn-outline"
-        onClick={handleBack}
-        style={{ marginBottom: '1.5rem' }}
-      >
-        <span className="rtl-flip" aria-hidden="true">←</span> {t('backToMenu')}
-      </button>
-
-
-
-      {showTopicSelect ? (
-        <div style={{
-          textAlign: 'center',
-          maxWidth: '600px',
-          margin: '0 auto',
-          padding: '2rem'
-        }}>
-          <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>
-            {t('selectTopic')}
-          </h2>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-            gap: '1rem'
-          }}>
-            {Object.entries(TOPICS).map(([topicId, topicInfo]) => {
-              const color = TOPIC_COLORS[topicId];
-              const topicProgress = progress.scores[topicId]?.total || 0;
-              return (
-                <button
-                  key={topicId}
-                  onClick={() => {
-                    setSelectedTopic(topicId);
-                    handleTopicSelect();
-                  }}
-                  style={{
-                    padding: '1.5rem 1rem',
-                    background: color.bg,
-                    border: `2px solid ${color.border}`,
-                    borderRadius: '12px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    opacity: 1
-                  }}
-                >
-                  <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
-                    {topicInfo.icon}
-                  </div>
-                  <h3 style={{
-                    color: color.text,
-                    fontWeight: '700',
-                    fontSize: '1.1rem',
-                    margin: '0 0 0.25rem 0'
-                  }}>
-                    {t(`topics.${topicId}`)}
-                  </h3>
-                  <p style={{
-                    color: 'var(--text-muted)',
-                    fontSize: '0.8rem',
-                    margin: 0
-                  }}>
-                    {t('questionsAttempted', { count: topicProgress })}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ) : (
-        <div>
-          <h2 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-            {TOPICS[selectedTopic].icon} {t(`session.${selectedMode}`)}: {t(`topics.${selectedTopic}`)}
-          </h2>
-
-          {selectedMode === 'quiz' ? (
-            <QuizPanel
-              topic={selectedTopic}
-              difficulty={getDifficulty(selectedTopic)}
-              onComplete={(topic, isCorrect) => handleComplete(topic, isCorrect)}
-            />
-          ) : (
-            <TracePanel
-              topic={selectedTopic}
-              onComplete={(topic, isCorrect) => handleComplete(topic, isCorrect)}
-            />
-          )}
-        </div>
-      )}
+      <header className="training-header">
+        <h1 className="training-title">{t('title')}</h1>
+        <p className="training-subtitle">Choose a topic. The practice engine selects the next questions from your progress.</p>
+      </header>
+      <ScoreBoard stats={stats} onClear={resetProgress} />
+      <div className="practice-topic-grid">
+        {Object.entries(TOPICS).map(([id, topic]) => {
+          const count = questionRepository.getQuestions(id).length;
+          return (
+            <button className="practice-topic-card" key={id} onClick={() => setSelectedTopic(id)}>
+              <span className="topic-icon">{topic.icon}</span>
+              <span className="topic-course">{topic.course}</span>
+              <h2>{t(`topics.${id}`)}</h2>
+              <span className="topic-count">{count} reviewed questions</span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="level-card content-coming">
+        <RotateCcw size={22} />
+        <h2>More questions are being prepared</h2>
+        <p>The current bank is organized for safe practice now. It is not being presented as 200 questions yet.</p>
+      </div>
     </div>
   );
 }
