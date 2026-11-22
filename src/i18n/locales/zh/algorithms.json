@@ -33,5 +33,12 @@
   "activity-selection": { "name": "活动选择问题" },
   "fractional-knapsack": { "name": "分数背包问题" },
   "greedy-coin-change": { "name": "贪心硬币找零" },
+  "fcfs": { "name": "先来先服务（FCFS）" },
+  "sjf": { "name": "短作业优先（SJF）" },
+  "srtf": { "name": "最短剩余时间优先（SRTF）" },
+  "priority": { "name": "优先级调度" },
+  "round-robin": { "name": "时间片轮转（RR）" },
+  "mlq": { "name": "多级队列（MLQ）" },
+  "mlfq": { "name": "多级反馈队列（MLFQ）" },
   "compare": { "name": "算法对比" }
 }

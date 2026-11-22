@@ -26,6 +26,8 @@ const ROUTE_TITLE_KEYS = {
   '/courses/algorithms': 'catalog:course.algorithms.title',
   '/courses/algorithms/dynamic-programming': 'catalog:topic.dynamic-programming.title',
   '/courses/algorithms/greedy': 'catalog:topic.greedy.title',
+  '/courses/operating-systems': 'catalog:course.operating-systems.title',
+  '/courses/operating-systems/cpu-scheduling': 'catalog:topic.cpu-scheduling.title',
   '/sorting': 'routes.sorting',
   '/searching': 'routes.searching',
   '/data-structures': 'routes.data-structures',
@@ -43,6 +45,7 @@ const ALGORITHM_SLUGS = new Set([
   'bfs', 'dfs', 'dijkstra', 'prim', 'kruskal',
   'fibonacci-dp', 'knapsack-01', 'lcs', 'coin-change-dp',
   'activity-selection', 'fractional-knapsack', 'greedy-coin-change',
+  'fcfs', 'sjf', 'srtf', 'priority', 'round-robin', 'mlq', 'mlfq',
 ]);
 const TOPIC_SLUGS = new Set(['arrays', 'stacks', 'queues', 'linked-lists']);
 const DS_TYPE_KEYS = {

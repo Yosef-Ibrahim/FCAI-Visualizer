@@ -300,6 +300,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 [data-theme="dark"] .course-overview--violet { --overview-tint: #221d33; }
 [data-theme="dark"] .course-overview--emerald { --overview-tint: #142c27; }
 [data-theme="dark"] .course-card--emerald { --course-color: #5bd0aa; --course-tint: #18372f; }
+[data-theme="dark"] .course-overview--coral { --overview-tint: #2d1b22; }
+[data-theme="dark"] .course-card--coral { --course-color: #ff8490; --course-tint: #351f27; }
 [data-theme="dark"] .topic-card-icon { background: color-mix(in srgb, var(--accent) 13%, var(--surface)); }
 [data-theme="dark"] .topic-card-status { background: color-mix(in srgb, var(--accent3) 14%, var(--surface)); }
 [data-theme="dark"] .topic-card-tags span { color: var(--text-muted); }

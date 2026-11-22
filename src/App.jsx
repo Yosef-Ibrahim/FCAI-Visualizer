@@ -29,6 +29,9 @@ const AlgorithmDesignHome = lazy(() => import('./pages/courses/AlgorithmDesign/A
 const DynamicProgramming = lazy(() => import('./pages/courses/AlgorithmDesign/DynamicProgramming'));
 const GreedyAlgorithms = lazy(() => import('./pages/courses/AlgorithmDesign/GreedyAlgorithms'));
 
+const OperatingSystemsHome = lazy(() => import('./pages/courses/OperatingSystems/OperatingSystemsHome'));
+const CpuScheduling = lazy(() => import('./pages/courses/OperatingSystems/CpuScheduling'));
+
 const InformationTheoryHome = lazy(() => import('./pages/courses/InformationTheoryCompression/InformationTheoryHome'));
 const LosslessCompression = lazy(() => import('./pages/courses/InformationTheoryCompression/LosslessCompression'));
 const LossyCompression = lazy(() => import('./pages/courses/InformationTheoryCompression/LossyCompression'));
@@ -86,6 +89,11 @@ export default function App() {
               <Route path="courses/algorithms/dynamic-programming/:algo" element={<DynamicProgramming />} />
               <Route path="courses/algorithms/greedy" element={<GreedyAlgorithms />} />
               <Route path="courses/algorithms/greedy/:algo" element={<GreedyAlgorithms />} />
+
+              {/* Operating Systems course */}
+              <Route path="courses/operating-systems" element={<OperatingSystemsHome />} />
+              <Route path="courses/operating-systems/cpu-scheduling" element={<CpuScheduling />} />
+              <Route path="courses/operating-systems/cpu-scheduling/:algo" element={<CpuScheduling />} />
 
               {/* Information Theory & Data Compression course */}
               <Route path="courses/information-theory-compression" element={<InformationTheoryHome />} />

@@ -35,6 +35,11 @@
       "eyebrow": "Algorithms course",
       "title": "Algorithm Analysis & Design",
       "description": "Master core problem-solving paradigms by stepping through dynamic programming recurrences and greedy decision rules."
+    },
+    "operating-systems": {
+      "eyebrow": "Systems course",
+      "title": "Operating Systems",
+      "description": "Explore how the OS kernel allocates CPU time across processes through interactive Gantt charts, ready queues, and live code tracing."
     }
   },
   "topic": {
@@ -216,6 +221,15 @@
         "Activity selection",
         "Fractional knapsack",
         "Counterexamples"
+      ]
+    },
+    "cpu-scheduling": {
+      "title": "CPU Scheduling",
+      "description": "Trace FCFS, SJF, SRTF, Priority, Round Robin, MLQ, and MLFQ with Gantt charts, ready queues, metrics, and 5-language code tracing.",
+      "tags": [
+        "7 schedulers",
+        "Gantt & queues",
+        "Code tracing"
       ]
     }
   },

@@ -33,5 +33,12 @@
   "activity-selection": { "name": "活動選択問題" },
   "fractional-knapsack": { "name": "分数ナップサック問題" },
   "greedy-coin-change": { "name": "貪欲コイン問題" },
+  "fcfs": { "name": "先着順スケジューリング（FCFS）" },
+  "sjf": { "name": "最短ジョブ優先（SJF）" },
+  "srtf": { "name": "最短残り時間優先（SRTF）" },
+  "priority": { "name": "優先度スケジューリング" },
+  "round-robin": { "name": "ラウンドロビン（RR）" },
+  "mlq": { "name": "多段階キュー（MLQ）" },
+  "mlfq": { "name": "多段階フィードバックキュー（MLFQ）" },
   "compare": { "name": "アルゴリズム比較" }
 }
