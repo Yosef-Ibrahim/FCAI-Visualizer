@@ -10,6 +10,7 @@ import {
   SCHEDULING_PRESETS,
   normalizeSchedulingInput,
   compareSchedulersOnWorkload,
+  generateRandomWorkload,
 } from './index';
 import {
   schedulingComplexity,
@@ -374,6 +375,33 @@ describe('Step contract, metadata & 5-language codeLines bounds across all 7 sch
         expect(steps[steps.length - 1].sched.phase).toBe('done');
         expect(steps[steps.length - 1].sched.processes.every((p) => p.state === 'done')).toBe(true);
       }
+    }
+  });
+
+  it('generates valid random workloads for every scheduler', () => {
+    const seeded = (() => {
+      let s = 42;
+      return () => {
+        s = (s * 1664525 + 1013904223) % 4294967296;
+        return s / 4294967296;
+      };
+    })();
+
+    for (const scheduler of ALL_SCHEDULERS) {
+      const workload = generateRandomWorkload(scheduler.id, 5, { rng: seeded });
+      expect(workload.processes).toHaveLength(5);
+      expect(workload.processes[0].arrival).toBe(0);
+      for (const proc of workload.processes) {
+        expect(proc.burst).toBeGreaterThanOrEqual(2);
+        expect(proc.priority).toBeGreaterThanOrEqual(1);
+      }
+      if (scheduler.id === 'mlq') {
+        const queues = new Set(workload.processes.map((p) => p.queue));
+        expect(queues.has(0)).toBe(true);
+        expect(queues.has(1)).toBe(true);
+      }
+      const steps = scheduler.generateSteps(workload);
+      expect(steps.length).toBeGreaterThan(2);
     }
   });
 });
