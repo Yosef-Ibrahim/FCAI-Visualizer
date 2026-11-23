@@ -1,8 +1,14 @@
-.contact-dock {
+.contact-dock-root {
   position: fixed;
   z-index: 80;
   inset-inline-end: 16px;
   bottom: 24px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.contact-dock {
   display: flex;
   flex-direction: column;
   gap: 7px;
@@ -19,21 +25,25 @@
   display: grid;
   width: 38px;
   height: 38px;
+  padding: 0;
   place-items: center;
   border: 1px solid transparent;
   border-radius: 10px;
+  background: transparent;
   color: var(--text-muted);
+  cursor: pointer;
   transition: color .18s, background .18s, border-color .18s, transform .18s;
 }
 
-.contact-dock-link:hover {
+.contact-dock-link:hover,
+.contact-dock-link.is-active {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
-  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: color-mix(in srgb, var(--accent) 13%, var(--surface));
   color: var(--accent);
 }
 
-.contact-dock-link::after {
+.contact-dock-link[data-tooltip]::after {
   position: absolute;
   inset-inline-end: calc(100% + 10px);
   top: 50%;
@@ -54,16 +64,223 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, .12);
 }
 
-.contact-dock-link:hover::after,
-.contact-dock-link:focus-visible::after {
+.contact-dock-link[data-tooltip]:hover::after,
+.contact-dock-link[data-tooltip]:focus-visible::after {
   opacity: 1;
   transform: translateY(-50%) translateX(0);
 }
 
+/* ── Team & About Popover ───────────────────────────────────────────────── */
+.contact-about-card {
+  width: min(336px, calc(100vw - 84px));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 15px 16px 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 97%, transparent);
+  box-shadow: 0 18px 44px rgba(15, 32, 52, .22);
+  backdrop-filter: blur(14px);
+  text-align: start;
+  animation: contactCardIn .16s ease-out;
+}
+
+@keyframes contactCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.contact-about-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.contact-about-title {
+  margin: 0;
+  font: 800 15px/1.25 var(--font-head);
+  color: var(--text);
+}
+
+.contact-about-sub {
+  margin: 3px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.contact-about-close {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.contact-about-close:hover {
+  border-color: var(--border);
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.contact-creator-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.contact-creator-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface2);
+}
+
+.contact-creator-avatar {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.contact-creator-avatar--accent {
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+  color: var(--accent);
+}
+
+.contact-creator-avatar--accent3 {
+  background: color-mix(in srgb, var(--accent3) 16%, var(--surface));
+  color: var(--accent3);
+}
+
+.contact-creator-info {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.contact-creator-name {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contact-creator-role {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.contact-creator-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+}
+
+.contact-creator-icon-btn {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-muted);
+  transition: border-color .15s, color .15s;
+}
+
+.contact-creator-icon-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.contact-creator-linkedin {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid color-mix(in srgb, var(--accent) 36%, var(--border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 11%, var(--surface));
+  color: var(--accent);
+  font-size: 11.5px;
+  font-weight: 700;
+  transition: background .15s, border-color .15s;
+}
+
+.contact-creator-linkedin:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+}
+
+.contact-about-footer {
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.contact-about-repo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 650;
+  transition: color .15s;
+}
+
+.contact-about-repo:hover {
+  color: var(--accent);
+}
+
 @media (max-width: 640px) {
-  .contact-dock {
+  .contact-dock-root {
     inset-inline-end: 12px;
     bottom: 14px;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .contact-about-card {
+    width: min(320px, calc(100vw - 24px));
+  }
+
+  .contact-dock {
+    flex-direction: row;
     gap: 4px;
     padding: 5px;
     border-radius: 13px;
@@ -73,11 +290,17 @@
     width: 36px;
     height: 36px;
   }
+
+  .contact-dock-link[data-tooltip]::after {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .contact-dock-link,
-  .contact-dock-link::after {
+  .contact-dock-link::after,
+  .contact-about-card {
     transition: none;
+    animation: none;
   }
 }

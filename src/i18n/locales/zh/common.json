@@ -13,7 +13,16 @@
     "madeBy": "为学习而打造 · 欢迎联系",
     "source": "GitHub 仓库",
     "sourceLabel": "打开 GitHub 源代码和问题反馈",
-    "sourceAction": "查看源码 / 提交问题"
+    "sourceAction": "查看源码 / 提交问题",
+    "about": "关于与团队",
+    "aboutLabel": "打开团队与作者主页",
+    "teamTitle": "关于与团队",
+    "teamSubtitle": "为 FCAI-CU 学生打造的可视化算法学习平台。",
+    "closeAbout": "关闭团队面板",
+    "roleCreator": "创建者",
+    "roleTeam": "网站团队",
+    "linkedinCreator": "打开 {{name}} 的 LinkedIn 主页",
+    "emailCreator": "给 {{name}} 发送邮件"
   },
   "header": {
     "eyebrow": "FCAI-CU · 学习平台",

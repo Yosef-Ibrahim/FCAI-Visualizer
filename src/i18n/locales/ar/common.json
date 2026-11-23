@@ -13,7 +13,16 @@
     "madeBy": "صُمّم للتعلّم · يسعدني تواصلك",
     "source": "مستودع GitHub",
     "sourceLabel": "فتح الكود المصدري أو الإبلاغ عن مشكلة",
-    "sourceAction": "عرض السورس كود أو إرسال Issue"
+    "sourceAction": "عرض السورس كود أو إرسال Issue",
+    "about": "عن الفريق",
+    "aboutLabel": "عرض فريق العمل وملفات المطوّرين",
+    "teamTitle": "عن المشروع والفريق",
+    "teamSubtitle": "صُمّم لطلاب حاسبات وذكاء اصطناعي القاهرة لتعلّم الخوارزميات بصريًا.",
+    "closeAbout": "إغلاق نافذة الفريق",
+    "roleCreator": "المؤسّس",
+    "roleTeam": "فريق الموقع",
+    "linkedinCreator": "فتح ملف {{name}} على لينكدإن",
+    "emailCreator": "إرسال بريد إلكتروني إلى {{name}}"
   },
   "header": {
     "eyebrow": "FCAI-CU · منصّة تعليمية",
