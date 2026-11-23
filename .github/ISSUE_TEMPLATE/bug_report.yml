@@ -1,0 +1,39 @@
+name: Bug report
+description: Report something broken or behaving unexpectedly.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for helping improve FCAI Visualizer. Include enough detail to reproduce the issue."
+  - type: input
+    id: page
+    attributes:
+      label: Page or visualizer
+      placeholder: "e.g. AVL Tree, Array, Practice"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What did you click or enter?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and browser
+      placeholder: "e.g. Windows 11, Chrome"

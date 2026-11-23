@@ -24,12 +24,22 @@
     "advanced-data-structure": {
       "eyebrow": "Advanced course",
       "title": "Advanced Data Structure",
-      "description": "Study tree structures that organize hierarchical data and keep operations efficient as collections grow."
+      "description": "Study hierarchical and prefix-based structures that keep data organized as collections grow."
     },
     "information-theory-compression": {
       "eyebrow": "Information theory course",
       "title": "Information Theory & Data Compression",
       "description": "Explore how information is represented efficiently through lossless and lossy compression, with interactive algorithm visualizations."
+    },
+    "algorithms": {
+      "eyebrow": "Algorithms course",
+      "title": "Algorithm Analysis & Design",
+      "description": "Master core problem-solving paradigms by stepping through dynamic programming recurrences and greedy decision rules."
+    },
+    "operating-systems": {
+      "eyebrow": "Systems course",
+      "title": "Operating Systems",
+      "description": "Explore how the OS kernel allocates CPU time across processes through interactive Gantt charts, ready queues, and live code tracing."
     }
   },
   "topic": {
@@ -123,6 +133,24 @@
         "Balancing"
       ]
     },
+    "b-tree": {
+      "title": "B-Tree",
+      "description": "Explore multi-key nodes, promoted split keys, predecessor deletion, borrowing, and merging.",
+      "tags": [
+        "Order 3",
+        "Split & promote",
+        "Delete & rebalance"
+      ]
+    },
+    "trie": {
+      "title": "Trie",
+      "description": "Insert words and watch shared prefixes grow into a searchable character tree.",
+      "tags": [
+        "Prefix tree",
+        "Word insertion",
+        "O(L) lookup"
+      ]
+    },
     "lossless-compression": {
       "title": "Lossless Compression",
       "description": "Compress data without losing information, then reconstruct the original input exactly.",
@@ -140,6 +168,154 @@
         "Linear prediction",
         "DCT + quantization"
       ]
+    },
+    "hashing": {
+      "title": "Hashing",
+      "description": "Map keys into buckets and trace separate chaining, open-addressing probes, tombstones, and rehashing.",
+      "tags": [
+        "Chaining",
+        "Open addressing",
+        "Rehashing"
+      ]
+    },
+    "suffix-trie": {
+      "title": "Suffix Trie",
+      "description": "Index every suffix of a string to trace substring search and occurrence counting.",
+      "tags": [
+        "All suffixes",
+        "Substring search",
+        "O(n²) nodes"
+      ]
+    },
+    "suffix-tree": {
+      "title": "Suffix Tree",
+      "description": "Compress unary chains into labeled edges to shrink suffix storage to linear node count.",
+      "tags": [
+        "Path compression",
+        "Edge labels",
+        "O(n) nodes"
+      ]
+    },
+    "suffix-array": {
+      "title": "Suffix Array",
+      "description": "Sort suffix offsets lexicographically, compute Kasai's LCP array, and binary-search patterns.",
+      "tags": [
+        "Sorted suffixes",
+        "Kasai LCP",
+        "Binary search"
+      ]
+    },
+    "dynamic-programming": {
+      "title": "Dynamic Programming",
+      "description": "Fill 1D and 2D recurrence tables, inspect subproblem dependencies, and trace optimal solutions.",
+      "tags": [
+        "0/1 Knapsack",
+        "LCS",
+        "Coin Change"
+      ]
+    },
+    "greedy": {
+      "title": "Greedy Algorithms",
+      "description": "Apply locally optimal choices to activity selection, fractional knapsack, and coin-change counterexamples.",
+      "tags": [
+        "Activity selection",
+        "Fractional knapsack",
+        "Counterexamples"
+      ]
+    },
+    "cpu-scheduling": {
+      "title": "CPU Scheduling",
+      "description": "Trace FCFS, SJF, SRTF, Priority, Round Robin, MLQ, and MLFQ with Gantt charts, ready queues, metrics, and 5-language code tracing.",
+      "tags": [
+        "7 schedulers",
+        "Gantt & queues",
+        "Code tracing"
+      ]
+    }
+  },
+  "btree": {
+    "controls": "B-Tree controls",
+    "eyebrow": "Multiway search tree",
+    "title": "B-Tree",
+    "description": "Insert, search, and delete integer keys. Follow each comparison, split, promotion, borrow, and merge.",
+    "orderLabel": "B-Tree Order (m): {{order}}",
+    "orderInput": "B-Tree Order (m)",
+    "orderDescription": "m is the maximum children per node (3–10). Nodes hold at most m − 1 keys; non-root nodes hold at least floor((m − 1) / 2), matching the C++ reference.",
+    "orderChangeConfirm": "Changing order from {{order}} to {{nextOrder}} clears the current tree and operation history. Continue?",
+    "maxKeys": "Maximum keys per node",
+    "minKeys": "Minimum keys in non-root nodes",
+    "operationInput": "Integer key",
+    "inputPlaceholder": "Enter an integer",
+    "invalidKey": "Enter a safe whole number.",
+    "insert": "Insert",
+    "search": "Search",
+    "delete": "Delete",
+    "playback": "Step playback",
+    "previous": "Previous step",
+    "play": "Play steps",
+    "pause": "Pause steps",
+    "next": "Next step",
+    "restart": "Restart steps",
+    "stepCount": "Step {{current}} of {{total}}",
+    "ready": "Ready for an operation",
+    "animationSpeed": "Animation speed",
+    "slow": "Slow",
+    "normal": "Normal",
+    "fast": "Fast",
+    "reset": "Reset tree",
+    "operationStatus": "Current operation",
+    "idleMessage": "Enter a key to begin. Duplicate keys are ignored.",
+    "visualization": "B-Tree visualization",
+    "visualizationEyebrow": "Tree structure",
+    "liveStats": "LIVE STATS",
+    "height": "Height",
+    "heightExplanation": "Height is the number of edges on a root-to-leaf path; an empty tree is 0.",
+    "levels": "Levels",
+    "levelsExplanation": "Levels count nodes from the root to a leaf; a single root is 1 level.",
+    "nodes": "Nodes",
+    "keys": "Keys",
+    "depthLegend": "Depth color legend",
+    "depth": "Depth",
+    "depthLevel": "Depth {{level}}",
+    "zoomControls": "Tree zoom controls",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "resetZoom": "Reset zoom",
+    "treeAria": "B-Tree nodes and keys: {{keys}}",
+    "canvasInstructions": "Canvas navigation instructions",
+    "hintZoom": "Scroll to zoom",
+    "hintPan": "Right-click + drag to pan",
+    "hintReset": "Double-click to reset view",
+    "hintInsert": "to insert",
+    "nodeTitle": "Node keys: {{keys}}",
+    "emptyTitle": "The tree is empty",
+    "emptyDescription": "Insert an integer to create the first leaf node.",
+    "canvasHint": "Scroll to zoom or drag to pan. Larger trees can also be scrolled. Levels count nodes from the root (a single root is 1).",
+    "steps": {
+      "rootCreated": "The tree is empty. Create a leaf root containing {{value}}.",
+      "visitInsert": "Compare {{value}} with [{{keys}}] and follow child {{child}}.",
+      "duplicate": "{{value}} is already in the B-Tree. Duplicate keys are ignored.",
+      "insertLeaf": "Insert {{value}} into this leaf in sorted order.",
+      "split": "Node [{{keys}}] overflowed. Split it around {{key}}; the middle key moves up.",
+      "promote": "Promote {{key}} into its parent between the split children.",
+      "rootSplit": "The root split. Create a new root with {{key}}; the tree gains a level.",
+      "insertComplete": "Inserted {{value}}. Every node is back within the B-Tree key limits.",
+      "visitSearch": "Inspect [{{keys}}] for {{value}}.",
+      "childSelected": "The key is not in this node. Follow child {{child}} to continue.",
+      "found": "Found {{value}} in this node.",
+      "notFound": "{{value}} is not in the B-Tree; nothing was changed.",
+      "notFoundEmpty": "The tree is empty, so {{value}} cannot be present.",
+      "visitDelete": "Search for {{value}} in [{{keys}}].",
+      "findPredecessor": "{{value}} is inside an internal node. Find its predecessor, {{predecessor}}, in the left subtree.",
+      "replacePredecessor": "Replace {{value}} with its predecessor {{predecessor}}, then remove the predecessor from the leaf.",
+      "deleteLeaf": "Remove {{value}} from the leaf.",
+      "underflow": "This child has fewer than {{min}} key. Check adjacent siblings for a key to borrow.",
+      "borrowLeft": "Borrow from the left sibling: rotate a parent key down and the sibling's largest key up.",
+      "borrowRight": "Borrow from the right sibling: rotate a parent key down and the sibling's smallest key up.",
+      "merge": "Merge the siblings with separator {{key}} into one node.",
+      "shrinkRoot": "The root became empty. Its only child becomes the new root, reducing the tree height.",
+      "shrinkEmpty": "The last key was deleted. The tree is now empty.",
+      "deleteComplete": "Deleted {{value}}. The B-Tree key limits are restored."
     }
   },
   "compression": {

@@ -7,8 +7,8 @@ export class RadixSort extends SortingAlgorithm {
     super('radix');
   }
 
-  getDefaultInput() {
-    return Array.from({ length: 20 }, () => Math.floor(Math.random() * 900) + 100);
+  getDefaultInput(size = 20) {
+    return Array.from({ length: size }, () => Math.floor(Math.random() * 900) + 100);
   }
 
   generateSteps(input) {

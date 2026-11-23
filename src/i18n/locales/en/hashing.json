@@ -1,0 +1,129 @@
+{
+  "title": "Hash table",
+  "subtitle": "Trace hash functions, collision resolution, probe arcs, tombstones, and rehashing.",
+  "controlsAria": "Hash table controls",
+  "stageAria": "Hash table visualization",
+  "strategies": {
+    "label": "Collision resolution",
+    "chaining": "Separate chaining",
+    "linear": "Linear probing",
+    "quadratic": "Quadratic probing",
+    "double": "Double hashing",
+    "hint": {
+      "chaining": "Each bucket holds a linked chain for colliding keys.",
+      "linear": "Checks consecutive slots: (h(k) + i) mod m.",
+      "quadratic": "Jumps quadratically: (h(k) + i²) mod m.",
+      "double": "Steps by a second hash: (h₁(k) + i · h₂(k)) mod m."
+    }
+  },
+  "tableSize": {
+    "label": "Prime table size (m)",
+    "rehashedBadge": "Expanded to m = {{m}}"
+  },
+  "operations": {
+    "label": "Integer key",
+    "placeholder": "e.g. 23, 0, -5",
+    "insert": "Insert",
+    "search": "Search",
+    "delete": "Delete",
+    "rehash": "Rehash",
+    "rehashTitle": "Expand to next prime ≥ 2m and purge tombstones",
+    "sample": "Sample",
+    "clear": "Clear"
+  },
+  "playback": {
+    "label": "Playback",
+    "start": "Reset to first step",
+    "previous": "Previous step",
+    "play": "Play",
+    "pause": "Pause",
+    "next": "Next step",
+    "end": "Jump to final step",
+    "speed": "Animation speed",
+    "slow": "Slow",
+    "normal": "Normal",
+    "fast": "Fast",
+    "stepCounter": "Step {{current}} / {{total}}",
+    "ready": "Ready",
+    "narrationLabel": "Step trace",
+    "idleMessage": "Insert, search, or delete an integer key—or load a sample—to step through hashing."
+  },
+  "telemetry": {
+    "ariaLabel": "Hash table telemetry",
+    "formula": "Hash",
+    "occupancy": "n / m",
+    "loadFactor": "Load α",
+    "loadWarning": "High load factor (α ≥ 0.70) — consider rehashing",
+    "tombstones": "Tombstones",
+    "collisions": "Collisions",
+    "probes": "Probes"
+  },
+  "stage": {
+    "probePathLabel": "Probe sequence",
+    "slotEmpty": "Empty",
+    "slotDeleted": "DEL",
+    "slotDeletedTitle": "Deleted tombstone slot",
+    "chainNull": "NULL",
+    "bucketAria": "Bucket {{index}}",
+    "slotAriaEmpty": "Slot {{index}}: empty",
+    "slotAriaDeleted": "Slot {{index}}: deleted tombstone",
+    "slotAriaOccupied": "Slot {{index}}: key {{key}}",
+    "legendAria": "Slot state legend",
+    "legendEmpty": "Empty",
+    "legendOccupied": "Occupied",
+    "legendDeleted": "Tombstone (DEL)",
+    "legendActive": "Active probe",
+    "legendTarget": "Inserted / found",
+    "legendCollision": "Collision",
+    "legendChain": "Bucket → linked chain → NULL"
+  },
+  "code": {
+    "toggleOpen": "Hide code walkthrough",
+    "toggleClosed": "Show code walkthrough",
+    "opLabel": "{{strategy}} · {{op}}",
+    "ops": {
+      "insert": "Insert",
+      "search": "Search",
+      "delete": "Delete",
+      "rehash": "Rehash"
+    }
+  },
+  "errors": {
+    "emptyKey": "Enter an integer key first.",
+    "invalidKey": "Enter a valid integer key.",
+    "integerOnly": "Only whole integers (including 0 and negatives) are allowed.",
+    "tableFull": "Table is full. Rehash to expand capacity.",
+    "probeCycle": "Probe sequence cycled without finding an open slot. Rehash to expand."
+  },
+  "steps": {
+    "computeHash": "Compute {{formula}} for key {{key}} — starting at bucket {{index}}.",
+    "duplicateFound": "Key {{key}} is already present at index {{index}}; duplicate insert skipped.",
+    "chainCheckNode": "Bucket {{index}} node {{pos}} holds {{existing}} ≠ {{key}}; continue walking the chain.",
+    "insertChainEmpty": "Bucket {{index}} was empty; inserted key {{key}} as the head node.",
+    "insertChainAppend": "Collision at bucket {{index}}: appended key {{key}} to the chain (length {{length}}).",
+    "probeCollision": "Probe #{{step}}: slot {{index}} is occupied by {{existing}} — collision, probing next slot.",
+    "tombstoneRemember": "Slot {{index}} is a tombstone (DEL) — remembered as first reusable slot while scanning for duplicates.",
+    "tombstoneSkip": "Slot {{index}} is a tombstone (DEL) — keeping slot {{firstIndex}} as target and continuing duplicate check.",
+    "insertEmpty": "Slot {{index}} is empty; inserted key {{key}}.",
+    "insertReuseTombstone": "Reached empty slot {{emptyIndex}} with no duplicate; inserted key {{key}} into remembered tombstone slot {{index}}.",
+    "insertReuseAfterScan": "Finished checking all reachable slots with no duplicate; inserted key {{key}} into tombstone slot {{index}}.",
+    "probeCycle": "Probe sequence repeated slot {{index}} after {{probes}} probes while inserting {{key}} — rehash to expand.",
+    "tableFull": "All {{capacity}} slots are occupied; cannot insert key {{key}}. Rehash to expand.",
+    "searchFoundChain": "Found key {{key}} in bucket {{index}} at chain position {{pos}}.",
+    "searchNotFoundChain": "Reached end of bucket {{index}}; key {{key}} is not in the table.",
+    "searchCycleStop": "Probe sequence repeated slot {{index}}; key {{key}} is not in the table.",
+    "searchEmptyStop": "Slot {{index}} is empty — stop search; key {{key}} is not in the table.",
+    "searchSkipTombstone": "Slot {{index}} is a tombstone (DEL) — skip past it while searching for {{key}}.",
+    "searchFound": "Found key {{key}} at slot {{index}} after {{probes}} probes.",
+    "searchMismatch": "Slot {{index}} holds {{existing}} ≠ {{key}}; continue probing.",
+    "searchExhausted": "Probed all {{capacity}} slots; key {{key}} is not in the table.",
+    "deleteChain": "Unlinked key {{key}} from bucket {{index}}.",
+    "deleteTombstone": "Deleted key {{key}} at slot {{index}} by marking it DELETED (tombstone) to preserve probe chains.",
+    "deleteNotFound": "Key {{key}} was not found; nothing deleted.",
+    "rehashStart": "Rehashing from m = {{oldM}} to prime m = {{newM}}: moving {{count}} active keys and purging {{purged}} tombstones.",
+    "rehashMove": "Re-inserted key {{key}} at index {{index}} ({{formula}}).",
+    "rehashDone": "Rehash complete: {{count}} keys stored in m = {{newM}} slots with 0 tombstones.",
+    "sampleLoaded": "Loaded sample keys [{{keys}}] into table of size m = {{capacity}}.",
+    "cleared": "Cleared hash table (m = {{capacity}})."
+  }
+}

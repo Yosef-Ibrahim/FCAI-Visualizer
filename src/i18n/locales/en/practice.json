@@ -2,8 +2,14 @@
   "title": "Practice Mode",
   "subtitle": "Test your algorithm knowledge",
   "modes": {
-    "quiz": { "title": "Quiz", "description": "Multiple choice questions" },
-    "trace": { "title": "Tracing", "description": "Step-by-step practice" }
+    "quiz": {
+      "title": "Quiz",
+      "description": "Multiple choice questions"
+    },
+    "trace": {
+      "title": "Tracing",
+      "description": "Step-by-step practice"
+    }
   },
   "session": {
     "quiz": "Quiz",
@@ -82,5 +88,10 @@
       "incorrect": "✗ Incorrect",
       "wrongAnswer": "Wrong! Answer: {{answer}}"
     }
+  },
+  "feedback": {
+    "title": "Share feedback",
+    "description": "Suggest an improvement, report a bug, or tell us what would make studying better.",
+    "link": "Share feedback"
   }
 }

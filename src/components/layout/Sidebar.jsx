@@ -4,8 +4,12 @@ import {
   BookOpen,
   ChevronLeft,
   ChevronRight,
+  Compass,
+  Cpu,
   FileArchive,
   GitBranch,
+  Grid3x3,
+  Hash,
   Home,
   Image,
   Layers,
@@ -14,9 +18,11 @@ import {
   Scale,
   Search,
   Sparkles,
+  Table2,
   TreePine,
   Trophy,
   Workflow,
+  Zap,
 } from 'lucide-react';
 import { useT } from '../../hooks/useT';
 import './Sidebar.css';
@@ -37,6 +43,7 @@ const COURSE_LINKS = [
       { key: 'sorting', to: '/courses/data-structure/sorting', icon: ListOrdered },
       { key: 'searching', to: '/courses/data-structure/searching', icon: Search },
       { key: 'graphs', to: '/courses/data-structure/graphs', icon: Network },
+      { key: 'hashing', to: '/courses/data-structure/hashing', icon: Hash },
     ],
   },
   {
@@ -47,6 +54,28 @@ const COURSE_LINKS = [
       { key: 'trees', to: '/courses/advanced-data-structure/trees', icon: TreePine },
       { key: 'avl-tree', to: '/courses/advanced-data-structure/avl-tree', icon: TreePine },
       { key: 'red-black-tree', to: '/courses/advanced-data-structure/red-black-tree', icon: TreePine },
+      { key: 'b-tree', to: '/courses/advanced-data-structure/b-tree', icon: TreePine },
+      { key: 'trie', to: '/courses/advanced-data-structure/trie', icon: TreePine },
+      { key: 'suffix-trie', to: '/courses/advanced-data-structure/suffix-trie', icon: GitBranch },
+      { key: 'suffix-tree', to: '/courses/advanced-data-structure/suffix-tree', icon: GitBranch },
+      { key: 'suffix-array', to: '/courses/advanced-data-structure/suffix-array', icon: Table2 },
+    ],
+  },
+  {
+    key: 'algorithms',
+    to: '/courses/algorithms',
+    icon: Compass,
+    children: [
+      { key: 'dynamic-programming', to: '/courses/algorithms/dynamic-programming', icon: Grid3x3 },
+      { key: 'greedy', to: '/courses/algorithms/greedy', icon: Zap },
+    ],
+  },
+  {
+    key: 'operating-systems',
+    to: '/courses/operating-systems',
+    icon: Cpu,
+    children: [
+      { key: 'cpu-scheduling', to: '/courses/operating-systems/cpu-scheduling', icon: Cpu },
     ],
   },
   {

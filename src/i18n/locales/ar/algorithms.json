@@ -80,6 +80,48 @@
   "kruskal": {
     "name": "Kruskal — الشجرة الممتدة الصغرى"
   },
+  "fibonacci-dp": {
+    "name": "فيبوناتشي (البرمجة الديناميكية)"
+  },
+  "knapsack-01": {
+    "name": "حقيبة الظهر 0/1"
+  },
+  "lcs": {
+    "name": "أطول تسلسل فرعي مشترك (LCS)"
+  },
+  "coin-change-dp": {
+    "name": "تبديل العملات (أقل عدد عملات)"
+  },
+  "activity-selection": {
+    "name": "اختيار الأنشطة"
+  },
+  "fractional-knapsack": {
+    "name": "حقيبة الظهر الكسرية"
+  },
+  "greedy-coin-change": {
+    "name": "تبديل العملات الجشع"
+  },
+  "fcfs": {
+    "name": "الأول وصولًا يُخدم أولًا (FCFS)"
+  },
+  "sjf": {
+    "name": "أقصر مهمة أولًا (SJF)"
+  },
+  "srtf": {
+    "name": "أقصر وقت متبقٍ أولًا (SRTF)"
+  },
+  "priority": {
+    "name": "الجدولة بالأولوية (Priority)"
+  },
+  "round-robin": {
+    "name": "التناوب الدائري (Round Robin)"
+  },
+  "mlq": {
+    "name": "الطوابير متعددة المستويات (MLQ)"
+  },
+  "mlfq": {
+    "name": "طوابير التغذية الراجعة متعددة المستويات (MLFQ)"
+  },
   "compare": {
     "name": "مقارنة الخوارزميات"
   }

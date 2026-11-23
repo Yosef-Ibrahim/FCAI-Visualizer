@@ -1,0 +1,129 @@
+{
+  "title": "哈希表",
+  "subtitle": "逐步追踪哈希函数、冲突解决策略、探测弧线、墓碑标记与再哈希过程。",
+  "controlsAria": "哈希表控制面板",
+  "stageAria": "哈希表可视化区域",
+  "strategies": {
+    "label": "冲突解决策略",
+    "chaining": "拉链法",
+    "linear": "线性探测",
+    "quadratic": "二次探测",
+    "double": "双重哈希",
+    "hint": {
+      "chaining": "每个桶使用链表存放发生冲突的键。",
+      "linear": "依次探测相邻槽位：(h(k) + i) mod m。",
+      "quadratic": "按平方步长跳跃：(h(k) + i²) mod m。",
+      "double": "按第二哈希步长探测：(h₁(k) + i · h₂(k)) mod m。"
+    }
+  },
+  "tableSize": {
+    "label": "质数表长 (m)",
+    "rehashedBadge": "已扩容至 m = {{m}}"
+  },
+  "operations": {
+    "label": "整数键",
+    "placeholder": "例如：23、0、-5",
+    "insert": "插入",
+    "search": "查找",
+    "delete": "删除",
+    "rehash": "再哈希",
+    "rehashTitle": "扩容至不小于 2m 的最小质数并清除所有墓碑标记",
+    "sample": "示例",
+    "clear": "清空"
+  },
+  "playback": {
+    "label": "播放控制",
+    "start": "回到第一步",
+    "previous": "上一步",
+    "play": "播放",
+    "pause": "暂停",
+    "next": "下一步",
+    "end": "跳至最后一步",
+    "speed": "动画速度",
+    "slow": "慢速",
+    "normal": "正常",
+    "fast": "快速",
+    "stepCounter": "步骤 {{current}} / {{total}}",
+    "ready": "就绪",
+    "narrationLabel": "步骤说明",
+    "idleMessage": "插入、查找或删除一个整数键，或加载示例数据以逐步观察哈希过程。"
+  },
+  "telemetry": {
+    "ariaLabel": "哈希表实时指标",
+    "formula": "哈希公式",
+    "occupancy": "n / m",
+    "loadFactor": "负载因子 α",
+    "loadWarning": "负载因子偏高 (α ≥ 0.70) — 建议执行再哈希",
+    "tombstones": "墓碑数",
+    "collisions": "冲突次数",
+    "probes": "探测次数"
+  },
+  "stage": {
+    "probePathLabel": "探测序列",
+    "slotEmpty": "空",
+    "slotDeleted": "DEL",
+    "slotDeletedTitle": "已删除的墓碑槽位",
+    "chainNull": "NULL",
+    "bucketAria": "桶 {{index}}",
+    "slotAriaEmpty": "槽位 {{index}}：空",
+    "slotAriaDeleted": "槽位 {{index}}：墓碑标记",
+    "slotAriaOccupied": "槽位 {{index}}：键 {{key}}",
+    "legendAria": "槽位状态图例",
+    "legendEmpty": "空槽",
+    "legendOccupied": "已占用",
+    "legendDeleted": "墓碑 (DEL)",
+    "legendActive": "当前探测",
+    "legendTarget": "插入 / 命中",
+    "legendCollision": "冲突",
+    "legendChain": "桶 → 链表 → NULL"
+  },
+  "code": {
+    "toggleOpen": "隐藏代码演练",
+    "toggleClosed": "显示代码演练",
+    "opLabel": "{{strategy}} · {{op}}",
+    "ops": {
+      "insert": "插入",
+      "search": "查找",
+      "delete": "删除",
+      "rehash": "再哈希"
+    }
+  },
+  "errors": {
+    "emptyKey": "请先输入一个整数键。",
+    "invalidKey": "请输入有效的整数键。",
+    "integerOnly": "仅支持整数（包括 0 和负整数）。",
+    "tableFull": "哈希表已满，请执行再哈希以扩容。",
+    "probeCycle": "探测序列出现循环且未找到空槽，请执行再哈希扩容。"
+  },
+  "steps": {
+    "computeHash": "为键 {{key}} 计算 {{formula}} — 从索引 {{index}} 开始。",
+    "duplicateFound": "键 {{key}} 已存在于索引 {{index}}；跳过重复插入。",
+    "chainCheckNode": "桶 {{index}} 第 {{pos}} 个节点为 {{existing}} ≠ {{key}}；继续遍历链表。",
+    "insertChainEmpty": "桶 {{index}} 为空；将键 {{key}} 插入为链表头节点。",
+    "insertChainAppend": "桶 {{index}} 发生冲突：将键 {{key}} 追加至链表末尾（长度 {{length}}）。",
+    "probeCollision": "第 #{{step}} 次探测：槽位 {{index}} 已被 {{existing}} 占用 — 发生冲突，继续探测。",
+    "tombstoneRemember": "槽位 {{index}} 为墓碑 (DEL) — 记录为首个可复用槽位并继续检查重复键。",
+    "tombstoneSkip": "槽位 {{index}} 为墓碑 (DEL) — 保留槽位 {{firstIndex}} 作为插入目标并继续查重。",
+    "insertEmpty": "槽位 {{index}} 为空；成功插入键 {{key}}。",
+    "insertReuseTombstone": "到达空槽 {{emptyIndex}} 且未发现重复键；将键 {{key}} 写入先前记录的墓碑槽位 {{index}}。",
+    "insertReuseAfterScan": "已检查所有可达槽位且无重复键；将键 {{key}} 写入墓碑槽位 {{index}}。",
+    "probeCycle": "插入键 {{key}} 时在 {{probes}} 次探测后于槽位 {{index}} 形成循环 — 请执行再哈希扩容。",
+    "tableFull": "全部 {{capacity}} 个槽位均已占用，无法插入键 {{key}}。请执行再哈希扩容。",
+    "searchFoundChain": "在桶 {{index}} 的链表位置 {{pos}} 找到键 {{key}}。",
+    "searchNotFoundChain": "已到达桶 {{index}} 链表末尾；键 {{key}} 不在表中。",
+    "searchCycleStop": "探测序列在槽位 {{index}} 循环；键 {{key}} 不在表中。",
+    "searchEmptyStop": "槽位 {{index}} 为空 — 停止探测；键 {{key}} 不在表中。",
+    "searchSkipTombstone": "槽位 {{index}} 为墓碑 (DEL) — 跳过并继续查找键 {{key}}。",
+    "searchFound": "经过 {{probes}} 次探测，在槽位 {{index}} 找到键 {{key}}。",
+    "searchMismatch": "槽位 {{index}} 存放 {{existing}} ≠ {{key}}；继续探测下一个槽位。",
+    "searchExhausted": "已探测全部 {{capacity}} 个槽位；键 {{key}} 不在表中。",
+    "deleteChain": "已将键 {{key}} 从桶 {{index}} 链表中移除。",
+    "deleteTombstone": "在槽位 {{index}} 删除键 {{key}}，并将其标记为 DELETED（墓碑）以保持后续探测链不断裂。",
+    "deleteNotFound": "未找到键 {{key}}；未执行删除。",
+    "rehashStart": "从 m = {{oldM}} 再哈希至质数 m = {{newM}}：迁移 {{count}} 个有效键并清除 {{purged}} 个墓碑。",
+    "rehashMove": "将键 {{key}} 重新插入索引 {{index}}（{{formula}}）。",
+    "rehashDone": "再哈希完成：{{count}} 个键已存入 m = {{newM}} 个槽位，墓碑数归零。",
+    "sampleLoaded": "已将示例键 [{{keys}}] 加载至表长 m = {{capacity}} 的哈希表中。",
+    "cleared": "已清空哈希表（m = {{capacity}}）。"
+  }
+}

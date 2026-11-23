@@ -2,8 +2,14 @@
   "title": "练习模式",
   "subtitle": "测试你的算法知识",
   "modes": {
-    "quiz": { "title": "测验", "description": "选择题" },
-    "trace": { "title": "追踪", "description": "分步练习" }
+    "quiz": {
+      "title": "测验",
+      "description": "选择题"
+    },
+    "trace": {
+      "title": "追踪",
+      "description": "分步练习"
+    }
   },
   "session": {
     "quiz": "测验",
@@ -82,5 +88,10 @@
       "incorrect": "✗ 错误",
       "wrongAnswer": "错了！答案: {{answer}}"
     }
+  },
+  "feedback": {
+    "title": "分享反馈",
+    "description": "提出改进建议、报告问题，或告诉我们怎样让学习体验更好。",
+    "link": "分享反馈"
   }
 }

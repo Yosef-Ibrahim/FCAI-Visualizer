@@ -1,0 +1,98 @@
+{
+  "title": "动态规划 (DP)",
+  "subtitle": "观察重叠子问题如何自底向上填充表格、检查状态依赖关系，并回溯最优解。",
+  "algos": {
+    "fibonacci-dp": {
+      "name": "斐波那契数列（制表法）",
+      "shortDesc": "一维自底向上表格，直观展示 F(i) 如何复用 F(i−1) 与 F(i−2)。",
+      "complexityNote": "自底向上制表消除指数级 O(2ⁿ) 递归 · 使用滚动变量可将空间降至 O(1)"
+    },
+    "knapsack-01": {
+      "name": "0/1 背包问题",
+      "shortDesc": "二维物品×容量表，对比跳过与选取策略，并回溯最优物品组合。",
+      "complexityNote": "关于容量 W 的伪多项式时间 · 通过回溯可恢复完整的最优物品子集"
+    },
+    "lcs": {
+      "name": "最长公共子序列 (LCS)",
+      "shortDesc": "二维匹配网格，演示字符匹配时的对角转移、失配选择及子序列重构。",
+      "complexityNote": "m、n 为两字符串长度 · 匹配时沿对角线加一，失配时取上方与左方的最大值"
+    },
+    "coin-change-dp": {
+      "name": "零钱兑换（最少硬币数）",
+      "shortDesc": "初始化为 ∞ 的一维表，即使在贪心失效的面额组合下也能求得全局最优。",
+      "complexityNote": "n 为硬币面额数，A 为目标金额 · 保证求出任意正整数面额下的最少硬币数"
+    }
+  },
+  "controls": {
+    "algorithm": "算法",
+    "parameters": "输入参数",
+    "playback": "播放控制",
+    "speed": "速度",
+    "stepCounter": "步骤 {{current}} / {{total}}",
+    "jumpToTraceback": "跳至回溯阶段",
+    "resetDefaults": "恢复默认",
+    "apply": "应用输入",
+    "showCode": "显示代码",
+    "hideCode": "隐藏代码",
+    "fibN": "目标 n (1–12)",
+    "capacity": "背包容量 W (0–12)",
+    "items": "物品 (名称:重量:价值)",
+    "itemsHint": "逗号分隔，最多 6 件，例如：A:1:1, B:3:4, C:4:5, D:5:7",
+    "stringA": "字符串 A（最多 10 字符）",
+    "stringB": "字符串 B（最多 10 字符）",
+    "coins": "硬币面额",
+    "coinsHint": "最多 6 个正整数，例如：1, 3, 4",
+    "targetAmount": "目标金额 (0–20)"
+  },
+  "telemetry": {
+    "phase": "当前阶段",
+    "recurrence": "状态转移方程",
+    "result": "结果",
+    "inspectCell": "悬停 / 聚焦单元格",
+    "pending": "—",
+    "cellInspect": "单元格 ({{row}}, {{col}}) = {{value}}",
+    "phases": {
+      "init": "初始化",
+      "fill": "填表",
+      "traceback": "回溯",
+      "done": "完成"
+    },
+    "legend": {
+      "active": "当前单元格",
+      "dependency": "依赖单元格",
+      "traceback": "回溯路径",
+      "empty": "未填充"
+    }
+  },
+  "errors": {
+    "invalidInput": "请检查输入值后重试。",
+    "invalidItems": "请输入 1–6 件物品，格式为 名称:重量:价值（重量须为正整数）。",
+    "invalidCoins": "请输入 1–6 个正整数硬币面额。"
+  },
+  "steps": {
+    "fibInit": "为 Fibonacci({{n}}) 初始化长度为 {{size}} 的一维 DP 表。",
+    "fibBase": "基础情况：dp[{{index}}] = {{value}}。",
+    "fibFill": "计算 dp[{{i}}] = dp[{{prev1Index}}] ({{prev1}}) + dp[{{prev2Index}}] ({{prev2}}) = {{value}}。",
+    "fibDone": "完成！Fibonacci({{n}}) = {{result}}。",
+    "knapsackInit": "为 {{count}} 件物品、容量 {{capacity}} 初始化 ({{rows}} × {{cols}}) 零矩阵。",
+    "knapsackNoFit": "物品 {{item}}（重量 {{weight}}）超过容量 {{w}}，沿用不选值 {{skipVal}}。",
+    "knapsackTake": "容量 w={{w}} 考虑 {{item}}：选取 ({{takeVal}}) 优于跳过 ({{skipVal}}) → dp[{{i}}][{{w}}] = {{best}}。",
+    "knapsackSkip": "容量 w={{w}} 考虑 {{item}}：跳过 ({{skipVal}}) ≥ 选取 ({{takeVal}}) → dp[{{i}}][{{w}}] = {{best}}。",
+    "knapsackTraceTake": "回溯 ({{i}}, {{w}})：选入 {{item}}（重 {{weight}}、值 {{value}}），跳至容量 {{nextW}}。",
+    "knapsackTraceSkip": "回溯 ({{i}}, {{w}})：值来自上一行，不选 {{item}}。",
+    "knapsackDone": "完成！最大价值 = {{maxValue}}，所选物品 [{{items}}]（总重 {{totalWeight}}/{{capacity}}）。",
+    "lcsInit": "为 \"{{a}}\" 与 \"{{b}}\" 初始化 ({{rows}} × {{cols}}) LCS 表。",
+    "lcsMatch": "字符匹配 ('{{chA}}' = '{{chB}}')：沿对角线加一得 dp[{{i}}][{{j}}] = {{value}}。",
+    "lcsMismatch": "字符不等 ('{{chA}}' ≠ '{{chB}}')：dp[{{i}}][{{j}}] = max(上 {{up}}, 左 {{left}}) = {{value}}。",
+    "lcsTraceMatch": "回溯 ({{i}}, {{j}})：匹配 '{{ch}}' — 记录并向左上移动。",
+    "lcsTraceUp": "回溯 ({{i}}, {{j}})：向上移至第 {{nextI}} 行。",
+    "lcsTraceLeft": "回溯 ({{i}}, {{j}})：向左移至第 {{nextJ}} 列。",
+    "lcsDone": "完成！LCS 长度 = {{length}}，子序列 = \"{{subsequence}}\"。",
+    "coinInit": "使用面额 [{{coins}}]，初始化 dp[0] = 0，dp[1..{{amount}}] = ∞。",
+    "coinFill": "金额 {{amount}}：从 dp[{{prev}}] 加一枚面额 {{coin}} 得到最少 {{value}} 枚硬币。",
+    "coinUnreachableCell": "金额 {{amount}}：暂无可达面额组合，保持为 ∞。",
+    "coinTrace": "回溯金额 {{current}}：取硬币 {{coin}}，剩余 {{next}}。",
+    "coinDone": "完成！凑出 {{amount}} 最少需要 {{minCoins}} 枚硬币（[{{picked}}]）。",
+    "coinDoneUnreachable": "完成！使用硬币 [{{coins}}] 无法凑出目标金额 {{amount}}。"
+  }
+}

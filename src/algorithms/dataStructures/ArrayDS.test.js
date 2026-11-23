@@ -6,6 +6,17 @@ const valuesOf = (array) =>
   array.nodes.filter((node) => !node.isDeleted).map((node) => node.val);
 
 describe('ArrayDS', () => {
+  it('provides C++ code for every visualized operation', () => {
+    const structure = new ArrayDS();
+    const snippets = structure.getOpsCode();
+
+    for (const operation of ["insert","set","delete"]) {
+      expect(snippets[operation].cpp).toBeDefined();
+      expect(snippets[operation].cpp.length).toBeGreaterThan(0);
+      expect(snippets[operation].cpp.join('\n')).toMatch(/\b(void|int|bool|#include|struct)\b/);
+    }
+  });
+
   it('starts empty', () => {
     const array = new ArrayDS();
 
@@ -21,6 +32,35 @@ describe('ArrayDS', () => {
 
     expect(array.getSize()).toBe(2);
     expect(valuesOf(array)).toEqual([42, 7]);
+  });
+
+  it('rejects indexes beyond the current length instead of silently appending', () => {
+    const array = new ArrayDS();
+    array.insert(0, 10);
+    array.insert(1, 20);
+    array.insert(2, 30);
+
+    expect(array.insert(7, 99)).toBe(false);
+    expect(array.insert(-1, 99)).toBe(false);
+    expect(array.insert(1.5, 99)).toBe(false);
+    expect(valuesOf(array)).toEqual([10, 20, 30]);
+  });
+
+  it('allows insertion exactly at the current length', () => {
+    const array = new ArrayDS();
+    array.insert(0, 10);
+    array.insert(1, 20);
+
+    expect(array.insert(2, 30)).toBe(true);
+    expect(valuesOf(array)).toEqual([10, 20, 30]);
+  });
+
+  it('does not insert an empty value', () => {
+    const array = new ArrayDS();
+
+    expect(array.insert(0, '')).toBe(false);
+    expect(array.insert(0, null)).toBe(false);
+    expect(array.getSize()).toBe(0);
   });
 
   it('inserts in the middle', () => {

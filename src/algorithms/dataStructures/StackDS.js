@@ -29,6 +29,14 @@ export class StackDS {
           '    stack.append(val)',
           '    # O(1) — add to top',
         ],
+        lineOffsets: { cpp: 2 },
+        cpp: [
+          "#include <vector>",
+          "using namespace std;",
+          "void push(vector<int>& stack, int value) {",
+          "  stack.push_back(value); // O(1) amortized",
+          "}",
+        ],
       },
       pop: {
         js: [
@@ -46,6 +54,16 @@ export class StackDS {
           '    stack.pop()',
           '    return val  # O(1)',
         ],
+        lineOffsets: { cpp: 3 },
+        cpp: [
+          "#include <stdexcept>",
+          "int pop(vector<int>& stack) {",
+          "  if (stack.empty()) throw underflow_error(\"Stack is empty\");",
+          "  int value = stack.back();",
+          "  stack.pop_back();",
+          "  return value; // O(1)",
+          "}",
+        ],
       },
       peek: {
         js: [
@@ -58,6 +76,16 @@ export class StackDS {
           'def peek(stack):',
           '    if not stack: return None',
           '    return stack[-1]  # O(1)',
+        ],
+        lineOffsets: { cpp: 3 },
+        cpp: [
+          "#include <vector>",
+          "#include <stdexcept>",
+          "using namespace std;",
+          "int peek(const vector<int>& stack) {",
+          "  if (stack.empty()) throw underflow_error(\"Stack is empty\");",
+          "  return stack.back(); // O(1)",
+          "}",
         ],
       },
     };

@@ -1,0 +1,214 @@
+{
+  "title": "CPU Scheduling",
+  "subtitle": "Trace how the OS dispatcher selects processes from ready queues, allocates CPU slices on a Gantt timeline, and balances waiting, turnaround, and response times.",
+  "algos": {
+    "fcfs": {
+      "name": "FCFS",
+      "fullName": "First-Come, First-Served",
+      "shortDesc": "Non-preemptive FIFO queue ordered strictly by arrival time."
+    },
+    "sjf": {
+      "name": "SJF",
+      "fullName": "Shortest-Job-First",
+      "shortDesc": "Non-preemptive selection of the ready process with the smallest CPU burst."
+    },
+    "srtf": {
+      "name": "SRTF",
+      "fullName": "Shortest-Remaining-Time-First",
+      "shortDesc": "Preemptive SJF that switches whenever a shorter burst arrives."
+    },
+    "priority": {
+      "name": "Priority",
+      "fullName": "Priority Scheduling",
+      "shortDesc": "Dispatches the highest-priority ready process (smaller number = higher priority)."
+    },
+    "round-robin": {
+      "name": "Round Robin",
+      "fullName": "Round Robin (RR)",
+      "shortDesc": "Preemptive time-sharing that rotates ready processes by a fixed time quantum q."
+    },
+    "mlq": {
+      "name": "MLQ",
+      "fullName": "Multilevel Queue",
+      "shortDesc": "Fixed foreground (Q0, RR) and background (Q1, FCFS) queues with strict priority."
+    },
+    "mlfq": {
+      "name": "MLFQ",
+      "fullName": "Multilevel Feedback Queue",
+      "shortDesc": "Processes start in Q0 and demote across Q0 → Q1 → Q2 when they use their full quantum."
+    }
+  },
+  "presets": {
+    "fcfsSlide11": "Slide 11: P1(24), P2(3), P3(3)",
+    "fcfsConvoy": "Convoy fix: P2(3), P3(3), P1(24)",
+    "fcfsIdle": "CPU idle gap: arrivals 0, 6, 7",
+    "sjfSlide19": "Slide 19: Staggered arrivals (avg 4)",
+    "sjfSlide14": "Slide 14: Simultaneous bursts (avg 7)",
+    "srtfSlide20": "Slide 20: Preemptive SJF (avg 3)",
+    "srtfSlide21": "Slide 21: Preemptive trace (avg 6.5)",
+    "prioSlide23": "Slide 23: Non-preemptive (avg 8.2)",
+    "prioPreemptive": "Preemptive priority arrival",
+    "rrSlide25": "Slide 25: Time quantum q = 4",
+    "rrSlide26": "Slide 26: Time quantum q = 20",
+    "rrSlide39": "Slide 39: Deterministic eval (q = 10)",
+    "mlqDefault": "Foreground RR (Q0) + Background FCFS (Q1)",
+    "mlfqSlide32": "Slide 32: Q0(8) → Q1(16) → Q2(FCFS)"
+  },
+  "controls": {
+    "algorithm": "Scheduler",
+    "presets": "Lecture presets",
+    "generateRandom": "Random",
+    "processCount": "Processes",
+    "editWorkload": "Edit processes",
+    "closeEditor": "Close editor",
+    "options": "Scheduler options",
+    "quantum": "Time quantum (q)",
+    "quantumHint": "Integer between 1 and 30 time units",
+    "mlfqQ0": "Q0 quantum",
+    "mlfqQ1": "Q1 quantum",
+    "mlfqQ2Note": "Q2 runs non-preemptive FCFS for CPU-bound jobs.",
+    "priorityMode": "Preemption mode",
+    "nonPreemptive": "Non-preemptive",
+    "preemptive": "Preemptive",
+    "priorityHint": "Lower integer indicates higher scheduling priority (1 is highest).",
+    "workload": "Process workload",
+    "workloadCount": "{{count}} / 8",
+    "addProcess": "Add process",
+    "removeProcess": "Remove {{pid}}",
+    "applyWorkload": "Apply workload",
+    "resetDefault": "Reset default",
+    "playback": "Playback",
+    "stepCounter": "Step {{current}} / {{total}}",
+    "speed": "Speed",
+    "restart": "Restart trace",
+    "stepBack": "Step back",
+    "play": "Play",
+    "pause": "Pause",
+    "stepForward": "Step forward",
+    "jumpToEnd": "Jump to end",
+    "showCode": "Show code walkthrough",
+    "hideCode": "Hide code walkthrough",
+    "colPid": "PID",
+    "colArrival": "Arr",
+    "colBurst": "Burst",
+    "colPriority": "Prio",
+    "colQueue": "Queue",
+    "queueFg": "Q0 (FG)",
+    "queueBg": "Q1 (BG)"
+  },
+  "telemetry": {
+    "clock": "Clock",
+    "cpu": "CPU",
+    "idle": "IDLE",
+    "none": "—",
+    "avgWaiting": "Avg wait",
+    "avgTurnaround": "Avg turnaround",
+    "avgResponse": "Avg response",
+    "cpuUtil": "CPU util",
+    "throughput": "Throughput",
+    "contextSwitches": "Switches"
+  },
+  "phases": {
+    "init": "Init",
+    "arrive": "Arrival",
+    "idle": "Idle",
+    "dispatch": "Dispatch",
+    "run": "Running",
+    "preempt": "Preempt",
+    "demote": "Demote",
+    "complete": "Complete",
+    "done": "Finished"
+  },
+  "gantt": {
+    "title": "CPU Gantt chart",
+    "subtitle": "Proportional execution timeline with exact dispatch boundaries",
+    "empty": "Step forward or press Play to execute the first CPU slice.",
+    "idleLabel": "IDLE",
+    "totalSpan": "Total time: {{time}}",
+    "progress": "t = {{current}} / {{total}}",
+    "ariaLabel": "CPU scheduling Gantt chart",
+    "sliceTooltip": "{{pid}}: t = {{start}} to {{end}} (duration {{duration}})"
+  },
+  "queues": {
+    "title": "CPU & ready queues",
+    "cpuSlot": "Active CPU",
+    "cpuIdle": "Idle",
+    "cpuWaiting": "Waiting for dispatch",
+    "readyQueue": "Ready queue",
+    "emptyQueue": "Empty",
+    "remainingTag": "rem {{remaining}}",
+    "priorityTag": "p={{priority}}",
+    "demotionHint": "Full quantum used → demote to next lower queue",
+    "activeQueueBadge": "Active"
+  },
+  "table": {
+    "title": "Process trace table",
+    "pid": "PID",
+    "arrival": "Arrival",
+    "burst": "Burst",
+    "priority": "Priority",
+    "queue": "Queue",
+    "remaining": "Remaining",
+    "start": "First start",
+    "finish": "Finish",
+    "turnaround": "Turnaround",
+    "waiting": "Waiting",
+    "response": "Response",
+    "state": "State",
+    "averages": "Averages",
+    "states": {
+      "new": "New",
+      "ready": "Ready",
+      "running": "Running",
+      "done": "Done"
+    }
+  },
+  "panel": {
+    "overviewTab": "Overview & complexity",
+    "compareTab": "Compare schedulers",
+    "formulas": "Core formulas",
+    "keyPoints": "Key behavior",
+    "pros": "Strengths",
+    "cons": "Trade-offs"
+  },
+  "eval": {
+    "title": "Deterministic evaluation",
+    "subtitle": "Runs FCFS, SJF, SRTF, Priority, and Round Robin on your current process table to compare wait, turnaround, and response times.",
+    "algorithm": "Scheduler",
+    "avgWaiting": "Avg wait",
+    "avgTurnaround": "Avg turnaround",
+    "avgResponse": "Avg response",
+    "cpuUtil": "CPU util",
+    "switches": "Switches",
+    "lowestWait": "Lowest avg wait",
+    "activeTag": "Current",
+    "switchAria": "Switch visualizer to {{name}}",
+    "settingsNote": "Evaluated with Round Robin q = {{quantum}} and Priority ({{mode}})."
+  },
+  "errors": {
+    "minProcesses": "Keep at least 1 process in the workload.",
+    "maxProcesses": "Up to 8 processes are supported for clear visualization.",
+    "invalidArrival": "{{pid}}: arrival time must be an integer 0 or greater.",
+    "invalidBurst": "{{pid}}: CPU burst must be an integer between 1 and 100.",
+    "invalidPriority": "{{pid}}: priority must be a positive integer (1 or greater).",
+    "invalidQuantum": "Time quantum must be an integer between 1 and 30.",
+    "invalidMlfqQuanta": "Q0 and Q1 quanta must be integers between 1 and 30.",
+    "applyFailed": "Could not build schedule with the provided parameters."
+  },
+  "steps": {
+    "init": "Initialized {{count}} processes in the scheduling workload.",
+    "arrive": "At t = {{time}}, {{pid}} arrives with burst {{burst}} and enters the ready queue.",
+    "arriveQueue": "At t = {{time}}, {{pid}} arrives and enters {{queue}}.",
+    "idle": "CPU is idle from t = {{start}} to t = {{end}} waiting for the next arrival.",
+    "dispatch": "At t = {{time}}, dispatch {{pid}} to the CPU (remaining burst: {{remaining}}).",
+    "dispatchPriority": "At t = {{time}}, dispatch {{pid}} with highest priority ({{priority}}).",
+    "dispatchQuantum": "At t = {{time}}, dispatch {{pid}} for up to quantum q = {{quantum}} (remaining: {{remaining}}).",
+    "dispatchQueue": "At t = {{time}}, dispatch {{pid}} from {{queue}} ({{policy}}).",
+    "runSlice": "{{pid}} runs on the CPU from t = {{start}} to t = {{end}} (remaining: {{remaining}}).",
+    "preempt": "At t = {{time}}, {{incomingPid}} preempts {{currentPid}} ({{reason}}).",
+    "quantumExpire": "At t = {{time}}, {{pid}} reaches its time quantum with {{remaining}} remaining and returns to the ready queue.",
+    "demote": "At t = {{time}}, {{pid}} exhausts its quantum in {{fromQueue}} and demotes to {{toQueue}} (remaining: {{remaining}}).",
+    "complete": "{{pid}} finishes at t = {{finish}} (Turnaround = {{turnaround}}, Waiting = {{waiting}}, Response = {{response}}).",
+    "done": "Schedule complete: Avg Wait = {{avgWaiting}}, Avg Turnaround = {{avgTurnaround}}, Avg Response = {{avgResponse}}, CPU Util = {{cpuUtilization}}%."
+  }
+}

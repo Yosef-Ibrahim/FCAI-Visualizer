@@ -15,7 +15,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview",
-    "verify": "npm run lint && npm run typecheck && npm run i18n:check && npm run test && npm run build"
+    "verify": "eslint . && tsc && node scripts/i18n-check.mjs && vitest run && vite build"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

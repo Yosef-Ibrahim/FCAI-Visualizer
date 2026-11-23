@@ -1,0 +1,1213 @@
+/* ==========================================================================
+   CPU Scheduling Visualizer — Clean Two-Column Sorting-Style Workbench
+   Anchored strictly to AlgoVs CSS tokens (GlobalStyles.css) for automatic
+   Light & Dark theme parity and RTL support.
+   ========================================================================== */
+
+.sched-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+  padding: clamp(14px, 2vw, 22px);
+  gap: 14px;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: clip;
+}
+
+/* ── Process Color Palette (8 high-contrast accessible process colors) ──── */
+.sched-proc-c1 { --proc-col: var(--accent); }
+.sched-proc-c2 { --proc-col: var(--accent3); }
+.sched-proc-c3 { --proc-col: var(--accent4); }
+.sched-proc-c4 { --proc-col: var(--accent2); }
+.sched-proc-c5 { --proc-col: #7054ad; }
+.sched-proc-c6 { --proc-col: #0e8aa3; }
+.sched-proc-c7 { --proc-col: #c46a2c; }
+.sched-proc-c8 { --proc-col: #4f6bd6; }
+
+[data-theme="dark"] .sched-proc-c5 { --proc-col: #a98ef0; }
+[data-theme="dark"] .sched-proc-c6 { --proc-col: #4ecbe0; }
+[data-theme="dark"] .sched-proc-c7 { --proc-col: #f09e65; }
+[data-theme="dark"] .sched-proc-c8 { --proc-col: #8ea6ff; }
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.sched-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 18px;
+}
+
+.sched-header-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sched-header-title h2 {
+  margin: 0;
+  font: 800 clamp(20px, 2.2vw, 25px)/1.2 var(--font-head);
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.sched-header-desc {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.sched-header-narration {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: 68ch;
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.sched-narration-text {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.sched-formula-chip {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface2));
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+/* Phase badges */
+.sched-phase-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--surface2);
+  color: var(--text-muted);
+}
+.sched-phase-pill--dispatch,
+.sched-phase-pill--run {
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color: var(--accent);
+}
+.sched-phase-pill--preempt,
+.sched-phase-pill--demote {
+  background: color-mix(in srgb, var(--accent2) 15%, var(--surface));
+  color: var(--accent2);
+}
+.sched-phase-pill--complete,
+.sched-phase-pill--done {
+  background: color-mix(in srgb, var(--accent3) 15%, var(--surface));
+  color: var(--accent3);
+}
+.sched-phase-pill--arrive,
+.sched-phase-pill--idle {
+  background: color-mix(in srgb, var(--accent4) 16%, var(--surface));
+  color: var(--accent4);
+}
+
+/* ── Single Horizontal Control Bar ──────────────────────────────────────── */
+.sched-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 5px 18px rgba(22, 50, 79, 0.045);
+}
+
+.sched-algo-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sched-algo-tab {
+  min-height: 34px;
+  padding: 5px 13px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.sched-algo-tab:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.sched-algo-tab.is-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color: var(--accent);
+}
+
+.sched-toolbar-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 14px;
+}
+
+.sched-ctrl-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.sched-ctrl-divider {
+  width: 1px;
+  height: 26px;
+  background: var(--border);
+}
+
+.sched-btn,
+.sched-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.sched-btn {
+  padding: 0 12px;
+}
+
+.sched-icon-btn {
+  width: 36px;
+  padding: 0;
+}
+
+.sched-btn:hover,
+.sched-icon-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.sched-btn--primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+  padding: 0 15px;
+}
+
+.sched-btn--primary:hover {
+  filter: brightness(1.08);
+  color: #fff;
+}
+
+.sched-btn--accent {
+  border-color: color-mix(in srgb, var(--accent3) 50%, var(--border));
+  background: color-mix(in srgb, var(--accent3) 12%, var(--surface));
+  color: var(--accent3);
+}
+
+.sched-btn--accent:hover {
+  border-color: var(--accent3);
+  background: color-mix(in srgb, var(--accent3) 18%, var(--surface));
+  color: var(--accent3);
+}
+
+.sched-btn.is-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 13%, var(--surface));
+  color: var(--accent);
+}
+
+.sched-icon-btn[aria-disabled="true"],
+.sched-btn[aria-disabled="true"] {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.sched-speed-inline,
+.sched-inline-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sched-speed-inline input[type="range"] {
+  width: 78px;
+  accent-color: var(--accent);
+}
+
+.sched-select,
+.sched-num-input {
+  min-height: 34px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.sched-num-input {
+  width: 58px;
+  text-align: center;
+}
+
+.sched-seg-inline {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface2);
+}
+
+.sched-seg-btn {
+  min-height: 30px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sched-seg-btn.is-active {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Collapsible Inline Process Editor ──────────────────────────────────── */
+.sched-editor-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.sched-editor-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  font-size: 12.5px;
+}
+
+.sched-editor-count {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sched-editor-note {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.sched-editor-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sched-editor-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+  min-width: 142px;
+}
+
+.sched-editor-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sched-editor-pid {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.sched-row-remove {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.sched-row-remove:hover {
+  background: color-mix(in srgb, var(--accent2) 14%, transparent);
+  color: var(--accent2);
+}
+
+.sched-editor-fields {
+  display: flex;
+  gap: 6px;
+}
+
+.sched-editor-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sched-cell-input {
+  width: 58px;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.sched-editor-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sched-error-msg {
+  margin: 0;
+  color: var(--accent2);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ── Main Two-Column Workspace (Viz Left + Code/Info Right) ─────────────── */
+.sched-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(330px, 430px);
+  gap: 16px;
+  align-items: start;
+}
+
+.sched-viz-col,
+.sched-side-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* Shared Card Surface */
+.sched-card,
+.sched-queues-section,
+.sched-table-section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 14px 16px;
+  box-shadow: 0 5px 18px rgba(22, 50, 79, 0.045);
+  min-width: 0;
+}
+
+.sched-card-head,
+.sched-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.sched-card-title,
+.sched-section-title {
+  margin: 0;
+  font: 750 14.5px/1.25 var(--font-head);
+  color: var(--text);
+}
+
+.sched-card-sub {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* ── Inline Telemetry Strip ─────────────────────────────────────────────── */
+.sched-telemetry-bar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.sched-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border-inline-end: 1px solid var(--border);
+  min-width: 0;
+}
+
+.sched-metric:last-child {
+  border-inline-end: none;
+}
+
+.sched-metric-label {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sched-metric-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.sched-metric-value.is-accent {
+  color: var(--accent);
+}
+
+.sched-metric-value.is-good {
+  color: var(--accent3);
+}
+
+/* ── Hero Gantt Chart ───────────────────────────────────────────────────── */
+.sched-span-badge {
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.sched-gantt-empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 14px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.sched-gantt-origin {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.sched-gantt-scroll {
+  overflow-x: auto;
+  padding: 4px 2px 6px;
+}
+
+.sched-gantt-track {
+  display: flex;
+  align-items: stretch;
+  min-width: 100%;
+}
+
+.sched-gantt-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 48px;
+}
+
+.sched-gantt-block {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 58px;
+  padding: 6px 4px;
+  border: 1.5px solid color-mix(in srgb, var(--proc-col, var(--border)) 62%, var(--border));
+  border-inline-end-width: 1px;
+  background: color-mix(in srgb, var(--proc-col, var(--surface2)) 18%, var(--surface));
+  color: var(--text);
+  overflow: hidden;
+  transition: opacity 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.sched-gantt-col:first-child .sched-gantt-block {
+  border-start-start-radius: 10px;
+  border-end-start-radius: 10px;
+}
+
+.sched-gantt-col:last-child .sched-gantt-block {
+  border-start-end-radius: 10px;
+  border-end-end-radius: 10px;
+  border-inline-end-width: 1.5px;
+}
+
+.sched-gantt-block.is-upcoming {
+  border-style: dashed;
+  border-color: var(--border);
+  background: var(--surface2);
+  opacity: 0.45;
+}
+
+.sched-gantt-block.is-idle {
+  border-style: dashed;
+  border-color: var(--border);
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--surface2),
+    var(--surface2) 6px,
+    var(--surface3) 6px,
+    var(--surface3) 12px
+  );
+  color: var(--text-muted);
+}
+
+.sched-gantt-block.is-running {
+  border-color: var(--proc-col);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--proc-col) 48%, transparent);
+}
+
+.sched-gantt-partial-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: color-mix(in srgb, var(--proc-col) 22%, transparent);
+  pointer-events: none;
+}
+
+.sched-gantt-pid {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.sched-gantt-meta {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sched-gantt-ticks {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  height: 20px;
+  padding-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.sched-gantt-tick--end {
+  margin-left: auto;
+  transform: translateX(50%);
+}
+
+.sched-gantt-tick--last {
+  margin-left: auto;
+}
+
+.sched-gantt-scrubber {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.sched-scrubber-input {
+  flex: 1;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.sched-scrubber-hint {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ── Active CPU & Ready Queue(s) ────────────────────────────────────────── */
+.sched-demotion-hint {
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.sched-queues-layout {
+  display: grid;
+  grid-template-columns: 165px minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.sched-cpu-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface2);
+}
+
+.sched-cpu-box.is-busy {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+}
+
+.sched-cpu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.sched-cpu-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.sched-cpu-qtag,
+.sched-queue-policy,
+.sched-queue-active-tag {
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.sched-queue-active-tag {
+  border-color: color-mix(in srgb, var(--accent3) 45%, var(--border));
+  color: var(--accent3);
+}
+
+.sched-cpu-empty {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 0;
+}
+
+.sched-queue-lanes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sched-queue-lane {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface2);
+}
+
+.sched-queue-lane.is-active {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+
+.sched-queue-lane-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sched-queue-lane-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sched-queue-lane-tags {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.sched-queue-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 30px;
+  align-items: center;
+}
+
+.sched-queue-empty {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.sched-pid-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border: 1px solid color-mix(in srgb, var(--proc-col) 55%, var(--border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--proc-col) 14%, var(--surface));
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sched-pid-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--proc-col);
+  flex: 0 0 auto;
+}
+
+.sched-pid-sub {
+  color: var(--text-muted);
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.sched-demote-connector {
+  display: flex;
+  justify-content: center;
+  color: var(--text-muted);
+  padding: 2px 0;
+}
+
+/* ── Process Trace Table & Deterministic Eval Table ─────────────────────── */
+.sched-table-scroll {
+  overflow-x: auto;
+}
+
+.sched-trace-table,
+.sched-eval-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.sched-trace-table th,
+.sched-trace-table td,
+.sched-eval-table th,
+.sched-eval-table td {
+  padding: 8px 9px;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  white-space: nowrap;
+}
+
+.sched-trace-table th,
+.sched-eval-table th {
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  background: var(--surface2);
+}
+
+.sched-trace-table .is-num,
+.sched-eval-table .is-num {
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+.sched-trace-table tbody tr.is-row-active {
+  background: color-mix(in srgb, var(--accent) 11%, var(--surface));
+}
+
+.sched-table-pid {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-weight: 800;
+}
+
+.sched-state-pill {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.sched-state-pill--new { background: var(--surface2); color: var(--text-muted); }
+.sched-state-pill--ready { background: color-mix(in srgb, var(--accent4) 16%, var(--surface)); color: var(--accent4); }
+.sched-state-pill--running { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); color: var(--accent); }
+.sched-state-pill--done { background: color-mix(in srgb, var(--accent3) 16%, var(--surface)); color: var(--accent3); }
+
+.sched-trace-table tfoot td,
+.sched-trace-table tfoot th {
+  border-bottom: none;
+  background: var(--surface2);
+  font-weight: 800;
+}
+
+.sched-tfoot-label {
+  color: var(--text);
+}
+
+.sched-trace-table .is-emphasis,
+.sched-eval-table .is-best-val {
+  color: var(--accent3);
+  font-weight: 800;
+}
+
+/* ── Right Side Panel: Live Code + Overview/Compare ─────────────────────── */
+.sched-code-card .panel-card {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 5px 18px rgba(22, 50, 79, 0.045);
+}
+
+.sched-code-card .lang-tab-bar {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.sched-code-card .lang-tab {
+  min-height: 28px;
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sched-code-card .lang-tab.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color: var(--accent);
+}
+
+.sched-code-card .shared-code-panel pre {
+  max-height: 330px;
+}
+
+.sched-info-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+}
+
+.sched-info-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sched-info-tab.is-active {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.sched-overview-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sched-overview-summary {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.sched-overview-block h4,
+.sched-procon-col h4 {
+  margin: 0 0 6px;
+  font: 700 12.5px var(--font-head);
+  color: var(--text);
+}
+
+.sched-formula-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sched-formula-item {
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text);
+}
+
+.sched-overview-list,
+.sched-procon-col ul {
+  margin: 0;
+  padding-inline-start: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.sched-procon-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.sched-procon-col--pro h4 { color: var(--accent3); }
+.sched-procon-col--con h4 { color: var(--accent2); }
+
+.sched-complexity-wrap .panel-card {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface2);
+  box-shadow: none;
+}
+
+.sched-complexity-wrap .complexity-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  font-size: 12.5px;
+}
+
+.sched-complexity-wrap .complexity-label {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.sched-complexity-wrap .complexity-value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent3);
+  text-align: end;
+}
+
+/* Deterministic Evaluation Panel */
+.sched-eval-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sched-eval-head h4 {
+  margin: 0 0 3px;
+  font: 750 13.5px var(--font-head);
+}
+
+.sched-eval-head p,
+.sched-eval-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.sched-eval-algo-cell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+
+.sched-eval-algo-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 12.5px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.sched-eval-tag {
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.sched-eval-tag--current {
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color: var(--accent);
+}
+
+.sched-eval-tag--best {
+  background: color-mix(in srgb, var(--accent3) 16%, var(--surface));
+  color: var(--accent3);
+}
+
+/* ── Responsive Breakpoints ─────────────────────────────────────────────── */
+@media (max-width: 1180px) {
+  .sched-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .sched-telemetry-bar {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .sched-metric:nth-child(4) {
+    border-inline-end: none;
+  }
+
+  .sched-metric:nth-child(n + 5) {
+    border-top: 1px solid var(--border);
+  }
+}
+
+@media (max-width: 720px) {
+  .sched-page {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .sched-ctrl-divider {
+    display: none;
+  }
+
+  .sched-telemetry-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sched-metric {
+    border-inline-end: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+  }
+
+  .sched-metric:nth-child(1),
+  .sched-metric:nth-child(2) {
+    border-top: none;
+  }
+
+  .sched-metric:nth-child(2n) {
+    border-inline-end: none;
+  }
+
+  .sched-queues-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sched-procon-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sched-gantt-block,
+  .sched-algo-tab,
+  .sched-btn,
+  .sched-icon-btn {
+    transition: none;
+  }
+}

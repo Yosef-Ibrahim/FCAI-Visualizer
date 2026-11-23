@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Open the learning platform
+    url: https://fcai-visualizer-ten.vercel.app/
+    about: Try the visualizers and practice mode before submitting feedback.

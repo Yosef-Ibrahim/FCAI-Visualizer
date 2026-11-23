@@ -126,11 +126,12 @@ export function initDSVisualizer(container, type) {
     </div>
     <div class="ds-code-panel" id="ds-code-panel">
       <div class="ds-code-header">
-        <span class="ds-code-title">⟨/⟩ Code Trace</span>
+        <span class="ds-code-title"><span class="ds-code-title-icon">⌘</span><span><strong>Code walkthrough</strong><small>Follow the operation line by line</small></span></span>
         <div style="display:flex;align-items:center;gap:8px;">
-          <div class="ds-code-lang-bar" id="ds-code-lang-bar">
-            <button class="ds-code-lang-btn active" data-lang="js">JS</button>
-            <button class="ds-code-lang-btn" data-lang="python">Python</button>
+          <div class="ds-code-lang-bar" id="ds-code-lang-bar" role="group" aria-label="Choose code language">
+            <button class="ds-code-lang-btn active" type="button" data-lang="js" aria-pressed="true">JavaScript</button>
+            <button class="ds-code-lang-btn" type="button" data-lang="python" aria-pressed="false">Python</button>
+            <button class="ds-code-lang-btn" type="button" data-lang="cpp" aria-pressed="false">C++</button>
           </div>
           <button class="ds-code-close-btn" id="ds-code-close" title="Close">✕</button>
         </div>
@@ -219,6 +220,10 @@ export function initDSVisualizer(container, type) {
       currentLang = btn.dataset.lang;
       codeLangBar.querySelectorAll('.ds-code-lang-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+      codeLangBar.querySelectorAll('.ds-code-lang-btn').forEach((b) => {
+        if (b !== btn) b.setAttribute('aria-pressed', 'false');
+      });
       if (currentCodeSnippet) renderCodeLines(currentCodeSnippet, currentStepIdx);
     });
   });
@@ -293,7 +298,8 @@ export function initDSVisualizer(container, type) {
 
       const step = steps[currentStepIdx];
       updateProgress(currentStepIdx, steps.length);
-      renderCodeLines(codeObj, step.line);
+      const lineOffset = codeObj.lineOffsets?.[currentLang] ?? 0;
+      renderCodeLines(codeObj, step.line + lineOffset);
       codeStepMsgEl.textContent = step.msg;
 
       if (step.action) step.action();
@@ -306,9 +312,10 @@ export function initDSVisualizer(container, type) {
 
   // 5. Canvas Resize & Camera
   function resizeCanvas() {
-    canvas.width = canvas.clientWidth * devicePixelRatio;
-    canvas.height = canvas.clientHeight * devicePixelRatio;
-    ctx.scale(devicePixelRatio, devicePixelRatio);
+    const pixelRatio = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.round(canvas.clientWidth * pixelRatio));
+    canvas.height = Math.max(1, Math.round(canvas.clientHeight * pixelRatio));
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     if (!camReady) resetCamera();
   }
 
@@ -321,7 +328,11 @@ export function initDSVisualizer(container, type) {
   }
 
   const onResize = () => { if (!destroyed) resizeCanvas(); };
-  window.addEventListener('resize', onResize);
+  const resizeObserver = typeof ResizeObserver !== 'undefined'
+    ? new ResizeObserver(onResize)
+    : null;
+  if (resizeObserver) resizeObserver.observe(canvasWrap);
+  else window.addEventListener('resize', onResize);
   resizeCanvas();
 
   // 6. Bind Common Events
@@ -414,7 +425,8 @@ export function initDSVisualizer(container, type) {
     destroyed = true;
     if (rafId) cancelAnimationFrame(rafId);
     if (stepRunnerTimer) clearTimeout(stepRunnerTimer);
-    window.removeEventListener('resize', onResize);
+    resizeObserver?.disconnect();
+    if (!resizeObserver) window.removeEventListener('resize', onResize);
     window.removeEventListener('mousemove', onMouseMove);
     window.removeEventListener('mouseup', onMouseUp);
     container.innerHTML = '';

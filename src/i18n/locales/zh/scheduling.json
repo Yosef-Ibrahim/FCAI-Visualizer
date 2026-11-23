@@ -1,0 +1,214 @@
+{
+  "title": "CPU 调度",
+  "subtitle": "追踪操作系统分派程序如何从就绪队列中选择进程、在甘特图上分配 CPU 时间片，并权衡等待时间、周转时间与响应时间。",
+  "algos": {
+    "fcfs": {
+      "name": "FCFS",
+      "fullName": "先来先服务（FCFS）",
+      "shortDesc": "严格按到达时间排序的非抢占 FIFO 队列。"
+    },
+    "sjf": {
+      "name": "SJF",
+      "fullName": "短作业优先（SJF）",
+      "shortDesc": "在就绪进程中非抢占式选择 CPU 突发时间最短的进程。"
+    },
+    "srtf": {
+      "name": "SRTF",
+      "fullName": "最短剩余时间优先（SRTF）",
+      "shortDesc": "抢占式 SJF：每当到达更短突发时间的进程时立即切换。"
+    },
+    "priority": {
+      "name": "优先级",
+      "fullName": "优先级调度",
+      "shortDesc": "分派优先级最高的就绪进程（数值越小表示优先级越高）。"
+    },
+    "round-robin": {
+      "name": "时间片轮转",
+      "fullName": "时间片轮转（RR）",
+      "shortDesc": "抢占式分时调度，按固定时间片 q 轮流调度就绪进程。"
+    },
+    "mlq": {
+      "name": "MLQ",
+      "fullName": "多级队列（MLQ）",
+      "shortDesc": "固定划分前台队列（Q0，RR）与后台队列（Q1，FCFS），并按严格优先级调度。"
+    },
+    "mlfq": {
+      "name": "MLFQ",
+      "fullName": "多级反馈队列（MLFQ）",
+      "shortDesc": "新进程进入 Q0，用完完整时间片后沿 Q0 → Q1 → Q2 逐级降级。"
+    }
+  },
+  "presets": {
+    "fcfsSlide11": "幻灯片 11：P1(24), P2(3), P3(3)",
+    "fcfsConvoy": "消除护航效应：P2(3), P3(3), P1(24)",
+    "fcfsIdle": "CPU 空闲间隙：到达时间 0, 6, 7",
+    "sjfSlide19": "幻灯片 19：交错到达（均值 4）",
+    "sjfSlide14": "幻灯片 14：同时到达（均值 7）",
+    "srtfSlide20": "幻灯片 20：抢占式 SJF（均值 3）",
+    "srtfSlide21": "幻灯片 21：SRTF 追踪（均值 6.5）",
+    "prioSlide23": "幻灯片 23：非抢占优先级（均值 8.2）",
+    "prioPreemptive": "抢占式优先级到达",
+    "rrSlide25": "幻灯片 25：时间片 q = 4",
+    "rrSlide26": "幻灯片 26：时间片 q = 20",
+    "rrSlide39": "幻灯片 39：确定性评估（q = 10）",
+    "mlqDefault": "前台 RR (Q0) + 后台 FCFS (Q1)",
+    "mlfqSlide32": "幻灯片 32：Q0(8) → Q1(16) → Q2(FCFS)"
+  },
+  "controls": {
+    "algorithm": "调度算法",
+    "presets": "课堂预设",
+    "generateRandom": "随机生成",
+    "processCount": "进程数",
+    "editWorkload": "编辑进程",
+    "closeEditor": "收起编辑",
+    "options": "调度参数",
+    "quantum": "时间片 (q)",
+    "quantumHint": "1 到 30 之间的整数",
+    "mlfqQ0": "Q0 时间片",
+    "mlfqQ1": "Q1 时间片",
+    "mlfqQ2Note": "Q2 采用非抢占式 FCFS 处理计算密集型作业。",
+    "priorityMode": "抢占模式",
+    "nonPreemptive": "非抢占式",
+    "preemptive": "抢占式",
+    "priorityHint": "数字越小优先级越高（1 为最高优先级）。",
+    "workload": "进程工作负载",
+    "workloadCount": "{{count}} / 8",
+    "addProcess": "添加进程",
+    "removeProcess": "移除 {{pid}}",
+    "applyWorkload": "应用负载",
+    "resetDefault": "恢复默认",
+    "playback": "步骤播放",
+    "stepCounter": "第 {{current}} / {{total}} 步",
+    "speed": "速度",
+    "restart": "重置追踪",
+    "stepBack": "上一步",
+    "play": "播放",
+    "pause": "暂停",
+    "stepForward": "下一步",
+    "jumpToEnd": "跳至结尾",
+    "showCode": "展开代码追踪",
+    "hideCode": "收起代码追踪",
+    "colPid": "PID",
+    "colArrival": "到达",
+    "colBurst": "突发",
+    "colPriority": "优先级",
+    "colQueue": "队列",
+    "queueFg": "Q0 (前台)",
+    "queueBg": "Q1 (后台)"
+  },
+  "telemetry": {
+    "clock": "时钟",
+    "cpu": "CPU",
+    "idle": "空闲",
+    "none": "—",
+    "avgWaiting": "平均等待",
+    "avgTurnaround": "平均周转",
+    "avgResponse": "平均响应",
+    "cpuUtil": "CPU 利用率",
+    "throughput": "吞吐量",
+    "contextSwitches": "切换次数"
+  },
+  "phases": {
+    "init": "初始化",
+    "arrive": "到达",
+    "idle": "空闲",
+    "dispatch": "分派",
+    "run": "运行中",
+    "preempt": "抢占",
+    "demote": "降级",
+    "complete": "完成",
+    "done": "已结束"
+  },
+  "gantt": {
+    "title": "CPU 甘特图",
+    "subtitle": "带精确切换时间刻度的按比例执行时间轴",
+    "empty": "点击“下一步”或“播放”以执行第一个 CPU 时间片。",
+    "idleLabel": "空闲",
+    "totalSpan": "总时长：{{time}}",
+    "progress": "t = {{current}} / {{total}}",
+    "ariaLabel": "CPU 调度甘特图",
+    "sliceTooltip": "{{pid}}：t = {{start}} 至 {{end}}（时长 {{duration}}）"
+  },
+  "queues": {
+    "title": "CPU 与就绪队列",
+    "cpuSlot": "当前 CPU",
+    "cpuIdle": "空闲",
+    "cpuWaiting": "等待分派",
+    "readyQueue": "就绪队列",
+    "emptyQueue": "空",
+    "remainingTag": "剩余 {{remaining}}",
+    "priorityTag": "p={{priority}}",
+    "demotionHint": "用完完整时间片 → 降级到下一级队列",
+    "activeQueueBadge": "活跃"
+  },
+  "table": {
+    "title": "进程追踪表",
+    "pid": "进程",
+    "arrival": "到达",
+    "burst": "突发",
+    "priority": "优先级",
+    "queue": "队列",
+    "remaining": "剩余",
+    "start": "首次开始",
+    "finish": "完成",
+    "turnaround": "周转",
+    "waiting": "等待",
+    "response": "响应",
+    "state": "状态",
+    "averages": "平均值",
+    "states": {
+      "new": "新建",
+      "ready": "就绪",
+      "running": "运行中",
+      "done": "已完成"
+    }
+  },
+  "panel": {
+    "overviewTab": "原理解析与复杂度",
+    "compareTab": "调度器对比",
+    "formulas": "核心公式",
+    "keyPoints": "关键机制",
+    "pros": "优势",
+    "cons": "权衡"
+  },
+  "eval": {
+    "title": "确定性评估",
+    "subtitle": "在当前进程表上同时运行 FCFS、SJF、SRTF、优先级与时间片轮转，对比等待、周转与响应时间。",
+    "algorithm": "调度器",
+    "avgWaiting": "平均等待",
+    "avgTurnaround": "平均周转",
+    "avgResponse": "平均响应",
+    "cpuUtil": "CPU 利用率",
+    "switches": "切换次数",
+    "lowestWait": "最低平均等待",
+    "activeTag": "当前",
+    "switchAria": "切换可视化至 {{name}}",
+    "settingsNote": "评估参数：时间片轮转 q = {{quantum}}，优先级（{{mode}}）。"
+  },
+  "errors": {
+    "minProcesses": "工作负载中至少需要保留 1 个进程。",
+    "maxProcesses": "为保证清晰展示，最多支持 8 个进程。",
+    "invalidArrival": "{{pid}}：到达时间必须为大于等于 0 的整数。",
+    "invalidBurst": "{{pid}}：CPU 突发时间必须为 1 到 100 之间的整数。",
+    "invalidPriority": "{{pid}}：优先级必须为大于等于 1 的正整数。",
+    "invalidQuantum": "时间片必须为 1 到 30 之间的整数。",
+    "invalidMlfqQuanta": "Q0 和 Q1 的时间片必须为 1 到 30 之间的整数。",
+    "applyFailed": "无法使用给定参数生成调度方案。"
+  },
+  "steps": {
+    "init": "已初始化 {{count}} 个进程用于调度演示。",
+    "arrive": "在 t = {{time}} 时，{{pid}} 到达（突发时间 {{burst}}）并进入就绪队列。",
+    "arriveQueue": "在 t = {{time}} 时，{{pid}} 到达并进入 {{queue}}。",
+    "idle": "CPU 在 t = {{start}} 至 t = {{end}} 期间空闲，等待下一个进程到达。",
+    "dispatch": "在 t = {{time}} 时，将 {{pid}} 分派至 CPU（剩余突发：{{remaining}}）。",
+    "dispatchPriority": "在 t = {{time}} 时，分派优先级最高（{{priority}}）的 {{pid}}。",
+    "dispatchQuantum": "在 t = {{time}} 时，为 {{pid}} 分配最多 q = {{quantum}} 的时间片（剩余：{{remaining}}）。",
+    "dispatchQueue": "在 t = {{time}} 时，从 {{queue}}（{{policy}}）分派 {{pid}}。",
+    "runSlice": "{{pid}} 在 t = {{start}} 至 t = {{end}} 期间占用 CPU 运行（剩余：{{remaining}}）。",
+    "preempt": "在 t = {{time}} 时，{{incomingPid}} 抢占了 {{currentPid}}（{{reason}}）。",
+    "quantumExpire": "在 t = {{time}} 时，{{pid}} 时间片耗尽（剩余 {{remaining}}），返回就绪队列末尾。",
+    "demote": "在 t = {{time}} 时，{{pid}} 在 {{fromQueue}} 用完时间片并降级至 {{toQueue}}（剩余：{{remaining}}）。",
+    "complete": "{{pid}} 在 t = {{finish}} 完成（周转 = {{turnaround}}，等待 = {{waiting}}，响应 = {{response}}）。",
+    "done": "调度完成：平均等待 = {{avgWaiting}}，平均周转 = {{avgTurnaround}}，平均响应 = {{avgResponse}}，CPU 利用率 = {{cpuUtilization}}%。"
+  }
+}

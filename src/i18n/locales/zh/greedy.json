@@ -1,0 +1,128 @@
+{
+  "title": "贪心算法 (Greedy)",
+  "subtitle": "逐步追踪局部最优决策与可行性约束，理解贪心选择性质何时成立，以及在哪些反例下会失效。",
+  "algos": {
+    "activity-selection": {
+      "name": "活动选择问题",
+      "shortDesc": "按最早结束时间排序，依次接纳所有互不重叠的活动。",
+      "complexityNote": "按结束时间排序决定时间复杂度 · 可通过交换论证证明贪心最优"
+    },
+    "fractional-knapsack": {
+      "name": "分数背包问题",
+      "shortDesc": "按单位重量价值降序排列，依次整件或按比例装入直至背包装满。",
+      "complexityNote": "按价值密度降序选择 · 因物品可分割，贪心策略必达全局最优"
+    },
+    "greedy-coin-change": {
+      "name": "贪心零钱兑换",
+      "shortDesc": "每次选取不超过余额的最大面额，并与动态规划全局最优解对照。",
+      "complexityNote": "在标准货币体系下最优 · 面对非标准面额如 [1, 3, 4] 可能失效"
+    }
+  },
+  "controls": {
+    "algorithm": "算法",
+    "parameters": "输入参数",
+    "playback": "播放控制",
+    "speed": "速度",
+    "stepCounter": "步骤 {{current}} / {{total}}",
+    "resetDefaults": "恢复默认",
+    "apply": "应用输入",
+    "showCode": "显示代码",
+    "hideCode": "隐藏代码",
+    "loadFailingCase": "载入反例 ([1, 3, 4], 6)",
+    "loadCanonicalCase": "载入标准硬币 ([1, 5, 10, 25], 41)",
+    "activitiesLabel": "活动 (名称:开始:结束)",
+    "activitiesHint": "逗号分隔，最多 12 个区间，需满足 开始 < 结束",
+    "capacity": "背包容量 W",
+    "itemsLabel": "物品 (名称:重量:价值)",
+    "itemsHint": "逗号分隔，最多 10 件，重量须为正数",
+    "coinsLabel": "硬币面额",
+    "coinsHint": "最多 8 个正整数，例如：1, 5, 10, 25",
+    "amountLabel": "目标金额 (0–200)"
+  },
+  "views": {
+    "activity": {
+      "title": "活动区间时间轴",
+      "accepted": "已选",
+      "rejected": "冲突",
+      "active": "检查中",
+      "lastFinish": "上次结束",
+      "selectedCount": "已选数",
+      "statusAccepted": "已接纳",
+      "statusRejected": "时间重叠",
+      "statusActive": "检查中",
+      "statusPending": "待定",
+      "noneYet": "—"
+    },
+    "knapsack": {
+      "title": "按密度排序的物品与装填条",
+      "fillBarLabel": "背包容量装填进度",
+      "capacityUsed": "已用容量",
+      "totalValue": "总价值",
+      "ratio": "价值密度",
+      "weight": "重量",
+      "value": "价值",
+      "taken": "已装入",
+      "skipped": "已跳过（满）",
+      "pending": "待处理",
+      "wholeTag": "100%",
+      "fractionTag": "{{percent}}%"
+    },
+    "coin": {
+      "title": "面额选取与余额变化",
+      "target": "目标金额",
+      "remaining": "剩余金额",
+      "covered": "已凑金额",
+      "coinsUsed": "已用硬币",
+      "denomination": "面额 {{value}}",
+      "countBadge": "×{{count}}",
+      "pickedSequence": "已选硬币序列",
+      "emptyPicked": "暂未选取硬币",
+      "greedyLabel": "贪心结果",
+      "dpOptLabel": "DP 最优解",
+      "coinsSummary": "{{count}} 枚 [{{coins}}]",
+      "unreachedSummary": "失败（余额 {{remaining}}）",
+      "impossibleSummary": "无解",
+      "verdictOptimalTitle": "贪心策略与全局最优一致",
+      "verdictOptimalBody": "在此面额与目标下，优先选最大面额即可达到最少硬币数。",
+      "verdictSuboptimalTitle": "反例：贪心结果非最优",
+      "verdictSuboptimalBody": "优先选取面额 {{first}} 导致共需 {{greedyCount}} 枚，多于 DP 最优的 {{optCount}} 枚。",
+      "verdictFailedTitle": "反例：贪心策略陷入死胡同",
+      "verdictFailedBody": "贪心剩余 {{remaining}} 无法凑整，而 DP 存在 {{optCount}} 枚硬币的精确解。",
+      "verdictImpossibleTitle": "不存在精确组合",
+      "verdictImpossibleBody": "给定面额下，贪心与动态规划均无法凑出该目标金额。"
+    }
+  },
+  "related": {
+    "title": "AlgoVs 中的其他贪心算法",
+    "dijkstra": "Dijkstra 最短路径",
+    "dijkstraDesc": "贪心确定当前距离最近的未访问顶点",
+    "mstCompare": "Prim 与 Kruskal 最小生成树",
+    "mstCompareDesc": "在算法对比页探索最小生成树的贪心策略",
+    "huffman": "哈夫曼编码",
+    "huffmanDesc": "每次贪心合并频率最低的两个符号"
+  },
+  "errors": {
+    "invalidInput": "请检查输入值后重试。",
+    "invalidActivities": "请输入 1–12 个区间，格式为 名称:开始:结束（开始 < 结束）。",
+    "invalidItems": "请输入 1–10 件物品，格式为 名称:重量:价值（重量与容量须为正数）。",
+    "invalidCoins": "请输入 1–8 个正整数面额及 0–200 的目标金额。"
+  },
+  "steps": {
+    "activitySort": "已按最早结束时间升序排列 {{count}} 个活动。",
+    "activityAccept": "接纳 {{name}} [{{start}}, {{end}}]，因为开始时间 {{start}} ≥ 上次结束 {{prevEnd}}。",
+    "activityReject": "拒绝 {{name}} [{{start}}, {{end}}] — 与上次结束时间 {{lastEnd}} 冲突。",
+    "activityDone": "完成！共选出 {{count}} 个互不重叠的活动：{{selected}}。",
+    "fracSort": "已按价值/重量比降序排列 {{count}} 件物品（容量 {{capacity}}）。",
+    "fracSkipFull": "跳过 {{name}} — 背包已满（{{capacity}}）。",
+    "fracTakeWhole": "整件装入 {{name}}（重 {{weight}}、值 {{value}}、比 {{ratio}}），剩余容量 {{remaining}}。",
+    "fracTakePart": "装入 {{name}} 的 {{percent}}%（{{takenWeight}}/{{weight}} → +{{gainedValue}} 价值），背包已满。",
+    "fracDone": "完成！最大价值 = {{totalValue}}，已用容量 {{usedWeight}}/{{capacity}}。",
+    "coinSort": "针对目标 {{amount}} 将硬币面额降序排列：[{{coins}}]。",
+    "coinSkip": "跳过面额 {{coin}} — 大于剩余金额 {{remaining}}。",
+    "coinPick": "选取面额 {{coin}} → 剩余 {{remaining}}（已用 {{count}} 枚）。",
+    "coinDoneOptimal": "完成！贪心找到最优解：{{count}} 枚硬币 [{{coins}}]。",
+    "coinDoneSuboptimal": "贪心使用了 {{greedyCount}} 枚 [{{greedyCoins}}]，而 DP 最优仅需 {{optCount}} 枚 [{{optCoins}}]。",
+    "coinDoneFailedWithOpt": "对于目标 {{amount}}，贪心剩余 {{remaining}} 失败，而 DP 可用 {{optCount}} 枚 [{{optCoins}}] 完成。",
+    "coinDoneImpossible": "使用给定面额无法凑出目标金额 {{amount}}。"
+  }
+}

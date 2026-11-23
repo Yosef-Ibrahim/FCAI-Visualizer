@@ -7,8 +7,8 @@ export class CountingSort extends SortingAlgorithm {
     super('counting');
   }
 
-  getDefaultInput() {
-    return Array.from({ length: 20 }, () => Math.floor(Math.random() * 15) + 1);
+  getDefaultInput(size = 20) {
+    return Array.from({ length: size }, () => Math.floor(Math.random() * 15) + 1);
   }
 
   generateSteps(input) {

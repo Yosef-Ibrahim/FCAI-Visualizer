@@ -1,3 +1,16 @@
+import {
+  dpGreedyComplexity,
+  dpGreedyExplanations,
+  dpGreedyAlgoNames,
+  dpGreedyCodeSnippets,
+} from './algorithmDesignData';
+import {
+  schedulingComplexity,
+  schedulingExplanations,
+  schedulingAlgoNames,
+  schedulingCodeSnippets,
+} from './schedulingData';
+
 export const complexity = {
   // ── Sorting: best / avg / worst / space ──
   bubble:        {best:'O(n)',       avg:'O(n²)',       worst:'O(n²)',       space:'O(1)',     note:'Stable · In-place · Best case: already sorted'},
@@ -31,6 +44,8 @@ export const complexity = {
   dijkstra:      {access:'O(V²)',   search:'O(V²)',     insert:'O(V²)',      delete:'O(V²)',  space:'O(V)', note:'Naive O(V²) · With min-heap: O((V+E) log V)'},
   prim:          {access:'O(V²)',   search:'O(V²)',     insert:'O(V²)',      delete:'O(V²)',  space:'O(V)', note:'MST · O(E log V) with priority queue'},
   kruskal:       {access:'O(E log E)',search:'O(E log E)',insert:'O(E log E)',delete:'O(E log E)',space:'O(V+E)',note:'MST · Union-Find with path compression'},
+  ...dpGreedyComplexity,
+  ...schedulingComplexity,
 };
 
 // =====================================================
@@ -54,6 +69,8 @@ export const explanations = {
   dijkstra:  { title:"Dijkstra's Algorithm", body:`<p>Finds the shortest path from a source node to all other nodes in a weighted graph with non-negative weights.</p><ul><li>Greedy approach: always processes the lowest-distance unvisited node</li><li>O(V²) naive; O((V+E) log V) with priority queue</li><li>Fails with negative edge weights</li></ul>` },
   prim:      { title:"Prim's MST", body:`<p>Builds a Minimum Spanning Tree by greedily adding the cheapest edge that connects the growing MST to an unvisited vertex.</p><ul><li>Starts from any vertex</li><li>Good for dense graphs</li><li>Output: tree that connects all vertices with minimum total weight</li></ul>` },
   kruskal:   { title:"Kruskal's MST", body:`<p>Builds a Minimum Spanning Tree by sorting all edges by weight and adding each one if it doesn't create a cycle, using Union-Find.</p><ul><li>Good for sparse graphs</li><li>O(E log E) dominated by edge sort</li><li>Processes edges globally rather than growing from a vertex</li></ul>` },
+  ...dpGreedyExplanations,
+  ...schedulingExplanations,
 };
 
 export const algoNames = {
@@ -68,6 +85,8 @@ export const algoNames = {
   bfs:'Breadth-First Search', dfs:'Depth-First Search', dijkstra:'Dijkstra Shortest Path',
   prim:'Prim — Minimum Spanning Tree', kruskal:'Kruskal — Minimum Spanning Tree',
   compare:'Algorithm Comparison',
+  ...dpGreedyAlgoNames,
+  ...schedulingAlgoNames,
 };
 
 // =====================================================
@@ -1221,4 +1240,6 @@ export const codeSnippets = {
       '}',
     ],
   },
+  ...dpGreedyCodeSnippets,
+  ...schedulingCodeSnippets,
 };

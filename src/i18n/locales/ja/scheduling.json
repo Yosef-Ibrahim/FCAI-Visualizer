@@ -1,0 +1,214 @@
+{
+  "title": "CPU スケジューリング",
+  "subtitle": "OS ディスパッチャがレディキューからプロセスを選択し、ガントチャート上に CPU スライスを割り当てて待ち時間・ターンアラウンド・応答時間を調整する流れを追跡します。",
+  "algos": {
+    "fcfs": {
+      "name": "FCFS",
+      "fullName": "先着順（FCFS）",
+      "shortDesc": "到着時刻順に厳密に実行する非プリエンプティブな FIFO キュー。"
+    },
+    "sjf": {
+      "name": "SJF",
+      "fullName": "最短ジョブ優先（SJF）",
+      "shortDesc": "実行可能なプロセスの中で最小の CPU バーストを選ぶ非プリエンプティブ方式。"
+    },
+    "srtf": {
+      "name": "SRTF",
+      "fullName": "最短残り時間優先（SRTF）",
+      "shortDesc": "より短いバーストのプロセスが到着した瞬間に切り替えるプリエンプティブ SJF。"
+    },
+    "priority": {
+      "name": "優先度",
+      "fullName": "優先度スケジューリング",
+      "shortDesc": "最も高い優先度のプロセスを実行します（数値が小さいほど高優先度）。"
+    },
+    "round-robin": {
+      "name": "ラウンドロビン",
+      "fullName": "ラウンドロビン（RR）",
+      "shortDesc": "固定タイムクォンタム q ごとにプロセスを順番に切り替える時分割方式。"
+    },
+    "mlq": {
+      "name": "MLQ",
+      "fullName": "多段階キュー（MLQ）",
+      "shortDesc": "フォアグラウンド（Q0: RR）とバックグラウンド（Q1: FCFS）を厳格な優先度で分離します。"
+    },
+    "mlfq": {
+      "name": "MLFQ",
+      "fullName": "多段階フィードバックキュー（MLFQ）",
+      "shortDesc": "新規プロセスは Q0 に入り、クォンタムを使い切ると Q0 → Q1 → Q2 へ降格します。"
+    }
+  },
+  "presets": {
+    "fcfsSlide11": "スライド 11: P1(24), P2(3), P3(3)",
+    "fcfsConvoy": "コンボイ効果の改善: P2(3), P3(3), P1(24)",
+    "fcfsIdle": "CPU アイドル区間: 到着 0, 6, 7",
+    "sjfSlide19": "スライド 19: 異なる到着時刻（平均 4）",
+    "sjfSlide14": "スライド 14: 同時到着（平均 7）",
+    "srtfSlide20": "スライド 20: プリエンプティブ SJF（平均 3）",
+    "srtfSlide21": "スライド 21: SRTF トレース（平均 6.5）",
+    "prioSlide23": "スライド 23: 非プリエンプティブ優先度（平均 8.2）",
+    "prioPreemptive": "プリエンプティブ優先度の到着",
+    "rrSlide25": "スライド 25: タイムクォンタム q = 4",
+    "rrSlide26": "スライド 26: タイムクォンタム q = 20",
+    "rrSlide39": "スライド 39: 決定的評価（q = 10）",
+    "mlqDefault": "フォアグラウンド RR (Q0) + バックグラウンド FCFS (Q1)",
+    "mlfqSlide32": "スライド 32: Q0(8) → Q1(16) → Q2(FCFS)"
+  },
+  "controls": {
+    "algorithm": "スケジューラ",
+    "presets": "講義プリセット",
+    "generateRandom": "ランダム生成",
+    "processCount": "プロセス数",
+    "editWorkload": "プロセス編集",
+    "closeEditor": "編集を閉じる",
+    "options": "スケジューラ設定",
+    "quantum": "タイムクォンタム (q)",
+    "quantumHint": "1〜30 の整数で指定",
+    "mlfqQ0": "Q0 クォンタム",
+    "mlfqQ1": "Q1 クォンタム",
+    "mlfqQ2Note": "Q2 は CPU バウンドなジョブを非プリエンプティブ FCFS で処理します。",
+    "priorityMode": "プリエンプション",
+    "nonPreemptive": "非プリエンプティブ",
+    "preemptive": "プリエンプティブ",
+    "priorityHint": "小さい整数ほど高い優先度を表します（1 が最高）。",
+    "workload": "プロセス一覧",
+    "workloadCount": "{{count}} / 8",
+    "addProcess": "プロセスを追加",
+    "removeProcess": "{{pid}} を削除",
+    "applyWorkload": "ワークロードを適用",
+    "resetDefault": "初期値に戻す",
+    "playback": "ステップ再生",
+    "stepCounter": "ステップ {{current}} / {{total}}",
+    "speed": "速度",
+    "restart": "先頭へ戻る",
+    "stepBack": "1 ステップ戻る",
+    "play": "再生",
+    "pause": "一時停止",
+    "stepForward": "1 ステップ進む",
+    "jumpToEnd": "末尾へ移動",
+    "showCode": "コードトレースを表示",
+    "hideCode": "コードトレースを隠す",
+    "colPid": "PID",
+    "colArrival": "到着",
+    "colBurst": "バースト",
+    "colPriority": "優先度",
+    "colQueue": "キュー",
+    "queueFg": "Q0 (FG)",
+    "queueBg": "Q1 (BG)"
+  },
+  "telemetry": {
+    "clock": "時刻",
+    "cpu": "CPU",
+    "idle": "待機",
+    "none": "—",
+    "avgWaiting": "平均待ち",
+    "avgTurnaround": "平均ターンアラウンド",
+    "avgResponse": "平均応答",
+    "cpuUtil": "CPU 使用率",
+    "throughput": "スループット",
+    "contextSwitches": "切替回数"
+  },
+  "phases": {
+    "init": "初期化",
+    "arrive": "到着",
+    "idle": "アイドル",
+    "dispatch": "ディスパッチ",
+    "run": "実行中",
+    "preempt": "プリエンプト",
+    "demote": "降格",
+    "complete": "完了",
+    "done": "終了"
+  },
+  "gantt": {
+    "title": "CPU ガントチャート",
+    "subtitle": "正確な切り替え時刻を示す比例タイムライン",
+    "empty": "「1 ステップ進む」または「再生」を押して最初の CPU スライスを実行します。",
+    "idleLabel": "IDLE",
+    "totalSpan": "合計時間: {{time}}",
+    "progress": "t = {{current}} / {{total}}",
+    "ariaLabel": "CPU スケジューリング ガントチャート",
+    "sliceTooltip": "{{pid}}: t = {{start}} 〜 {{end}}（期間 {{duration}}）"
+  },
+  "queues": {
+    "title": "CPU とレディキュー",
+    "cpuSlot": "実行中 CPU",
+    "cpuIdle": "アイドル",
+    "cpuWaiting": "ディスパッチ待機中",
+    "readyQueue": "レディキュー",
+    "emptyQueue": "空",
+    "remainingTag": "残り {{remaining}}",
+    "priorityTag": "p={{priority}}",
+    "demotionHint": "クォンタム満了 → 次の下位キューへ降格",
+    "activeQueueBadge": "実行中"
+  },
+  "table": {
+    "title": "プロセストレース表",
+    "pid": "PID",
+    "arrival": "到着",
+    "burst": "バースト",
+    "priority": "優先度",
+    "queue": "キュー",
+    "remaining": "残り",
+    "start": "初回開始",
+    "finish": "完了",
+    "turnaround": "ターンアラウンド",
+    "waiting": "待ち時間",
+    "response": "応答時間",
+    "state": "状態",
+    "averages": "平均",
+    "states": {
+      "new": "新規",
+      "ready": "実行可能",
+      "running": "実行中",
+      "done": "完了"
+    }
+  },
+  "panel": {
+    "overviewTab": "解説と計算量",
+    "compareTab": "方式を比較",
+    "formulas": "基本公式",
+    "keyPoints": "主な動作",
+    "pros": "利点",
+    "cons": "トレードオフ"
+  },
+  "eval": {
+    "title": "決定的評価",
+    "subtitle": "現在のプロセス表に対して FCFS・SJF・SRTF・優先度・ラウンドロビンを一括実行し、待ち・ターンアラウンド・応答時間を比較します。",
+    "algorithm": "スケジューラ",
+    "avgWaiting": "平均待ち",
+    "avgTurnaround": "平均ターンアラウンド",
+    "avgResponse": "平均応答",
+    "cpuUtil": "CPU 使用率",
+    "switches": "切替回数",
+    "lowestWait": "最小平均待ち時間",
+    "activeTag": "表示中",
+    "switchAria": "{{name}} に切り替える",
+    "settingsNote": "評価条件: ラウンドロビン q = {{quantum}}、優先度（{{mode}}）。"
+  },
+  "errors": {
+    "minProcesses": "少なくとも 1 つのプロセスを残してください。",
+    "maxProcesses": "見やすく表示するためプロセス数は最大 8 件です。",
+    "invalidArrival": "{{pid}}: 到着時刻は 0 以上の整数にしてください。",
+    "invalidBurst": "{{pid}}: バースト時間は 1〜100 の整数にしてください。",
+    "invalidPriority": "{{pid}}: 優先度は 1 以上の正の整数にしてください。",
+    "invalidQuantum": "タイムクォンタムは 1〜30 の整数にしてください。",
+    "invalidMlfqQuanta": "Q0 と Q1 のクォンタムは 1〜30 の整数にしてください。",
+    "applyFailed": "指定されたパラメータではスケジュールを生成できませんでした。"
+  },
+  "steps": {
+    "init": "スケジューリング対象として {{count}} 個のプロセスを初期化しました。",
+    "arrive": "時刻 t = {{time}} に {{pid}}（バースト {{burst}}）が到着し、レディキューに入りました。",
+    "arriveQueue": "時刻 t = {{time}} に {{pid}} が到着し、{{queue}} に入りました。",
+    "idle": "次のプロセス到着まで、t = {{start}} 〜 {{end}} の間 CPU はアイドル状態です。",
+    "dispatch": "時刻 t = {{time}} に {{pid}} を CPU へディスパッチします（残りバースト: {{remaining}}）。",
+    "dispatchPriority": "時刻 t = {{time}} に最高優先度（{{priority}}）の {{pid}} をディスパッチします。",
+    "dispatchQuantum": "時刻 t = {{time}} に {{pid}} を最大クォンタム q = {{quantum}} でディスパッチします（残り: {{remaining}}）。",
+    "dispatchQueue": "時刻 t = {{time}} に {{queue}}（{{policy}}）から {{pid}} をディスパッチします。",
+    "runSlice": "{{pid}} が t = {{start}} 〜 {{end}} の間 CPU を実行しました（残り: {{remaining}}）。",
+    "preempt": "時刻 t = {{time}} に {{incomingPid}} が {{currentPid}} をプリエンプトしました（{{reason}}）。",
+    "quantumExpire": "時刻 t = {{time}} に {{pid}} のタイムクォンタムが終了（残り {{remaining}}）し、レディキュー末尾へ戻ります。",
+    "demote": "時刻 t = {{time}} に {{pid}} は {{fromQueue}} のクォンタムを使い切り、{{toQueue}} へ降格しました（残り: {{remaining}}）。",
+    "complete": "{{pid}} が t = {{finish}} で完了しました（ターンアラウンド = {{turnaround}}, 待ち = {{waiting}}, 応答 = {{response}}）。",
+    "done": "スケジュール完了: 平均待ち = {{avgWaiting}}, 平均ターンアラウンド = {{avgTurnaround}}, 平均応答 = {{avgResponse}}, CPU 使用率 = {{cpuUtilization}}%。"
+  }
+}

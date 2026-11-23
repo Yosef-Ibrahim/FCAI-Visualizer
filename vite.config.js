@@ -7,8 +7,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     watch: {
-      // Portable runtimes and browser profiles contain locked/generated files.
-      ignored: ['**/.tools/**'],
+      // Portable runtimes and standalone course references may contain locked/generated files.
+      ignored: ['**/.tools/**', '**/B_Tree/**'],
     },
   },
 })

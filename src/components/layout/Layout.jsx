@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import ContactSection from './ContactSection';
 import { useLocale } from '../../hooks/useLocale';
 
 const THEME_KEY = 'fcai_visualizer_theme';
@@ -67,6 +68,7 @@ export default function Layout() {
             imperative visualizers and page state reinitialize in-context. */}
         <main className="app-content" key={locale}>
           <Outlet />
+          <ContactSection />
         </main>
       </div>
     </div>

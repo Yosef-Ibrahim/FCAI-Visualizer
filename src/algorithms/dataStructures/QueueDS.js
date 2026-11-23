@@ -30,6 +30,14 @@ export class QueueDS {
           '    queue.append(val)',
           '    # O(1) — add to rear',
         ],
+        lineOffsets: { cpp: 2 },
+        cpp: [
+          "#include <queue>",
+          "using namespace std;",
+          "void enqueue(queue<int>& q, int value) {",
+          "  q.push(value); // O(1)",
+          "}",
+        ],
       },
       dequeue: {
         js: [
@@ -47,6 +55,17 @@ export class QueueDS {
           '    queue.pop(0)',
           '    return val  # O(1)',
         ],
+        lineOffsets: { cpp: 3 },
+        cpp: [
+          "#include <queue>",
+          "#include <stdexcept>",
+          "int dequeue(queue<int>& q) {",
+          "  if (q.empty()) throw underflow_error(\"Queue is empty\");",
+          "  int value = q.front();",
+          "  q.pop();",
+          "  return value; // O(1)",
+          "}",
+        ],
       },
       peek: {
         js: [
@@ -59,6 +78,15 @@ export class QueueDS {
           'def peek_front(queue):',
           '    if not queue: return None',
           '    return queue[0]  # O(1)',
+        ],
+        lineOffsets: { cpp: 3 },
+        cpp: [
+          "#include <queue>",
+          "#include <stdexcept>",
+          "int peekFront(const queue<int>& q) {",
+          "  if (q.empty()) throw underflow_error(\"Queue is empty\");",
+          "  return q.front(); // O(1)",
+          "}",
         ],
       },
     };
