@@ -18,6 +18,7 @@ export const CREATORS = [
     initials: 'ME',
     roleKey: 'contact.roleTeam',
     linkedin: 'https://www.linkedin.com/in/mahmoud-e-292b52322',
+    email: 'mahmodelsayed882@gmail.com',
     accent: 'accent3',
   },
 ];
