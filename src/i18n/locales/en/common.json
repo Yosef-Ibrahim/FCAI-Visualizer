@@ -13,7 +13,16 @@
     "madeBy": "Built for learning · Get in touch",
     "source": "GitHub repository",
     "sourceLabel": "Open GitHub source code and issues",
-    "sourceAction": "View source / report an issue"
+    "sourceAction": "View source / report an issue",
+    "about": "About & team",
+    "aboutLabel": "Open team and creator profiles",
+    "teamTitle": "About & team",
+    "teamSubtitle": "Built for FCAI-CU students to learn algorithms visually.",
+    "closeAbout": "Close team panel",
+    "roleCreator": "Creator",
+    "roleTeam": "Website team",
+    "linkedinCreator": "Open {{name}}'s LinkedIn profile",
+    "emailCreator": "Send email to {{name}}"
   },
   "header": {
     "eyebrow": "FCAI-CU · Learning platform",
