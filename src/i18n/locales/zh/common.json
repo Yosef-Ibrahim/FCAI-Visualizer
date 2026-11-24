@@ -97,7 +97,16 @@
   "codePanel": {
     "title": "实现",
     "ariaLabel": "算法实现",
-    "viewIn": "以{{lang}}查看"
+    "viewIn": "以{{lang}}查看",
+    "modeLabel": "代码视图",
+    "visualizerMode": "可视化",
+    "fullImplementation": "完整实现",
+    "helperLabel": "函数",
+    "languageLabel": "编程语言",
+    "copy": "复制",
+    "copied": "已复制",
+    "copyError": "无法复制代码。请检查剪贴板权限。",
+    "waitingForStep": "运行操作或逐步执行以跟踪代码。"
   },
   "notFound": {
     "eyebrow": "404 · 页面未找到",

@@ -93,6 +93,8 @@ describe('SuffixArray', () => {
         expect(typeof step.msg).toBe('string');
         expect(step.msg.length).toBeGreaterThan(0);
         expect(step.msgKey).toMatch(/^suffix:steps\./);
+        expect(step.codeTrace?.stepId).toBe(step.phase);
+        expect(['build', 'buildLcp']).toContain(step.codeTrace?.functionKey);
       }
     },
   );
@@ -116,6 +118,7 @@ describe('SuffixArray', () => {
           expect(found.positions).toEqual(expected);
           expect(found.rightBound - found.leftBound).toBe(expected.length);
           expect(found.steps.length).toBeGreaterThan(0);
+          expect(found.steps.every((step) => step.codeTrace?.functionKey === 'search')).toBe(true);
         }
       }
 

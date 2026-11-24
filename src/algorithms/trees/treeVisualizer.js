@@ -7,6 +7,9 @@
 import { THEMES, SPEED_TABLE, AVLTree } from './AVLTree.js';
 import { RedBlackTree } from './RedBlackTree.js';
 import { BST } from './BST.js';
+import { getTreeCode, getTreeCodeLine, getTreeStep, TREE_CODE_LANGUAGES } from './treeCode.js';
+import { layoutTreeSnapshot, TREE_CAMERA_ORIGIN } from './treeLayout.js';
+import { getTreeImplementation, getTreeImplementationLine } from '../../data/treeImplementations.js';
 
 const hintIcon = (paths) => `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
 
@@ -72,6 +75,10 @@ export function initTreeVisualizer(container, type = 'avl') {
       <span class="tree-title-main">${titleName}</span>
       <span class="tree-title-sub">Visualizer</span>
       <span class="tree-title-edition">Educational Edition</span>
+      <div class="tree-mode-switch" role="group" aria-label="Visualizer mode">
+        <button class="tree-mode-btn is-active" type="button" data-mode="visualizer" aria-pressed="true">Visualizer</button>
+        <button class="tree-mode-btn" type="button" data-mode="implementation" aria-pressed="false">Full Implementation</button>
+      </div>
     </div>
     <hr class="tree-divider"/>
     <section class="tree-section">
@@ -162,6 +169,9 @@ export function initTreeVisualizer(container, type = 'avl') {
   canvasWrap.className = 'tree-canvas-wrap';
   canvasWrap.innerHTML = `
     <canvas class="tree-canvas" id="tv-canvas" role="img" aria-label="Tree Visualization Canvas"></canvas>
+    <button class="tree-code-open-btn" id="tv-code-open" type="button" aria-controls="tv-code-panel" aria-expanded="false">
+      Show code walkthrough
+    </button>
     <div aria-live="polite" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;" id="tv-aria-live"></div>
     <div class="tree-live-stats">
       <div class="tree-ls-label">LIVE STATS</div>
@@ -198,6 +208,25 @@ export function initTreeVisualizer(container, type = 'avl') {
 
   container.appendChild(panel);
   container.appendChild(canvasWrap);
+  const codePanel = document.createElement('aside');
+  codePanel.className = 'tree-code-panel';
+  codePanel.id = 'tv-code-panel';
+  codePanel.innerHTML = `
+    <div class="tree-code-header">
+      <span class="tree-code-title">Code walkthrough</span>
+      <div class="tree-code-toolbar">
+        <select class="tree-code-helper" id="tv-code-helper" aria-label="Choose helper function"></select>
+        <div class="tree-code-lang-bar" id="tv-code-lang-bar" role="group" aria-label="Choose code language"></div>
+        <button class="tree-code-copy-btn" id="tv-code-copy" type="button">Copy</button>
+        <button class="tree-code-close-btn" id="tv-code-close" type="button" aria-label="Close code panel" title="Close">✕</button>
+      </div>
+    </div>
+    <div class="tree-code-copy-status" id="tv-code-copy-status" role="status"></div>
+    <div class="tree-code-progress-wrap"><div class="tree-code-progress-bar" id="tv-code-progress"></div></div>
+    <div class="tree-code-step-msg" id="tv-code-step-msg">Insert or delete a value to trace its implementation.</div>
+    <pre class="tree-code-pre"><code id="tv-code-lines"></code></pre>
+  `;
+  container.appendChild(codePanel);
 
   // ── References ─────────────────────────────────────────────────────────
   const canvas = canvasWrap.querySelector('#tv-canvas');
@@ -223,6 +252,155 @@ export function initTreeVisualizer(container, type = 'avl') {
   let rbtDirection = 1;
   let rbtBusy = false;
   let rbtPlayElapsed = 0;
+  const treeCode = getTreeCode(type);
+  let treeOperation = 'insert';
+  let treeSelectedHelper = 'insert';
+  let treeTraceSemantic = 'start';
+  let treeCurrentEvent = null;
+  let treeManualHelper = false;
+  let treeManualHistoryIndex = -1;
+  let treeCurrentLang = 'js';
+  let treeCodeMode = 'visualizer';
+  let treeCurrentSource = '';
+  const treeCodeLines = codePanel.querySelector('#tv-code-lines');
+  const treeCodeMsg = codePanel.querySelector('#tv-code-step-msg');
+  const treeCodeProgress = codePanel.querySelector('#tv-code-progress');
+  const treeCodeHelper = codePanel.querySelector('#tv-code-helper');
+  const treeCodeLangBar = codePanel.querySelector('#tv-code-lang-bar');
+  const treeCodeCopy = codePanel.querySelector('#tv-code-copy');
+  const treeCodeCopyStatus = codePanel.querySelector('#tv-code-copy-status');
+  const treeCodeToggle = canvasWrap.querySelector('#tv-code-open');
+  const treeLanguageLabels = { js: 'JS', python: 'Python', cpp: 'C++', java: 'Java', csharp: 'C#' };
+
+  function setCodePanelVisible(visible) {
+    codePanel.classList.toggle('visible', visible);
+    treeCodeToggle.setAttribute('aria-expanded', String(visible));
+    treeCodeToggle.hidden = visible;
+    canvasWrap.classList.toggle('has-code-closed', !visible);
+  }
+
+  setCodePanelVisible(false);
+  treeCodeToggle.addEventListener('click', () => setCodePanelVisible(true));
+
+  Object.keys(treeCode).forEach((helper) => {
+    const option = document.createElement('option');
+    option.value = helper;
+    option.textContent = helper;
+    treeCodeHelper.appendChild(option);
+  });
+  TREE_CODE_LANGUAGES.forEach((language) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `tree-code-lang-btn${language === treeCurrentLang ? ' active' : ''}`;
+    button.dataset.lang = language;
+    button.setAttribute('aria-pressed', String(language === treeCurrentLang));
+    button.textContent = treeLanguageLabels[language];
+    treeCodeLangBar.appendChild(button);
+  });
+
+  function renderTreeCode() {
+    const selectedCode = treeCode[treeSelectedHelper];
+    let lines = selectedCode?.[treeCurrentLang] ?? [];
+    let activeLine = getTreeCodeLine(
+      selectedCode,
+      selectedCode?.semantic?.[treeTraceSemantic]?.[treeCurrentLang] >= 0
+        ? treeTraceSemantic
+        : 'start',
+      treeCurrentLang,
+    );
+    if (treeCodeMode === 'implementation') {
+      lines = getTreeImplementation(type, treeCurrentLang).split('\n');
+      activeLine = getTreeImplementationLine(type, treeSelectedHelper, treeCurrentLang);
+      const semanticLine = getTreeCodeLine(
+        selectedCode,
+        selectedCode?.semantic?.[treeTraceSemantic]?.[treeCurrentLang] >= 0
+          ? treeTraceSemantic
+          : 'start',
+        treeCurrentLang,
+      );
+      const semanticSourceLine = selectedCode?.[treeCurrentLang]?.[semanticLine]?.trim();
+      const matchingLine = semanticSourceLine
+        ? lines.findIndex((line, index) => index >= Math.max(0, activeLine) && line.trim() === semanticSourceLine)
+        : -1;
+      if (matchingLine >= 0) activeLine = matchingLine;
+    }
+    treeCurrentSource = lines.join('\n');
+    treeCodeLines.replaceChildren();
+    lines.forEach((line, index) => {
+      const row = document.createElement('div');
+      row.className = `tree-cline${index === activeLine ? ' active' : index < activeLine ? ' visited' : ''}`;
+      const number = document.createElement('span');
+      number.className = 'tree-cline-num';
+      number.textContent = String(index + 1);
+      const text = document.createElement('span');
+      text.className = 'tree-cline-text';
+      text.textContent = line;
+      row.append(number, text);
+      treeCodeLines.appendChild(row);
+    });
+    if (activeLine >= 0) {
+      treeCodeLines.querySelector('.tree-cline.active')?.scrollIntoView({ block: 'nearest' });
+    }
+    if (treeCurrentEvent) {
+      treeCodeMsg.textContent = treeCurrentEvent.explanation;
+    }
+    const total = rbtHistory.length;
+    const progress = total > 0 && rbtHistoryIndex >= 0 ? ((rbtHistoryIndex + 1) / total) * 100 : 0;
+    treeCodeProgress.style.width = `${progress}%`;
+  }
+
+  treeCodeHelper.addEventListener('change', () => {
+    treeSelectedHelper = treeCodeHelper.value;
+    treeManualHelper = true;
+    treeManualHistoryIndex = rbtHistoryIndex;
+    renderTreeCode();
+  });
+  treeCodeLangBar.addEventListener('click', (event) => {
+    const button = event.target.closest('.tree-code-lang-btn');
+    if (!button) return;
+    treeCurrentLang = button.dataset.lang;
+    treeCodeLangBar.querySelectorAll('.tree-code-lang-btn').forEach((item) => {
+      const active = item === button;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-pressed', String(active));
+    });
+    renderTreeCode();
+  });
+  container.querySelectorAll('.tree-mode-btn').forEach((button) => {
+    button.addEventListener('click', () => {
+      const fullImplementation = button.dataset.mode === 'implementation';
+      treeCodeMode = fullImplementation ? 'implementation' : 'visualizer';
+      container.classList.toggle('is-full-implementation', fullImplementation);
+      container.querySelectorAll('.tree-mode-btn').forEach((item) => {
+        const active = item === button;
+        item.classList.toggle('is-active', active);
+        item.setAttribute('aria-pressed', String(active));
+      });
+      if (fullImplementation) {
+        setCodePanelVisible(true);
+      }
+      renderTreeCode();
+    });
+  });
+  treeCodeCopy.addEventListener('click', async () => {
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable');
+      await navigator.clipboard.writeText(treeCurrentSource);
+      treeCodeCopyStatus.textContent = 'Copied';
+    } catch {
+      treeCodeCopyStatus.textContent = 'Could not copy code. Check clipboard permissions.';
+    }
+  });
+  codePanel.querySelector('#tv-code-close').addEventListener('click', () => {
+    setCodePanelVisible(false);
+    container.classList.remove('is-full-implementation');
+    treeCodeMode = 'visualizer';
+    container.querySelectorAll('.tree-mode-btn').forEach((button) => {
+      const active = button.dataset.mode === 'visualizer';
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+  });
 
   const cam = { x:0, y:0, zoom:1, offsetX:0, offsetY:0 };
   let camReady = false;
@@ -297,8 +475,22 @@ export function initTreeVisualizer(container, type = 'avl') {
       involved.textContent = '';
       panel.querySelector('#tv-rbt-property-status').textContent = propsStatus;
       properties.forEach((item) => item.classList.remove('is-current', 'is-satisfied'));
+      treeCurrentEvent = null;
+      treeTraceSemantic = 'start';
+      renderTreeCode();
       updateRbtControls();
       return;
+    }
+    treeCurrentEvent = event;
+    const trace = getTreeStep(event, type, treeOperation);
+    treeTraceSemantic = trace.semantic;
+    if (treeManualHelper && rbtHistoryIndex !== treeManualHistoryIndex) {
+      treeManualHelper = false;
+      treeManualHistoryIndex = -1;
+    }
+    if (!treeManualHelper) {
+      treeSelectedHelper = trace.helper;
+      treeCodeHelper.value = trace.helper;
     }
     count.textContent = `Step ${rbtHistoryIndex + 1} of ${rbtHistory.length}`;
     title.textContent = event.operation;
@@ -330,6 +522,7 @@ export function initTreeVisualizer(container, type = 'avl') {
       item.classList.toggle('is-current', event.property === property);
       item.classList.toggle('is-satisfied', event.property === 'all');
     });
+    renderTreeCode();
     updateRbtControls();
   }
 
@@ -343,6 +536,12 @@ export function initTreeVisualizer(container, type = 'avl') {
 
   function startRbtOperation(action, value) {
     if (rbtBusy) return;
+    treeOperation = action;
+    treeManualHelper = false;
+    treeManualHistoryIndex = -1;
+    treeSelectedHelper = action;
+    treeCodeHelper.value = action;
+    setCodePanelVisible(true);
     const history = [];
     if (action === 'insert') tree.insert(value, (event) => history.push(event));
     else tree.delete(value, (event) => history.push(event));
@@ -434,8 +633,8 @@ export function initTreeVisualizer(container, type = 'avl') {
   }
 
   function resetCamera() {
-    const W = canvas.clientWidth, H = canvas.clientHeight;
-    cam.offsetX = W * 0.5; cam.offsetY = H * 0.35;
+    cam.offsetX = TREE_CAMERA_ORIGIN.x;
+    cam.offsetY = TREE_CAMERA_ORIGIN.y;
     cam.x = 0; cam.y = 0; cam.zoom = 1; camReady = true;
   }
 
@@ -509,6 +708,14 @@ export function initTreeVisualizer(container, type = 'avl') {
     const T = getT();
     const val = getVal();
     const pv = tree.getPredecessor(val);
+    treeOperation = 'search';
+    treeManualHelper = false;
+    treeSelectedHelper = 'search';
+    treeCodeHelper.value = 'search';
+    treeTraceSemantic = 'compare';
+    treeCurrentEvent = { explanation: 'Search for the predecessor in the ordered tree.' };
+    setCodePanelVisible(true);
+    renderTreeCode();
     tree.searchPath = pv !== null ? [val, pv] : [val];
     const m = pv !== null ? `Pred(${val}) = ${pv}` : `No predecessor for ${val}`;
     showPopup(m, T.accent2);
@@ -519,6 +726,14 @@ export function initTreeVisualizer(container, type = 'avl') {
     const T = getT();
     const val = getVal();
     const sv = tree.getSuccessor(val);
+    treeOperation = 'search';
+    treeManualHelper = false;
+    treeSelectedHelper = 'search';
+    treeCodeHelper.value = 'search';
+    treeTraceSemantic = 'compare';
+    treeCurrentEvent = { explanation: 'Search for the successor in the ordered tree.' };
+    setCodePanelVisible(true);
+    renderTreeCode();
     tree.searchPath = sv !== null ? [val, sv] : [val];
     const m = sv !== null ? `Succ(${val}) = ${sv}` : `No successor for ${val}`;
     showPopup(m, T.accent2);
@@ -528,6 +743,11 @@ export function initTreeVisualizer(container, type = 'avl') {
   function doGenerate() {
     if (rbtBusy) return;
     const T = getT();
+    treeOperation = 'insert';
+    treeManualHelper = false;
+    treeSelectedHelper = 'insert';
+    treeCodeHelper.value = 'insert';
+    setCodePanelVisible(true);
     let count = parseInt(randInput.value, 10);
     if (isNaN(count) || count < 1) count = 1;
     if (count > 99) count = 99;
@@ -747,36 +967,6 @@ export function initTreeVisualizer(container, type = 'avl') {
   let lastTime = performance.now();
   let rafId = null;
 
-  function layoutRbtSnapshot(snapshot, width, height) {
-    const nodes = [];
-    const edges = [];
-    let maxDepth = 0;
-    const visit = (node, depth, parentValue = null) => {
-      if (!node) return;
-      maxDepth = Math.max(maxDepth, depth);
-      visit(node.left, depth + 1, node.value);
-      nodes.push({ ...node, depth, parentValue });
-      visit(node.right, depth + 1, node.value);
-    };
-    visit(snapshot, 0);
-    const spacing = nodes.length > 1
-      ? Math.min(90, Math.max(34, (width - 80) / (nodes.length - 1)))
-      : 84;
-    const levelGap = maxDepth > 0
-      ? Math.max(48, Math.min(78, (height - 110) / maxDepth))
-      : 78;
-    nodes.forEach((node, index) => {
-      node.x = (index - (nodes.length - 1) / 2) * spacing;
-      node.y = node.depth * levelGap;
-      if (node.parentValue !== null) edges.push({ parentValue: node.parentValue, value: node.value });
-    });
-    return {
-      nodes: new Map(nodes.map((node) => [node.value, node])),
-      edges,
-      radius: Math.max(13, Math.min(20, spacing * 0.27)),
-    };
-  }
-
   function mixHex(from, to, progress) {
     const a = from.match(/[0-9a-f]{2}/gi) || ['00', '00', '00'];
     const b = to.match(/[0-9a-f]{2}/gi) || ['00', '00', '00'];
@@ -787,11 +977,11 @@ export function initTreeVisualizer(container, type = 'avl') {
     }).join('')}`;
   }
 
-  function drawRbtSnapshot(snapshot, previousSnapshot, progress, event, theme, width, height) {
+  function drawRbtSnapshot(snapshot, previousSnapshot, progress, event, theme) {
     if (!snapshot && !previousSnapshot) return;
     const eased = progress * progress * (3 - 2 * progress);
-    const before = layoutRbtSnapshot(previousSnapshot, width, height);
-    const after = layoutRbtSnapshot(snapshot, width, height);
+    const before = layoutTreeSnapshot(previousSnapshot);
+    const after = layoutTreeSnapshot(snapshot);
     const nodeRadius = Math.min(before.radius, after.radius);
     const pointFor = (value, oldNode, newNode) => {
       if (oldNode && newNode) {
@@ -906,7 +1096,7 @@ export function initTreeVisualizer(container, type = 'avl') {
     const previous = rbtProgress < 1 && transitionFromIndex >= 0 && transitionFromIndex < rbtHistory.length
       ? rbtHistory[transitionFromIndex].snapshot
       : snapshot;
-    drawRbtSnapshot(snapshot, previous, rbtProgress, event, T, W, H);
+    drawRbtSnapshot(snapshot, previous, rbtProgress, event, T);
     ctx.restore();
   }
 

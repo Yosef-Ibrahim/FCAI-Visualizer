@@ -72,6 +72,10 @@ export class Trie {
       kind,
       word,
       operation: details.operation ?? 'insert',
+      codeTrace: {
+        functionKey: details.operation ?? 'insert',
+        stepId: kind,
+      },
       currentNodeId: details.currentNodeId ?? this.root.id,
       activeEdgeId: details.activeEdgeId ?? null,
       focusPath: details.focusPath ?? [this.root.id],

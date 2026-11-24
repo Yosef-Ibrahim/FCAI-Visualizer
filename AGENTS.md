@@ -198,6 +198,48 @@ existing pattern exactly:
 - Accessibility: `role="img"` + `aria-label` on canvases, `aria-live="polite"`
   region for step narration. Keep these in new visualizers.
 
+## Advanced data-structure code walkthroughs
+
+The eight supported targets are Binary Search Tree (BST), AVL Tree, Red-Black
+Tree, B-Tree, Trie, Suffix Trie, Suffix Tree, and Suffix Array. Each offers a
+**Visualizer** walkthrough and a **Full Implementation** view in JavaScript,
+Python, C++, C#, and Java. Implementations must be complete, standalone
+versions of the selected structure; C++ examples include their standard
+headers.
+
+- BST, AVL, and Red-Black Tree share the imperative canvas visualizer in
+  `src/algorithms/trees/treeVisualizer.js`. Their standalone five-language
+  implementations live in `src/data/treeImplementations.js`; the separate
+  helper snippets and event-to-function/semantic-line mappings live in
+  `src/algorithms/trees/treeCode.js`. The Red-Black Tree source uses the
+  left-leaning red-black variant. Tree node layout and the initial camera origin
+  are fixed and independent of the visible canvas dimensions; use pan/zoom to
+  navigate larger trees rather than compressing or recentering them to fit side
+  panels. On wide layouts, the code walkthrough overlays the canvas so opening
+  it does not resize the tree; the canvas exposes a reopen control when the
+  panel is closed.
+- B-Tree, Trie, and suffix structures use React visualizer pages. Their pure
+  engines emit a `codeTrace` object on every playback step, containing a
+  semantic `stepId` and the active `functionKey`; the React code workbench
+  consumes those fields and does not own algorithm behavior.
+- B-Tree examples take maximum-child order as their constructor argument and
+  preserve the visualizer's `m - 1` maximum-key and
+  `floor((m - 1) / 2)` minimum-key limits. Deletion replaces internal keys with
+  predecessors and repairs underflow through sibling borrowing or merging.
+- Keep B-Tree, Trie, and suffix-structure implementation text and helper
+  extraction in `src/data/advancedStructureCode.js`. The shared React
+  workbench is `src/components/shared/AdvancedCodeWorkbench.jsx`; it owns only
+  code-view selection, not algorithm or playback state.
+- The React code panel is docked to the right on wide layouts and stacks below
+  the visualization on narrow screens. Language and helper selection must not
+  restart execution; a language change preserves the current step, and helper
+  selection during playback immediately displays the selected function with
+  its mapped line. Full Implementation mode displays the standalone source and
+  changes presentation only.
+- Keep all language controls keyboard accessible with an exposed selected
+  state, and provide a copy-to-clipboard action for the currently displayed
+  code.
+
 ## Persistence & state
 
 - All `localStorage` keys are prefixed `fcai_visualizer_`

@@ -97,7 +97,16 @@
   "codePanel": {
     "title": "実装",
     "ariaLabel": "アルゴリズムの実装",
-    "viewIn": "{{lang}}で表示"
+    "viewIn": "{{lang}}で表示",
+    "modeLabel": "コード表示",
+    "visualizerMode": "ビジュアライザー",
+    "fullImplementation": "完全な実装",
+    "helperLabel": "関数",
+    "languageLabel": "プログラミング言語",
+    "copy": "コピー",
+    "copied": "コピーしました",
+    "copyError": "コードをコピーできませんでした。クリップボードの権限を確認してください。",
+    "waitingForStep": "操作を実行するか、ステップを進めてコードを確認してください。"
   },
   "notFound": {
     "eyebrow": "404 · ページが見つかりません",

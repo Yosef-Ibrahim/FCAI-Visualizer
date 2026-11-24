@@ -273,6 +273,12 @@ export function buildSuffixTree(rawText) {
     msgKey: 'suffix:steps.treeComplete',
     msgParams: finalStats,
   });
+  steps.forEach((step) => {
+    step.codeTrace = {
+      functionKey: step.type.startsWith('search') ? 'search' : 'build',
+      stepId: step.type,
+    };
+  });
 
   return {
     ok: true,
@@ -320,6 +326,7 @@ export function searchSuffixTree(root, textWithSentinel, rawPattern) {
 
   steps.push({
     type: 'search-start',
+    codeTrace: { functionKey: 'search', stepId: 'search-start' },
     root,
     activeSuffixIndex: -1,
     activeSuffixEnd: -1,
@@ -345,6 +352,7 @@ export function searchSuffixTree(root, textWithSentinel, rawPattern) {
     if (!child) {
       steps.push({
         type: 'search-miss',
+        codeTrace: { functionKey: 'search', stepId: 'search-miss' },
         root,
         activeSuffixIndex: -1,
         activeSuffixEnd: -1,
@@ -379,6 +387,7 @@ export function searchSuffixTree(root, textWithSentinel, rawPattern) {
 
       steps.push({
         type: 'search-found',
+        codeTrace: { functionKey: 'search', stepId: 'search-found' },
         root,
         activeSuffixIndex: -1,
         activeSuffixEnd: -1,
@@ -405,6 +414,7 @@ export function searchSuffixTree(root, textWithSentinel, rawPattern) {
     if (k < edgeChars.length) {
       steps.push({
         type: 'search-miss',
+        codeTrace: { functionKey: 'search', stepId: 'search-miss' },
         root,
         activeSuffixIndex: -1,
         activeSuffixEnd: -1,
@@ -430,6 +440,7 @@ export function searchSuffixTree(root, textWithSentinel, rawPattern) {
     current = child;
     steps.push({
       type: 'search-edge',
+      codeTrace: { functionKey: 'search', stepId: 'search-edge' },
       root,
       activeSuffixIndex: -1,
       activeSuffixEnd: -1,
@@ -446,6 +457,9 @@ export function searchSuffixTree(root, textWithSentinel, rawPattern) {
     });
   }
 
+  steps.forEach((step) => {
+    step.codeTrace = { functionKey: 'search', stepId: step.type };
+  });
   return { ok: true, errorKey: null, found: false, positions: [], steps };
 }
 

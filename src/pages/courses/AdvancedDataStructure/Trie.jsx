@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pause, Play, RotateCcw, Search, SkipBack, SkipForward, Sparkles, Trash2 } from 'lucide-react';
 import { Trie } from '../../../algorithms/trees/Trie';
+import AdvancedCodeWorkbench from '../../../components/shared/AdvancedCodeWorkbench';
 import { useT } from '../../../hooks/useT';
 import '../../../styles/TrieVisualizer.css';
 
@@ -439,6 +440,7 @@ export default function TrieVisualizer() {
           </div>
         </footer>
       </section>
+      <AdvancedCodeWorkbench structure="trie" activeStep={activeStep} executionSteps={steps} stepIndex={stepIndex} />
     </div>
   );
 }

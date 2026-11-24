@@ -30,6 +30,7 @@ describe('Trie', () => {
 
     expect(first.steps.map((step) => step.kind)).toEqual(['start', 'create', 'create', 'markEnd']);
     expect(second.steps.map((step) => step.kind)).toEqual(['start', 'follow', 'create', 'create', 'markEnd']);
+    expect(second.steps.every((step) => step.codeTrace?.functionKey === 'insert' && step.codeTrace.stepId === step.kind)).toBe(true);
     expect(second.steps[1].focusPath).toHaveLength(2);
     expect(second.steps[1].activeEdgeId).toBe('root:node-1');
   });

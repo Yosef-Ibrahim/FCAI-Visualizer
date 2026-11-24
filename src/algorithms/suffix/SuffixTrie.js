@@ -171,6 +171,12 @@ export function buildSuffixTrie(rawText) {
     msgKey: 'suffix:steps.trieComplete',
     msgParams: finalStats,
   });
+  steps.forEach((step) => {
+    step.codeTrace = {
+      functionKey: step.type.startsWith('search') ? 'search' : 'build',
+      stepId: step.type,
+    };
+  });
 
   return {
     ok: true,
@@ -231,6 +237,7 @@ export function searchSuffixTrie(treeRoot, textWithSentinel, rawPattern) {
 
   steps.push({
     type: 'search-start',
+    codeTrace: { functionKey: 'search', stepId: 'search-start' },
     root: treeRoot,
     activeSuffixIndex: -1,
     activeSuffixEnd: -1,
@@ -251,6 +258,7 @@ export function searchSuffixTrie(treeRoot, textWithSentinel, rawPattern) {
     if (!next) {
       steps.push({
         type: 'search-miss',
+        codeTrace: { functionKey: 'search', stepId: 'search-miss' },
         root: treeRoot,
         activeSuffixIndex: -1,
         activeSuffixEnd: -1,
@@ -277,6 +285,7 @@ export function searchSuffixTrie(treeRoot, textWithSentinel, rawPattern) {
     path.push(current.id);
     steps.push({
       type: 'search-char',
+      codeTrace: { functionKey: 'search', stepId: 'search-char' },
       root: treeRoot,
       activeSuffixIndex: -1,
       activeSuffixEnd: -1,
@@ -301,6 +310,7 @@ export function searchSuffixTrie(treeRoot, textWithSentinel, rawPattern) {
 
   steps.push({
     type: 'search-found',
+    codeTrace: { functionKey: 'search', stepId: 'search-found' },
     root: treeRoot,
     activeSuffixIndex: -1,
     activeSuffixEnd: -1,
@@ -318,6 +328,9 @@ export function searchSuffixTrie(treeRoot, textWithSentinel, rawPattern) {
       count: positions.length,
       positions: positions.join(', '),
     },
+  });
+  steps.forEach((step) => {
+    step.codeTrace = { functionKey: 'search', stepId: step.type };
   });
 
   return {
