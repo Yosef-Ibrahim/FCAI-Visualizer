@@ -1,18 +1,20 @@
 :root {
   font-family: "Inter", "Segoe UI", sans-serif;
   color-scheme: light;
-  --bg: #f4f8fc;
+  /* Calm, low-glare academic palette. One accent family keeps every page
+     visually consistent; semantic colours stay muted rather than saturated. */
+  --bg: #f4f7f6;
   --surface: #ffffff;
-  --surface2: #f2f6fa;
-  --surface3: #e9f0f7;
-  --border: #dce6ef;
-  --text: #16324f;
-  --text-muted: #587087;
-  --accent: #1769aa;
-  --accent2: #d85b68;
-  --accent3: #16876b;
-  --accent4: #b77d18;
-  --yellow: #d8a52b;
+  --surface2: #eef3f1;
+  --surface3: #e3ebe7;
+  --border: #d9e3df;
+  --text: #20302d;
+  --text-muted: #5b6f6a;
+  --accent: #2f6b5e;
+  --accent2: #b05d5d;
+  --accent3: #3f7f63;
+  --accent4: #a37c35;
+  --yellow: #c39a4a;
   --text-main: var(--text);
   --bg-main: var(--bg);
   --bg-panel: var(--surface);
@@ -22,34 +24,38 @@
   --font-mono: "JetBrains Mono", Consolas, monospace;
   --font-head: "Manrope", "Segoe UI", sans-serif;
   --font-body: "Inter", "Segoe UI", sans-serif;
-  --sidebar-w: 286px;
-  --header-h: 76px;
+  --sidebar-w: 276px;
+  --header-h: 72px;
   --radius: 14px;
-  --shadow: 0 12px 34px rgba(26, 56, 82, 0.08);
+  --radius-sm: 10px;
+  --radius-lg: 20px;
+  --shadow: 0 12px 30px rgba(25, 45, 40, 0.08);
+  --shadow-sm: 0 2px 8px rgba(25, 45, 40, 0.05);
   --transition-speed: 0.25s;
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0e1825;
-  --surface: #152437;
-  --surface2: #1c2d42;
-  --surface3: #243950;
-  --border: #30465c;
-  --text: #eef5fb;
-  --text-muted: #a5b8ca;
-  --accent: #70b7f0;
-  --accent2: #ff8490;
-  --accent3: #5bd0aa;
-  --accent4: #ecc365;
-  --yellow: #f1ca68;
+  --bg: #101817;
+  --surface: #17211f;
+  --surface2: #1d2927;
+  --surface3: #25332f;
+  --border: #30423c;
+  --text: #e6eeeb;
+  --text-muted: #a2b5af;
+  --accent: #7fc0ad;
+  --accent2: #e09a9a;
+  --accent3: #91cfa7;
+  --accent4: #d8b578;
+  --yellow: #d9bb74;
   --text-main: var(--text);
   --bg-main: var(--bg);
   --bg-panel: var(--surface);
   --bg-alt: var(--surface2);
   --card-bg: var(--surface);
   --border-color: var(--border);
-  --shadow: 0 12px 34px rgba(0, 0, 0, 0.2);
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -61,6 +67,8 @@ body {
   overflow: hidden;
   background: var(--bg);
   color: var(--text);
+  font-size: 14px;
+  line-height: 1.55;
   /* --font-locale is set inline on <html> by LocaleProvider from the active
      locale's meta.fontFamily; falls back to the Latin-centric stack. */
   font-family: var(--font-locale, var(--font-body));
@@ -83,11 +91,11 @@ select option:disabled { color: var(--text-muted); }
 select:disabled { opacity: .55; }
 canvas { display: block; }
 a { color: inherit; text-decoration: none; }
-::selection { background: rgba(23, 105, 170, .18); }
-::-webkit-scrollbar { width: 8px; height: 8px; }
+::selection { background: color-mix(in srgb, var(--accent) 18%, transparent); }
+::-webkit-scrollbar { width: 9px; height: 9px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #b9cbd9; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--text-muted) 34%, transparent); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--accent) 60%, transparent); }
 
 .app-layout { display: flex; width: 100%; height: 100%; overflow: hidden; }
 
