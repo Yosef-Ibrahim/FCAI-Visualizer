@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('install', 'mcp', 'check')]
+    [ValidateSet('install', 'mcp', 'check', 'browserless')]
     [string]$Mode = 'mcp'
 )
 

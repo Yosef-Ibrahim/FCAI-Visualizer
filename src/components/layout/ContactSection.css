@@ -294,6 +294,16 @@
   .contact-dock-link[data-tooltip]::after {
     display: none;
   }
+
+  /* Icon-only actions so creator names are not ellipsized in the narrow card. */
+  .contact-creator-linkedin {
+    padding: 0 8px;
+  }
+
+  .contact-creator-linkedin span,
+  .contact-creator-linkedin svg:last-child {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

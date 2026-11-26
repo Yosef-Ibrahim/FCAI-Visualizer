@@ -398,7 +398,8 @@
   .course-card-grid, .learning-tools-grid, .topic-grid { grid-template-columns: 1fr; }
   .course-card { min-height: 220px; padding: 20px; }
   .learning-tool-card { align-items: flex-start; flex-wrap: wrap; }
-  .learning-tool-action { width: 100%; margin-left: 56px; }
+  /* 100% + the 56px indent would push the row 56px past the card. */
+  .learning-tool-action { width: calc(100% - 56px); margin-left: 56px; }
   .home-footer { flex-wrap: wrap; gap: 5px 10px; line-height: 1.6; }
   .course-overview { padding-top: 19px; }
   .course-overview-hero { min-height: unset; padding: 25px 20px; }

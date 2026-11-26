@@ -38,6 +38,7 @@ The commands below use the optional Windows launcher; replace `.\npm.cmd` with
 .\npm.cmd run test:watch # Vitest in watch mode while you work
 .\npm.cmd run build      # production build (Vercel deploys with this)
 .\npm.cmd run preview    # serve the dist/ build
+.\npm.cmd run smoke:layout # responsive layout smoke (Playwright, needs dist/)
 ```
 
 - **Tests live next to the code they cover** (`<name>.test.js`) and run under
@@ -49,8 +50,13 @@ The commands below use the optional Windows launcher; replace `.\npm.cmd` with
   covered as soon as it is registered.
 - `npm run verify` runs lint + typecheck + i18n:check + test + build in one
   pass and mirrors CI (`.github/workflows/ci.yml`).
+- `npm run smoke:layout` serves the built app and loads every visualizer route
+  at a phone (390×844) and tablet (768×1024) viewport, failing on page-level
+  horizontal overflow, controls clipped outside the viewport, or controls hidden
+  under the contact dock. It covers layout only (no clicking). Add new screens to
+  `ROUTES` in `scripts/smoke-layout.mjs`; run `npm run build` first locally.
 - CI runs on every push to `main` and every pull request: install → lint →
-  typecheck → i18n:check → test → build, on the Node version from
+  typecheck → i18n:check → test → build → layout smoke, on the Node version from
   `.node-version`. Deployment stays with Vercel's Git integration — the
   workflow only checks the code, it never deploys.
 - Do not hand-edit `dist/` (build output) or `package-lock.json`.
@@ -251,6 +257,9 @@ headers.
 - AI question generation and user AI-key management were removed (Phase 0);
   the app is fully offline for questions/plans (built-in question banks).
 - No `VITE_*` build-time env vars are currently required (`.env.example`).
+- `BROWSERLESS_TOKEN` is optional and read only by `npm run browserless:check`
+  (`docs/browserless.md`); it is declared empty in `.env.example` and is
+  never a build-time variable or committed value.
 - **Never commit real API keys.** If secrets are ever needed again, they
   belong in server-side stores such as Vercel env vars, never in source.
 - `vercel.json` rewrites everything except `/api/*` to `index.html` (SPA).

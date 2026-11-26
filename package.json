@@ -12,9 +12,11 @@
     "lint": "eslint .",
     "typecheck": "tsc",
     "i18n:check": "node scripts/i18n-check.mjs",
+    "browserless:check": "node --env-file-if-exists=.env scripts/playwright-local.mjs browserless",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview",
+    "smoke:layout": "node scripts/smoke-layout.mjs",
     "verify": "eslint . && tsc && node scripts/i18n-check.mjs && vitest run && vite build"
   },
   "dependencies": {
@@ -38,6 +40,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
+    "playwright": "1.65.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.0.11",

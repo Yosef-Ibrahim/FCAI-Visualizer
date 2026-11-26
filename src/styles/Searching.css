@@ -271,9 +271,17 @@
 }
 
 @media (max-width: 767px) {
+  .searching-page { height: auto; min-height: 100%; }
   .searching-side-panel { flex-direction: column; }
-  .sorting-controls  { flex-direction: column; align-items: stretch; }
-  .control-group     { justify-content: space-between; }
+  .sorting-controls  { flex-direction: column; align-items: stretch; min-width: 0; }
+  /* Let each row wrap instead of forcing the panel (and the page) wider
+     than the viewport. */
+  .control-group     { flex-wrap: wrap; justify-content: space-between; min-width: 0; }
+  .control-select    { flex: 1 1 auto; min-width: 0; max-width: 100%; }
+  .custom-input-field { flex: 1 1 120px; min-width: 0; }
+  .slider-group      { flex: 1 1 100%; min-width: 0; }
+  .slider-group input[type="range"] { flex: 1; min-width: 0; }
+  .search-target-group { flex-wrap: wrap; }
   .step-msg          { max-width: 100%; white-space: normal; }
   .searching-canvas-wrapper { min-height: 400px; }
   .custom-input-field { min-height: 44px; }
