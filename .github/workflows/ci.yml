@@ -43,3 +43,12 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      # Responsive layout smoke: loads every visualizer route at a phone and a
+      # tablet viewport against the built app and fails on horizontal overflow,
+      # clipped controls, or controls hidden under the contact dock.
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Responsive layout smoke (phone + tablet)
+        run: npm run smoke:layout

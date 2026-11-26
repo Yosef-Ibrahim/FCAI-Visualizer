@@ -1,5 +1,8 @@
 # Project-local Playwright MCP (Windows)
 
+For managed Chromium in the cloud instead of a local download, see
+[docs/browserless.md](browserless.md).
+
 OpenCode uses `opencode.json` to launch Playwright MCP with the portable Node
 version pinned in `.node-version`. Open `/mcps` to connect the `playwright`
 server (restart the project session if it has not discovered the config).
