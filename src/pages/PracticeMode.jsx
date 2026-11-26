@@ -17,6 +17,7 @@ import {
   Network,
   RotateCcw,
   Search,
+  Shuffle,
   Sparkles,
   Target,
   TreePine,
@@ -27,6 +28,7 @@ import {
   Zap,
 } from 'lucide-react';
 import {
+  MIXED_TOPIC,
   PRACTICE_TOPICS,
   getPracticeTopic,
   loadPracticeTopic,
@@ -55,6 +57,7 @@ const ICONS = {
   cpu: Cpu,
   archive: FileArchive,
   bookmark: Bookmark,
+  shuffle: Shuffle,
 };
 
 // Synthetic topic used when the user practises only their saved questions.
@@ -143,7 +146,11 @@ export default function PracticeMode() {
       setPool(shuffleQuestionSet(questions));
     } else {
       const bank = await loadPracticeTopic(topicId);
-      const seenIds = progress.scores[topicId]?.seenQuestionIds ?? [];
+      // A mixed session is made of real topic questions, so answered ids live
+      // under those topics; unions keep the whole pool moving forward.
+      const seenIds = topicId === 'mixed'
+        ? Object.values(progress.scores).flatMap((score) => score.seenQuestionIds ?? [])
+        : progress.scores[topicId]?.seenQuestionIds ?? [];
       setPool(selectSessionQuestions(bank, {
         limit: length === 'all' ? Infinity : Number(length),
         difficulty,
@@ -313,6 +320,24 @@ export default function PracticeMode() {
         </div>
 
         <div className="practice-grid">
+          {filter === 'all' && (
+            <button
+              type="button"
+              className="practice-topic practice-topic--mixed"
+              onClick={() => openTopic(MIXED_TOPIC.id)}
+            >
+              <span className="practice-topic-top">
+                <span className="practice-topic-icon"><Shuffle size={21} strokeWidth={1.8} /></span>
+                <span className="practice-topic-count">{t('hub.mixed.badge')}</span>
+              </span>
+              <strong className="practice-topic-title">{t(MIXED_TOPIC.labelKey)}</strong>
+              <span className="practice-topic-description">{t(MIXED_TOPIC.descriptionKey)}</span>
+              <span className="practice-topic-footer">
+                <span>{t('hub.mixed.topics', { count: PRACTICE_TOPICS.length })}</span>
+                <span className="practice-topic-go">{t('hub.practice')} <ArrowRight size={14} className="rtl-flip" /></span>
+              </span>
+            </button>
+          )}
           {visibleTopics.map((entry) => {
             const Icon = ICONS[entry.icon] ?? Target;
             const score = progress.scores[entry.id] ?? { total: 0, correct: 0 };
@@ -367,7 +392,9 @@ export default function PracticeMode() {
 
           <div className="practice-setup-meta">
             <span><Target size={15} /> {t('hub.questionsAvailable', { count: topic.questionCount })}</span>
-            <span><Trophy size={15} /> {topicScore?.total ? t('hub.topicAccuracy', { percent: accuracy }) : t('hub.notStarted')}</span>
+            <span><Trophy size={15} /> {topicId === 'mixed'
+              ? t('hub.mixed.meta', { count: PRACTICE_TOPICS.length })
+              : topicScore?.total ? t('hub.topicAccuracy', { percent: accuracy }) : t('hub.notStarted')}</span>
           </div>
 
           <fieldset className="practice-field">

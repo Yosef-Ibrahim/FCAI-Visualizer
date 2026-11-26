@@ -869,3 +869,26 @@
 .practice-saved-item .practice-card-meta {
   margin-bottom: 10px;
 }
+
+/* ── Mixed quiz across every topic ───────────────────────────────────────── */
+.practice-topic--mixed {
+  --topic-color: #6b58b8;
+  --topic-tint: #efecf9;
+  grid-column: 1 / -1;
+  min-height: 168px;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--topic-color) 10%, var(--surface)), var(--surface) 62%);
+}
+
+[data-theme="dark"] .practice-topic--mixed {
+  --topic-color: #b3a2e8;
+  --topic-tint: #262238;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--topic-color) 16%, var(--surface)), var(--surface) 62%);
+}
+
+.practice-topic--mixed .practice-topic-footer {
+  margin-top: auto;
+}
+
+.practice-topic--mixed .practice-topic-icon {
+  color: var(--topic-color);
+}

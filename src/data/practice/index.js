@@ -32,6 +32,19 @@ export const PRACTICE_TOPICS = [
   { id: 'compression', course: 'information-theory-compression', icon: 'archive', labelKey: 'practice:hub.topics.compression', descriptionKey: 'practice:hub.topicDescriptions.compression', questionCount: 200 },
 ];
 
+/**
+ * Session that draws from every topic. It is not a course card: it stays out of
+ * PRACTICE_TOPICS so course filters and per-topic scoring are untouched.
+ */
+export const MIXED_TOPIC = {
+  id: 'mixed',
+  course: 'all',
+  icon: 'shuffle',
+  labelKey: 'practice:hub.mixed.title',
+  descriptionKey: 'practice:hub.mixed.description',
+  questionCount: 3400,
+};
+
 const LOADERS = {
   arrays: () => import('./topics/dataStructures.js').then((module) => module.buildDataStructureTopic('arrays')),
   stacks: () => import('./topics/dataStructures.js').then((module) => module.buildDataStructureTopic('stacks')),
@@ -50,11 +63,22 @@ const LOADERS = {
   greedy: () => import('./topics/algorithms.js').then((module) => module.buildGreedyQuestions()),
   'cpu-scheduling': () => import('./topics/scheduling.js').then((module) => module.buildSchedulingQuestions()),
   compression: () => import('./topics/compression.js').then((module) => module.buildCompressionQuestions()),
+  mixed: async () => {
+    const banks = await Promise.all(PRACTICE_TOPICS.map((topic) => loadPracticeTopic(topic.id)));
+    const seen = new Set();
+    return banks.flat().filter((question) => {
+      const key = `${question.topic}::${question.id}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  },
 };
 
 const cache = new Map();
 
 export function getPracticeTopic(topicId) {
+  if (topicId === MIXED_TOPIC.id) return MIXED_TOPIC;
   return PRACTICE_TOPICS.find((topic) => topic.id === topicId) ?? null;
 }
 

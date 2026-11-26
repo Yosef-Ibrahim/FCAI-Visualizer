@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  MIXED_TOPIC,
   PRACTICE_TOPICS,
   buildSessionPool,
   loadPracticeTopic,
@@ -59,6 +60,22 @@ describe('practice question bank', () => {
       });
     });
   }
+});
+
+describe('mixed practice session', () => {
+  it('combines questions from every registered topic', async () => {
+    const mixed = await loadPracticeTopic('mixed');
+    const mixedTopics = new Set(mixed.map((question) => question.topic));
+    expect([...mixedTopics].sort()).toEqual(PRACTICE_TOPICS.map((topic) => topic.id).sort());
+    expect(mixed.length).toBeGreaterThanOrEqual(MIXED_TOPIC.questionCount);
+  });
+
+  it('builds a random session without duplicate questions', async () => {
+    const mixed = await loadPracticeTopic('mixed');
+    const selected = selectSessionQuestions(mixed, { limit: 10 });
+    expect(selected).toHaveLength(10);
+    expect(new Set(selected.map((question) => `${question.topic}::${question.id}`)).size).toBe(10);
+  });
 });
 
 describe('practice session selection', () => {

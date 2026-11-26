@@ -184,6 +184,13 @@
       "practice": "Practice saved questions",
       "empty": "No saved questions yet — tap the bookmark on any question to keep it here.",
       "remove": "Remove from saved"
+    },
+    "mixed": {
+      "badge": "All subjects",
+      "title": "Mixed everything",
+      "description": "Random questions from every practice topic — one session that mixes data structures, trees, algorithms, OS and compression.",
+      "meta": "Questions from all {{count}} topics",
+      "topics": "{{count}} topics combined"
     }
   }
 }
