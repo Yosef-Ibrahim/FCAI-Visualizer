@@ -276,6 +276,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 @media (max-width: 640px) {
   :root { --header-h: 66px; }
+  /* Keep the end of scrollable pages clear of the floating contact dock. */
+  .app-content { padding-bottom: 72px; }
   .app-header { gap: 10px; padding: 0 14px; }
   .header-eyebrow { font-size: 9px; }
   .header-title { font-size: 15px; }

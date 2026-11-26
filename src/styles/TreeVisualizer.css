@@ -146,7 +146,7 @@
   .tree-code-panel.visible{width:330px;flex-basis:330px}
 }
 @media(max-width: 767px) {
-  .tree-page{flex-direction:column;overflow-y:auto;overflow-x:hidden}
+  .tree-page{flex-direction:column;overflow-y:auto;overflow-x:hidden;padding-bottom:72px}
   .tree-panel{width:100%;min-width:100%;height:auto;max-height:none;border-right:none;border-bottom:1px solid var(--border);flex-shrink:0}
   .tree-canvas-wrap{min-height:400px;flex-shrink:0}
   .tree-code-panel{position:relative;inset:auto;z-index:auto;width:calc(100% - 16px);height:360px;flex:0 0 0;margin:0 8px;border:0;transform:none}

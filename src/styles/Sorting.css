@@ -192,11 +192,14 @@ input[type="range"] {
 }
 
 @media (max-width: 767px) {
+  /* Grow with the content so the page (not an overflowing 100%-tall box)
+     ends above the floating contact dock. */
+  .sorting-page {
+    height: auto;
+    min-height: 100%;
+  }
   .sorting-side-panel {
     flex-direction: column;
-  }
-  .control-group {
-    justify-content: space-between;
   }
   .sorting-canvas-wrapper {
     min-height: 400px;
