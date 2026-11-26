@@ -16,6 +16,7 @@ import {
 import { BTree, BTREE_MAX_ORDER, BTREE_MIN_ORDER, BTREE_ORDER } from '../../algorithms/trees/BTree';
 import { stepText } from '../../i18n/stepText';
 import { useT } from '../../hooks/useT';
+import AdvancedCodeWorkbench from './AdvancedCodeWorkbench';
 import '../../styles/BTreeVisualizer.css';
 import '../../styles/TreeVisualizer.css';
 
@@ -728,6 +729,7 @@ export default function BTreeVisualizer() {
           stats={stats}
         />
       </section>
+      <AdvancedCodeWorkbench structure="btree" activeStep={activeStep} executionSteps={steps} stepIndex={stepIndex} />
     </div>
   );
 }

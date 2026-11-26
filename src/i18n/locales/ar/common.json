@@ -106,7 +106,16 @@
   "codePanel": {
     "title": "التنفيذ",
     "ariaLabel": "تنفيذ الخوارزمية",
-    "viewIn": "العرض بـ {{lang}}"
+    "viewIn": "العرض بـ {{lang}}",
+    "modeLabel": "عرض الشيفرة",
+    "visualizerMode": "المحاكي",
+    "fullImplementation": "التنفيذ الكامل",
+    "helperLabel": "الدالة",
+    "languageLabel": "لغة البرمجة",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "copyError": "تعذر نسخ الشيفرة. تحقق من أذونات الحافظة.",
+    "waitingForStep": "نفّذ عملية أو تنقّل بين الخطوات لمتابعة شيفرتها."
   },
   "notFound": {
     "eyebrow": "404 · الصفحة غير موجودة",

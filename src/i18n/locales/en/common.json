@@ -106,7 +106,16 @@
   "codePanel": {
     "title": "Implementation",
     "ariaLabel": "Algorithm implementation",
-    "viewIn": "View in {{lang}}"
+    "viewIn": "View in {{lang}}",
+    "modeLabel": "Code view",
+    "visualizerMode": "Visualizer",
+    "fullImplementation": "Full Implementation",
+    "helperLabel": "Function",
+    "languageLabel": "Programming language",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyError": "Could not copy code. Check clipboard permissions.",
+    "waitingForStep": "Run or step through an operation to follow its code."
   },
   "notFound": {
     "eyebrow": "404 · PAGE NOT FOUND",

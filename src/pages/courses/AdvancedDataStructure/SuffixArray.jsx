@@ -15,6 +15,7 @@ import {
 } from '../../../algorithms/suffix/SuffixArray';
 import { computeSuffixSpaceStats } from '../../../algorithms/suffix/SuffixTree';
 import { SUFFIX_PRESETS } from '../../../algorithms/suffix/suffixUtils';
+import AdvancedCodeWorkbench from '../../../components/shared/AdvancedCodeWorkbench';
 import IndexedTextStrip from '../../../components/shared/IndexedTextStrip';
 import { useT } from '../../../hooks/useT';
 import { stepText } from '../../../i18n/stepText';
@@ -540,6 +541,7 @@ export default function SuffixArrayPage() {
           </table>
         </div>
       </section>
+      <AdvancedCodeWorkbench structure="suffixArray" activeStep={activeStep} executionSteps={activeSteps} stepIndex={clampedIndex} />
     </div>
   );
 }

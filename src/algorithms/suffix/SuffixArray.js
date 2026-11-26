@@ -256,6 +256,12 @@ export function buildSuffixArray(rawText) {
     msgKey: lrs.length > 0 ? 'suffix:steps.saCompleteLrs' : 'suffix:steps.saCompleteNoLrs',
     msgParams: { substring: lrs.substring, length: lrs.length },
   });
+  steps.forEach((step) => {
+    step.codeTrace = {
+      functionKey: step.phase === 'lcp-init' || step.phase === 'lcp' ? 'buildLcp' : 'build',
+      stepId: step.phase,
+    };
+  });
 
   return {
     ok: true,
@@ -458,6 +464,9 @@ export function searchSuffixArray(textWithSentinel, sa, rawPattern, lcp = []) {
       count: positions.length,
       positions: positions.join(', '),
     },
+  });
+  steps.forEach((step) => {
+    step.codeTrace = { functionKey: 'search', stepId: step.phase };
   });
 
   return {

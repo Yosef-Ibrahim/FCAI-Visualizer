@@ -72,7 +72,9 @@ describe('BTree (Ord = 3)', () => {
 
   it('inserts into a leaf, searches for present and absent keys, and rejects duplicates', () => {
     const tree = new BTree();
-    expect(tree.insert(8).inserted).toBe(true);
+    const firstInsert = tree.insert(8);
+    expect(firstInsert.inserted).toBe(true);
+    expect(firstInsert.steps.every((step) => step.codeTrace?.stepId)).toBe(true);
     expect(tree.insert(3).inserted).toBe(true);
     expect(tree.root.keys).toEqual([3, 8]);
     expect(tree.search(3).found).toBe(true);

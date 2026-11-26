@@ -16,6 +16,7 @@ import {
   searchSuffixTree,
 } from '../../../algorithms/suffix/SuffixTree';
 import { SUFFIX_PRESETS } from '../../../algorithms/suffix/suffixUtils';
+import AdvancedCodeWorkbench from '../../../components/shared/AdvancedCodeWorkbench';
 import IndexedTextStrip from '../../../components/shared/IndexedTextStrip';
 import SvgCameraViewport from '../../../components/shared/SvgCameraViewport';
 import { useT } from '../../../hooks/useT';
@@ -675,6 +676,7 @@ export default function SuffixTreePage() {
           </span>
         </div>
       </section>
+      <AdvancedCodeWorkbench structure="suffixTree" activeStep={activeStep} executionSteps={activeSteps} stepIndex={clampedIndex} />
     </div>
   );
 }

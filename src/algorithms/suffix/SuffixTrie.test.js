@@ -70,6 +70,7 @@ describe('SuffixTrie', () => {
         expect(step.msg.length).toBeGreaterThan(0);
         expect(step.msgKey).toMatch(/^suffix:steps\./);
         expect(step.root).toBeTruthy();
+        expect(step.codeTrace).toMatchObject({ functionKey: 'build', stepId: step.type });
       }
     },
   );
@@ -92,6 +93,7 @@ describe('SuffixTrie', () => {
           expect(found.found).toBe(true);
           expect(found.positions).toEqual(expected);
           expect(found.steps.length).toBeGreaterThan(1);
+          expect(found.steps.every((step) => step.codeTrace?.functionKey === 'search')).toBe(true);
         }
       }
 

@@ -40,6 +40,7 @@ export class BTree {
     this.order = limits.order;
     this.maxKeys = limits.maxKeys;
     this.minKeys = limits.minKeys;
+    this.activeOperation = 'insert';
   }
 
   snapshot() {
@@ -61,6 +62,7 @@ export class BTree {
   }
 
   _record(operation, explanation, kind, focusIds = [], extra = {}) {
+    const functionKey = extra.functionKey ?? this.activeOperation;
     this.steps.push({
       operation,
       explanation,
@@ -68,6 +70,10 @@ export class BTree {
       msgKey: extra.msgKey,
       msgParams: extra.msgParams,
       kind,
+      codeTrace: {
+        functionKey,
+        stepId: operation,
+      },
       focusIds,
       snapshot: this.snapshot(),
       ...extra,
@@ -164,6 +170,7 @@ export class BTree {
 
   insert(value) {
     validateKey(value);
+    this.activeOperation = 'insert';
     this.steps = [];
 
     if (!this.root) {
@@ -210,6 +217,7 @@ export class BTree {
 
   search(value) {
     validateKey(value);
+    this.activeOperation = 'search';
     this.steps = [];
     let node = this.root;
 
@@ -436,6 +444,7 @@ export class BTree {
 
   delete(value) {
     validateKey(value);
+    this.activeOperation = 'delete';
     this.steps = [];
 
     if (!this.root) {
