@@ -222,6 +222,17 @@ const POSTFIX_EXPRESSIONS = [
   ['8 8 * 8 -', 56], ['2 4 6 + *', 20], ['9 2 3 * +', 15], ['1 1 1 + + 5 *', 15],
 ];
 
+const STACK_EASY_CONCEPTS = [
+  { lvl: 'easy', q: 'At which end of a stack does push add an element?', a: 'The top', d: ['The bottom', 'Both ends', 'The middle'], e: 'Push and pop both work at the top, which is why the newest element is the first out.' },
+  { lvl: 'easy', q: 'Which element does pop remove from a stack?', a: 'The most recently pushed element', d: ['The oldest element', 'The smallest element', 'A random element'], e: 'A stack is LIFO, so pop removes the top element.' },
+  { lvl: 'easy', q: 'What does LIFO stand for?', a: 'Last In, First Out', d: ['First In, First Out', 'Last In, Final Out', 'Left In, Front Out'], e: 'The last element pushed is the first one removed.' },
+  { lvl: 'easy', q: 'Which structure stores the frames of active recursive calls?', a: 'The call stack', d: ['A heap', 'A hash table', 'A queue'], e: 'Each pending call keeps a frame on the call stack until it returns.' },
+  { lvl: 'easy', q: 'What is the result of evaluating the postfix expression "2 3 +"?', a: '5', d: ['23', '6', '1'], e: 'Push 2, push 3, then + pops both and pushes 2 + 3 = 5.' },
+  { lvl: 'easy', q: 'Which stack operation reads the top element without removing it?', a: 'peek', d: ['pop', 'push', 'enqueue'], e: 'Peek (or top) returns the value and leaves the stack unchanged.' },
+  { lvl: 'easy', q: 'A stack with top index −1 represents which state?', a: 'An empty stack', d: ['A full stack', 'A stack with one element', 'A stack that overflowed'], e: 'Top starts before index 0, so −1 means nothing has been pushed yet.' },
+  { lvl: 'easy', q: 'Which application is a natural fit for a stack?', a: 'Undo in a text editor', d: ['Serving print jobs in order', 'Storing a phone book', 'Scheduling processes round-robin'], e: 'Undo reverses the most recent action first, which is LIFO.' },
+];
+
 function buildStacks(rand) {
   const qs = [];
   let n = 0;
@@ -321,7 +332,7 @@ function buildStacks(rand) {
     });
   });
 
-  return [...qs, ...conceptBatch({ topic: 'stacks', prefix: 'stacks', concepts: STACK_CONCEPTS, rand })];
+  return [...qs, ...conceptBatch({ topic: 'stacks', prefix: 'stacks', concepts: [...STACK_CONCEPTS, ...STACK_EASY_CONCEPTS], rand })];
 }
 
 // ── Queues ──────────────────────────────────────────────────────────────────
@@ -351,6 +362,17 @@ const QUEUE_CONCEPTS = [
   { lvl: 'medium', q: 'A priority queue is full when its underlying heap array reaches which size?', a: 'Its capacity', d: ['Half its capacity', 'Capacity − 1', 'Zero'], e: 'A full heap array cannot accept another element without resizing.' },
   { lvl: 'medium', q: 'Which order results from inserting 3, 1, 2 into a min-priority queue and then removing all?', a: '1, 2, 3', d: ['3, 1, 2', '2, 1, 3', '3, 2, 1'], e: 'A min-priority queue returns the smallest value first.' },
   { lvl: 'medium', q: 'Which queue variant serves the same element repeatedly in round-robin scheduling?', a: 'A circular queue', d: ['A stack', 'A min-heap', 'A sorted array'], e: 'Re-enqueuing at the rear of a circular queue rotates service among processes.' },
+];
+
+const QUEUE_EASY_CONCEPTS = [
+  { lvl: 'easy', q: 'What does FIFO stand for?', a: 'First In, First Out', d: ['First In, Final Out', 'Fast In, Fast Out', 'Last In, First Out'], e: 'The element that has waited longest is served first.' },
+  { lvl: 'easy', q: 'At which end of a queue does enqueue add an element?', a: 'The rear', d: ['The front', 'The middle', 'Either end'], e: 'Enqueue appends at the rear; dequeue serves from the front.' },
+  { lvl: 'easy', q: 'Which element does dequeue remove from a queue?', a: 'The one that arrived first', d: ['The one that arrived last', 'The largest one', 'Any element'], e: 'A queue serves elements in arrival order.' },
+  { lvl: 'easy', q: 'Which application is a queue?', a: 'A printer spooler', d: ['Undo history', 'The call stack', 'Matching brackets'], e: 'Print jobs are served in the order they were submitted.' },
+  { lvl: 'easy', q: 'Which data structure holds the frontier of a breadth-first search?', a: 'A queue', d: ['A stack', 'A binary search tree', 'A hash table'], e: 'BFS explores level by level, which needs FIFO order.' },
+  { lvl: 'easy', q: 'A circular queue has capacity 5 and its front is at index 3. What is the front index after one dequeue?', a: '4', d: ['3', '2', '0'], e: 'Dequeue advances front by one: (3 + 1) mod 5 = 4.' },
+  { lvl: 'easy', q: 'Starting from an empty queue, enqueue(1) then enqueue(2) then dequeue(). Which value is at the front now?', a: '2', d: ['1', '3', 'The queue is empty'], e: 'Dequeue removes 1, leaving 2 at the front.' },
+  { lvl: 'easy', q: 'Which structure naturally supports round-robin CPU scheduling?', a: 'A queue', d: ['A stack', 'A max-heap', 'A sorted array'], e: 'Processes are served in order and re-enqueued at the rear, which rotates service.' },
 ];
 
 function buildQueues(rand) {
@@ -438,7 +460,7 @@ function buildQueues(rand) {
     });
   }
 
-  return [...qs, ...conceptBatch({ topic: 'queues', prefix: 'queues', concepts: QUEUE_CONCEPTS, rand })];
+  return [...qs, ...conceptBatch({ topic: 'queues', prefix: 'queues', concepts: [...QUEUE_CONCEPTS, ...QUEUE_EASY_CONCEPTS], rand })];
 }
 
 // ── Linked lists ────────────────────────────────────────────────────────────

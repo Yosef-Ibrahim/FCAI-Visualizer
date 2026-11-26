@@ -137,7 +137,9 @@
       "finish": "查看结果",
       "keyboard": "按 1–4 选择，按 Enter 继续。",
       "correct": "正确",
-      "incorrect": "答错了"
+      "incorrect": "答错了",
+      "save": "保存本题以便复习",
+      "unsave": "从已保存题目中移除"
     },
     "results": {
       "kicker": "练习完成",
@@ -157,14 +159,31 @@
       "correctAnswer": "正确答案"
     },
     "topics": {
+      "bst": "二叉搜索树",
+      "avl": "AVL 树",
+      "red-black": "红黑树",
+      "b-tree": "B 树",
       "trees": "树与平衡树",
       "trie-suffix": "字典树与后缀结构",
       "compression": "压缩与信息论"
     },
     "topicDescriptions": {
+      "bst": "在普通二叉搜索树中练习插入顺序、根、高度、遍历与查找代价。",
+      "avl": "平衡因子、LL/RR/LR/RL 旋转与 AVL 高度界限。",
+      "red-black": "颜色、黑高、插入与删除修复以及高度界限。",
+      "b-tree": "阶、键与子节点上限、分裂以及 B 树高度计算。",
       "trees": "BST、AVL、红黑树与 B 树的性质、旋转、遍历和高度界限。",
       "trie-suffix": "字典树节点、前缀查找、后缀数组、LCP 与后缀树界限。",
       "compression": "霍夫曼编码、熵、LZ77、量化以及无损与有损的取舍。"
+    },
+    "saved": {
+      "kicker": "保存以便复习",
+      "title": "已保存题目",
+      "description": "练习中标记的题目。可在此重读解析，或只练习已保存的题目。",
+      "open": "已保存",
+      "practice": "练习已保存题目",
+      "empty": "还没有保存的题目 —— 点击题目上的书签即可保存到这里。",
+      "remove": "从已保存中移除"
     }
   }
 }

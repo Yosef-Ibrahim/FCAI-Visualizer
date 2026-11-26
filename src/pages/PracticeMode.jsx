@@ -3,6 +3,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Binary,
+  Bookmark,
+  BookmarkCheck,
   Check,
   Cpu,
   FileArchive,
@@ -26,9 +28,9 @@ import {
 } from 'lucide-react';
 import {
   PRACTICE_TOPICS,
-  buildSessionPool,
   getPracticeTopic,
   loadPracticeTopic,
+  selectSessionQuestions,
   shuffleQuestionSet,
 } from '../data/practice/index.js';
 import { useProgress } from '../hooks/useProgress';
@@ -52,6 +54,17 @@ const ICONS = {
   zap: Zap,
   cpu: Cpu,
   archive: FileArchive,
+  bookmark: Bookmark,
+};
+
+// Synthetic topic used when the user practises only their saved questions.
+const SAVED_TOPIC = {
+  id: 'saved',
+  course: 'advanced-data-structure',
+  icon: 'bookmark',
+  labelKey: 'hub.saved.title',
+  descriptionKey: 'hub.saved.description',
+  questionCount: 0,
 };
 
 const DIFFICULTIES = ['mixed', 'easy', 'medium', 'hard'];
@@ -71,7 +84,9 @@ function accuracyOf(score) {
 export default function PracticeMode() {
   const t = useT('practice');
   const { locale } = useLocale();
-  const { progress, recordAnswer, getTopicScore, getStats, resetProgress } = useProgress();
+  const {
+    progress, recordAnswer, getTopicScore, getStats, resetProgress, toggleSaved, isSaved,
+  } = useProgress();
 
   const [view, setView] = useState('hub');
   const [filter, setFilter] = useState('all');
@@ -84,13 +99,16 @@ export default function PracticeMode() {
   const [checked, setChecked] = useState(false);
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [savedQuestions, setSavedQuestions] = useState([]);
+  const [savedLoading, setSavedLoading] = useState(false);
   const [resetArmed, setResetArmed] = useState(false);
   const resetTimer = useRef(null);
 
   const stats = getStats();
-  const topic = getPracticeTopic(topicId);
+  const topic = topicId === 'saved' ? SAVED_TOPIC : getPracticeTopic(topicId);
   const current = pool[index] ?? null;
-  const topicScore = topicId ? getTopicScore(topicId) : null;
+  const topicScore = topicId && topicId !== 'saved' ? getTopicScore(topicId) : null;
+  const currentSaved = current ? isSaved(current.id, current.topic) : false;
   const correctCount = answers.filter((answer) => answer.isCorrect).length;
 
   const visibleTopics = useMemo(
@@ -105,12 +123,55 @@ export default function PracticeMode() {
     setView('setup');
   };
 
+  const loadSavedQuestions = useCallback(async () => {
+    const banks = new Map();
+    const questions = [];
+    for (const entry of progress.saved || []) {
+      if (!banks.has(entry.topic)) banks.set(entry.topic, await loadPracticeTopic(entry.topic));
+      const question = banks.get(entry.topic).find((item) => item.id === entry.id);
+      if (question) questions.push(question);
+    }
+    return questions;
+  }, [progress.saved]);
+
   const beginSession = async () => {
     if (!topicId) return;
     setLoading(true);
-    const bank = await loadPracticeTopic(topicId);
-    const filtered = buildSessionPool(bank, difficulty);
-    setPool(shuffleQuestionSet(filtered, length === 'all' ? Infinity : Number(length)));
+    if (topicId === 'saved') {
+      const questions = savedQuestions.length ? savedQuestions : await loadSavedQuestions();
+      setSavedQuestions(questions);
+      setPool(shuffleQuestionSet(questions));
+    } else {
+      const bank = await loadPracticeTopic(topicId);
+      const seenIds = progress.scores[topicId]?.seenQuestionIds ?? [];
+      setPool(selectSessionQuestions(bank, {
+        limit: length === 'all' ? Infinity : Number(length),
+        difficulty,
+        seenIds,
+      }));
+    }
+    setAnswers([]);
+    setIndex(0);
+    setSelected(null);
+    setChecked(false);
+    setLoading(false);
+    setView('session');
+  };
+
+  const openSaved = async () => {
+    setView('saved');
+    setSavedLoading(true);
+    setSavedQuestions(await loadSavedQuestions());
+    setSavedLoading(false);
+  };
+
+  const startSavedSession = async () => {
+    setLoading(true);
+    const questions = savedQuestions.length ? savedQuestions : await loadSavedQuestions();
+    setSavedQuestions(questions);
+    setTopicId('saved');
+    setDifficulty('mixed');
+    setPool(shuffleQuestionSet(questions));
     setAnswers([]);
     setIndex(0);
     setSelected(null);
@@ -238,10 +299,17 @@ export default function PracticeMode() {
               </button>
             ))}
           </div>
-          <button type="button" className="practice-reset" onClick={handleReset}>
-            <RotateCcw size={15} />
-            {resetArmed ? t('hub.confirmReset') : t('hub.reset')}
-          </button>
+          <div className="practice-toolbar-actions">
+            <button type="button" className="practice-reset practice-saved-link" onClick={openSaved}>
+              <Bookmark size={15} />
+              {t('hub.saved.open')}
+              {stats.savedCount > 0 && <span className="practice-saved-count">{stats.savedCount}</span>}
+            </button>
+            <button type="button" className="practice-reset" onClick={handleReset}>
+              <RotateCcw size={15} />
+              {resetArmed ? t('hub.confirmReset') : t('hub.reset')}
+            </button>
+          </div>
         </div>
 
         <div className="practice-grid">
@@ -342,6 +410,82 @@ export default function PracticeMode() {
             {loading ? <Loader2 size={17} className="practice-spin" /> : <Sparkles size={17} />}
             {loading ? t('hub.loading') : t('hub.setup.begin')}
           </button>
+        </section>
+      </div>
+    );
+  }
+
+  // ── Saved questions ───────────────────────────────────────────────────────
+  if (view === 'saved') {
+    return (
+      <div className="practice-page practice-page--narrow">
+        <button type="button" className="practice-back" onClick={backToHub}>
+          <ArrowLeft size={16} className="rtl-flip" /> {t('hub.backToTopics')}
+        </button>
+
+        <section className="practice-saved">
+          <span className="practice-eyebrow"><Bookmark size={14} /> {t('hub.saved.kicker')}</span>
+          <h1>{t('hub.saved.title')}</h1>
+          <p>{t('hub.saved.description')}</p>
+
+          <div className="practice-result-actions">
+            <button
+              type="button"
+              className="practice-primary"
+              onClick={startSavedSession}
+              disabled={loading || savedLoading || savedQuestions.length === 0}
+            >
+              {loading ? <Loader2 size={17} className="practice-spin" /> : <Sparkles size={16} />}
+              {loading ? t('hub.loading') : t('hub.saved.practice')}
+            </button>
+            <button type="button" className="practice-secondary" onClick={backToHub}>
+              {t('hub.results.back')}
+            </button>
+          </div>
+
+          {savedLoading ? (
+            <p className="practice-loading">{t('hub.loading')}</p>
+          ) : savedQuestions.length === 0 ? (
+            <p className="practice-review-empty"><Bookmark size={16} /> {t('hub.saved.empty')}</p>
+          ) : (
+            <div className="practice-saved-list">
+              {savedQuestions.map((question) => {
+                const correctOption = question.options.find(
+                  (option) => option.charAt(0) === question.correctAnswer,
+                ) ?? '';
+                const sourceTopic = PRACTICE_TOPICS.find((entry) => entry.id === question.topic);
+                return (
+                  <article key={`${question.topic}-${question.id}`} className="practice-review-item practice-saved-item">
+                    <div className="practice-card-meta">
+                      <span className={`practice-level practice-level--${question.difficulty}`}>
+                        {t(`hub.levels.${question.difficulty}`)}
+                      </span>
+                      {sourceTopic && <span className="practice-tag">{t(sourceTopic.labelKey)}</span>}
+                      <button
+                        type="button"
+                        className="practice-save is-saved"
+                        onClick={() => {
+                          toggleSaved(question);
+                          setSavedQuestions((previous) => previous.filter(
+                            (entry) => !(entry.id === question.id && entry.topic === question.topic),
+                          ));
+                        }}
+                        aria-label={t('hub.saved.remove')}
+                        title={t('hub.saved.remove')}
+                      >
+                        <BookmarkCheck size={16} />
+                      </button>
+                    </div>
+                    <p className="practice-review-question">{question.question}</p>
+                    <p className="practice-review-row practice-review-row--right">
+                      <Check size={15} /> {t('hub.results.correctAnswer')}: {optionText(correctOption)}
+                    </p>
+                    <p className="practice-review-explanation">{question.explanation}</p>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </section>
       </div>
     );
@@ -453,6 +597,16 @@ export default function PracticeMode() {
               </span>
               {current.subtopic && <span className="practice-tag">{current.subtopic}</span>}
               {current.algorithm && <span className="practice-tag">{current.algorithm}</span>}
+              <button
+                type="button"
+                className={`practice-save${currentSaved ? ' is-saved' : ''}`}
+                onClick={() => toggleSaved(current)}
+                aria-pressed={currentSaved}
+                aria-label={currentSaved ? t('hub.session.unsave') : t('hub.session.save')}
+                title={currentSaved ? t('hub.session.unsave') : t('hub.session.save')}
+              >
+                {currentSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
+              </button>
             </div>
 
             <h2 className="practice-question">{current.question}</h2>

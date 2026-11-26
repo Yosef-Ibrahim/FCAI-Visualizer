@@ -790,3 +790,82 @@
 @media (prefers-reduced-motion: reduce) {
   .practice-topic:hover { transform: none; }
 }
+
+/* ── Saved questions ─────────────────────────────────────────────────────── */
+.practice-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.practice-saved-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--surface);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.practice-save {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-inline-start: auto;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color .16s, background .16s, color .16s;
+}
+
+.practice-save:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.practice-save.is-saved {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+}
+
+.practice-saved {
+  display: grid;
+  gap: 16px;
+}
+
+.practice-saved h1 {
+  margin: 0;
+  color: var(--text);
+  font: 750 26px/1.2 var(--font-head);
+  letter-spacing: -.02em;
+}
+
+.practice-saved > p {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.practice-saved-list {
+  display: grid;
+  gap: 12px;
+}
+
+.practice-saved-item {
+  background: var(--surface);
+}
+
+.practice-saved-item .practice-card-meta {
+  margin-bottom: 10px;
+}

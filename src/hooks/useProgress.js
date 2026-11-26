@@ -4,6 +4,7 @@ const STORAGE_KEY = 'fcai_visualizer_training_progress';
 const TOPICS = [
   'sorting', 'searching', 'trees', 'graphs', 'data-structures',
   'arrays', 'stacks', 'queues', 'linked-lists', 'hashing',
+  'bst', 'avl', 'red-black', 'b-tree',
   'trie-suffix', 'dynamic-programming', 'greedy', 'cpu-scheduling', 'compression',
 ];
 
@@ -15,8 +16,24 @@ function createDefaultProgress() {
     algorithms: {},
     history: [],
     achievements: [],
+    saved: [],
     settings: { soundEnabled: true, showHints: true, autoAdvance: false },
   };
+}
+
+function normalizeSaved(value) {
+  if (!Array.isArray(value)) return [];
+  const seen = new Set();
+  return value
+    .filter((entry) => entry && typeof entry.id === 'string' && typeof entry.topic === 'string')
+    .filter((entry) => {
+      const key = `${entry.topic}::${entry.id}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 500)
+    .map((entry) => ({ id: entry.id, topic: entry.topic, savedAt: entry.savedAt ?? Date.now() }));
 }
 
 function normalizeProgress(value) {
@@ -29,6 +46,7 @@ function normalizeProgress(value) {
     algorithms: value.algorithms && typeof value.algorithms === 'object' ? value.algorithms : {},
     history: Array.isArray(value.history) ? value.history.slice(0, 500) : [],
     achievements: Array.isArray(value.achievements) ? value.achievements : [],
+    saved: normalizeSaved(value.saved),
     settings: { ...defaults.settings, ...(value.settings || {}) },
   };
 }
@@ -66,8 +84,9 @@ export function useProgress() {
 
   const recordAnswer = useCallback((topic, isCorrect, difficulty, algorithm = null, questionId = null) => {
     setProgress((previous) => {
-      const topicScore = previous.scores[topic] || { total: 0, correct: 0, streak: 0, bestStreak: 0, xp: 0, difficulty: 'easy' };
+      const topicScore = previous.scores[topic] || { total: 0, correct: 0, streak: 0, bestStreak: 0, xp: 0, difficulty: 'easy', seenQuestionIds: [] };
       const streak = isCorrect ? (topicScore.streak || 0) + 1 : 0;
+      const topicSeen = Array.isArray(topicScore.seenQuestionIds) ? topicScore.seenQuestionIds : [];
       const xpEarned = isCorrect ? 10 + (streak > 0 && streak % 5 === 0 ? 15 : 0) : 2;
       const algorithmScore = algorithm ? (previous.algorithms[algorithm] || { total: 0, correct: 0, streak: 0, bestStreak: 0, xp: 0, seenQuestionIds: [] }) : null;
       const seen = algorithmScore?.seenQuestionIds || [];
@@ -91,6 +110,9 @@ export function useProgress() {
             bestStreak: Math.max(topicScore.bestStreak || 0, streak),
             xp: (topicScore.xp || 0) + xpEarned,
             difficulty: calculateNewDifficulty(topicScore.difficulty, isCorrect, streak),
+            seenQuestionIds: questionId && !topicSeen.includes(questionId)
+              ? [...topicSeen, questionId].slice(-2000)
+              : topicSeen,
           },
         },
         algorithms: algorithm ? { ...previous.algorithms, [algorithm]: updatedAlgorithm } : previous.algorithms,
@@ -110,6 +132,23 @@ export function useProgress() {
   const getDifficulty = useCallback((topic) => progress.scores[topic]?.difficulty || 'easy', [progress]);
   const getAlgorithmScore = useCallback((algorithm) => progress.algorithms[algorithm] || { total: 0, correct: 0, streak: 0, bestStreak: 0, xp: 0, seenQuestionIds: [] }, [progress]);
   const updateSettings = useCallback((settings) => setProgress((previous) => ({ ...previous, settings: { ...previous.settings, ...settings } })), []);
+  const toggleSaved = useCallback((question) => {
+    if (!question?.id || !question?.topic) return;
+    setProgress((previous) => {
+      const saved = previous.saved || [];
+      const exists = saved.some((entry) => entry.id === question.id && entry.topic === question.topic);
+      return {
+        ...previous,
+        saved: exists
+          ? saved.filter((entry) => !(entry.id === question.id && entry.topic === question.topic))
+          : [{ id: question.id, topic: question.topic, savedAt: Date.now() }, ...saved].slice(0, 500),
+      };
+    });
+  }, []);
+  const isSaved = useCallback(
+    (questionId, topic) => (progress.saved || []).some((entry) => entry.id === questionId && entry.topic === topic),
+    [progress],
+  );
   const resetProgress = useCallback(() => {
     const fresh = createDefaultProgress();
     setProgress(fresh);
@@ -125,10 +164,14 @@ export function useProgress() {
       bestStreak: Math.max(0, ...allTopics.map((score) => score.bestStreak || score.streak || 0)),
       totalXp: allTopics.reduce((sum, score) => sum + (score.xp || 0), 0),
       topics: progress.scores,
+      savedCount: (progress.saved || []).length,
     };
   }, [progress]);
 
-  return { progress, recordAnswer, getTopicScore, getDifficulty, getAlgorithmScore, updateSettings, resetProgress, getStats };
+  return {
+    progress, recordAnswer, getTopicScore, getDifficulty, getAlgorithmScore,
+    updateSettings, resetProgress, getStats, toggleSaved, isSaved,
+  };
 }
 
 function calculateNewDifficulty(currentDifficulty, isCorrect, streak) {
