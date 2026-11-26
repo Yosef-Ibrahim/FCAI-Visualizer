@@ -93,5 +93,78 @@
     "title": "フィードバックを送る",
     "description": "改善案や不具合、学習体験へのご意見をお寄せください。",
     "link": "フィードバック"
+  },
+  "hub": {
+    "eyebrow": "練習スタジオ",
+    "title": "試験本番のような練習",
+    "subtitle": "全コースの試験形式の問題が{{count}}問以上。短いセッション、すぐ読める解説、端末に保存される進捗。",
+    "available": "問の質問",
+    "attempted": "回答済み",
+    "accuracy": "正答率",
+    "streak": "最高連続正解",
+    "filterLabel": "コースで練習トピックを絞り込む",
+    "allCourses": "すべてのコース",
+    "reset": "進捗をリセット",
+    "confirmReset": "もう一度クリックで確定",
+    "questions": "問",
+    "practice": "練習する",
+    "attemptedCount": "{{count}}問 回答済み",
+    "notStarted": "未開始",
+    "backToTopics": "練習トピック一覧",
+    "setup": {
+      "kicker": "セッション設定",
+      "difficulty": "難易度",
+      "length": "1回の問題数",
+      "all": "すべて",
+      "note": "回答はすべてこの端末の進捗に保存されます。",
+      "begin": "セッションを開始"
+    },
+    "questionsAvailable": "このトピックに{{count}}問以上",
+    "topicAccuracy": "現在の正答率 {{percent}}%",
+    "loading": "問題を準備しています…",
+    "levels": {
+      "mixed": "ミックス",
+      "easy": "やさしい",
+      "medium": "ふつう",
+      "hard": "むずかしい"
+    },
+    "session": {
+      "exit": "セッションを終了",
+      "question": "問題 {{current}} / {{total}}",
+      "score": "スコア",
+      "submit": "答え合わせ",
+      "next": "次の問題",
+      "finish": "結果を見る",
+      "keyboard": "1〜4で回答、Enterで次へ。",
+      "correct": "正解",
+      "incorrect": "不正解"
+    },
+    "results": {
+      "kicker": "セッション完了",
+      "title": "結果",
+      "excellent": "素晴らしい。試験の準備ができています。",
+      "good": "よく進んでいます。間違えた問題を確認しましょう。",
+      "keepGoing": "解説を読んで、もう一度挑戦しましょう。",
+      "accuracy": "正答率",
+      "correct": "正解",
+      "incorrect": "不正解",
+      "answered": "回答数",
+      "retry": "このトピックをもう一度",
+      "back": "トピック一覧へ",
+      "review": "復習",
+      "noMistakes": "全問正解です。",
+      "yourAnswer": "あなたの回答",
+      "correctAnswer": "正解"
+    },
+    "topics": {
+      "trees": "木と平衡木",
+      "trie-suffix": "トライと接尾辞構造",
+      "compression": "圧縮と情報理論"
+    },
+    "topicDescriptions": {
+      "trees": "BST・AVL・赤黒木・B木の性質、回転、走査、高さの上限。",
+      "trie-suffix": "トライのノード、接頭辞検索、接尾辞配列、LCP、接尾辞木の上限。",
+      "compression": "ハフマン符号、エントロピー、LZ77、量子化、可逆と非可逆の違い。"
+    }
   }
 }

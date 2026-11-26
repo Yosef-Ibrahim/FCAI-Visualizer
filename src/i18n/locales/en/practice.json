@@ -93,5 +93,78 @@
     "title": "Share feedback",
     "description": "Suggest an improvement, report a bug, or tell us what would make studying better.",
     "link": "Share feedback"
+  },
+  "hub": {
+    "eyebrow": "Practice studio",
+    "title": "Practice that feels like the exam",
+    "subtitle": "{{count}}+ exam-style questions across every course — short sessions, instant explanations, and progress that stays on this device.",
+    "available": "questions available",
+    "attempted": "attempted",
+    "accuracy": "accuracy",
+    "streak": "best streak",
+    "filterLabel": "Filter practice topics by course",
+    "allCourses": "All courses",
+    "reset": "Reset progress",
+    "confirmReset": "Click again to reset",
+    "questions": "questions",
+    "practice": "Practice",
+    "attemptedCount": "{{count}} attempted",
+    "notStarted": "Not started",
+    "backToTopics": "All practice topics",
+    "setup": {
+      "kicker": "Session setup",
+      "difficulty": "Difficulty",
+      "length": "Questions per session",
+      "all": "All",
+      "note": "Every answer is saved to your progress on this device.",
+      "begin": "Begin session"
+    },
+    "questionsAvailable": "{{count}}+ questions in this topic",
+    "topicAccuracy": "{{percent}}% accuracy so far",
+    "loading": "Preparing questions…",
+    "levels": {
+      "mixed": "Mixed",
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
+    "session": {
+      "exit": "Exit session",
+      "question": "Question {{current}} of {{total}}",
+      "score": "Score",
+      "submit": "Check answer",
+      "next": "Next question",
+      "finish": "See results",
+      "keyboard": "Press 1–4 to answer, Enter to continue.",
+      "correct": "Correct",
+      "incorrect": "Not quite"
+    },
+    "results": {
+      "kicker": "Session complete",
+      "title": "Here is how you did",
+      "excellent": "Excellent — you are exam ready.",
+      "good": "Good progress. Review the missed items below.",
+      "keepGoing": "Keep going: read the explanations and try again.",
+      "accuracy": "Accuracy",
+      "correct": "Correct",
+      "incorrect": "Incorrect",
+      "answered": "Answered",
+      "retry": "Practice this topic again",
+      "back": "Back to topics",
+      "review": "Review",
+      "noMistakes": "No mistakes — every answer was correct.",
+      "yourAnswer": "Your answer",
+      "correctAnswer": "Correct answer"
+    },
+    "topics": {
+      "trees": "Trees & Balanced Trees",
+      "trie-suffix": "Tries & Suffix Structures",
+      "compression": "Compression & Information Theory"
+    },
+    "topicDescriptions": {
+      "trees": "BST, AVL, red-black and B-tree properties, rotations, traversals and height bounds.",
+      "trie-suffix": "Trie nodes, prefix search, suffix arrays, LCP and suffix-tree bounds.",
+      "compression": "Huffman codes, entropy, LZ77, quantization and lossless versus lossy trade-offs."
+    }
   }
 }

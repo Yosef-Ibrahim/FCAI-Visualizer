@@ -1,7 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 
 const STORAGE_KEY = 'fcai_visualizer_training_progress';
-const TOPICS = ['sorting', 'searching', 'trees', 'graphs', 'data-structures'];
+const TOPICS = [
+  'sorting', 'searching', 'trees', 'graphs', 'data-structures',
+  'arrays', 'stacks', 'queues', 'linked-lists', 'hashing',
+  'trie-suffix', 'dynamic-programming', 'greedy', 'cpu-scheduling', 'compression',
+];
 
 function createDefaultProgress() {
   return {

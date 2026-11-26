@@ -93,5 +93,78 @@
     "title": "分享反馈",
     "description": "提出改进建议、报告问题，或告诉我们怎样让学习体验更好。",
     "link": "分享反馈"
+  },
+  "hub": {
+    "eyebrow": "练习工作室",
+    "title": "像考试一样的练习",
+    "subtitle": "覆盖所有课程的{{count}}多道考试风格题目——短时练习、即时讲解，进度保存在本机。",
+    "available": "道可用题目",
+    "attempted": "已作答",
+    "accuracy": "正确率",
+    "streak": "最佳连击",
+    "filterLabel": "按课程筛选练习主题",
+    "allCourses": "全部课程",
+    "reset": "重置进度",
+    "confirmReset": "再次点击确认重置",
+    "questions": "道题",
+    "practice": "开始练习",
+    "attemptedCount": "已作答 {{count}} 道",
+    "notStarted": "尚未开始",
+    "backToTopics": "全部练习主题",
+    "setup": {
+      "kicker": "练习设置",
+      "difficulty": "难度",
+      "length": "每次题量",
+      "all": "全部",
+      "note": "每道题的作答都会保存到本机进度。",
+      "begin": "开始练习"
+    },
+    "questionsAvailable": "本主题有{{count}}多道题",
+    "topicAccuracy": "目前正确率 {{percent}}%",
+    "loading": "正在准备题目…",
+    "levels": {
+      "mixed": "混合",
+      "easy": "简单",
+      "medium": "中等",
+      "hard": "困难"
+    },
+    "session": {
+      "exit": "退出练习",
+      "question": "第 {{current}} / {{total}} 题",
+      "score": "得分",
+      "submit": "检查答案",
+      "next": "下一题",
+      "finish": "查看结果",
+      "keyboard": "按 1–4 选择，按 Enter 继续。",
+      "correct": "正确",
+      "incorrect": "答错了"
+    },
+    "results": {
+      "kicker": "练习完成",
+      "title": "本次结果",
+      "excellent": "很好，你已经准备好考试了。",
+      "good": "进展不错，请复习下面的错题。",
+      "keepGoing": "继续加油：阅读讲解后再试一次。",
+      "accuracy": "正确率",
+      "correct": "正确",
+      "incorrect": "错误",
+      "answered": "已作答",
+      "retry": "再练一次本主题",
+      "back": "返回主题列表",
+      "review": "复习",
+      "noMistakes": "全部正确，没有错题。",
+      "yourAnswer": "你的答案",
+      "correctAnswer": "正确答案"
+    },
+    "topics": {
+      "trees": "树与平衡树",
+      "trie-suffix": "字典树与后缀结构",
+      "compression": "压缩与信息论"
+    },
+    "topicDescriptions": {
+      "trees": "BST、AVL、红黑树与 B 树的性质、旋转、遍历和高度界限。",
+      "trie-suffix": "字典树节点、前缀查找、后缀数组、LCP 与后缀树界限。",
+      "compression": "霍夫曼编码、熵、LZ77、量化以及无损与有损的取舍。"
+    }
   }
 }
