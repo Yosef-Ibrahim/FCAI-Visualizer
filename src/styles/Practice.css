@@ -7,6 +7,7 @@
   width: min(100%, 1220px);
   margin: 0 auto;
   padding: clamp(20px, 3vw, 38px);
+  padding-bottom: clamp(72px, 8vw, 96px);
   animation: fadeIn .28s ease both;
 }
 
@@ -180,13 +181,13 @@
 
 .practice-topic--data-structure { --topic-color: #2f6b5e; --topic-tint: #eaf3ef; }
 .practice-topic--advanced-data-structure { --topic-color: #8a6a2f; --topic-tint: #f7f0e2; }
-.practice-topic--algorithms { --topic-color: #3d6b8f; --topic-tint: #eaf1f7; }
+.practice-topic--algorithms { --topic-color: #3f7f63; --topic-tint: #e9f3ee; }
 .practice-topic--operating-systems { --topic-color: #a05a4f; --topic-tint: #f8ece9; }
 .practice-topic--information-theory-compression { --topic-color: #6a5a8a; --topic-tint: #f0edf6; }
 
 [data-theme="dark"] .practice-topic--data-structure { --topic-color: #7fc0ad; --topic-tint: #1b2c28; }
 [data-theme="dark"] .practice-topic--advanced-data-structure { --topic-color: #d9b878; --topic-tint: #2c281f; }
-[data-theme="dark"] .practice-topic--algorithms { --topic-color: #8fb8d8; --topic-tint: #1c2933; }
+[data-theme="dark"] .practice-topic--algorithms { --topic-color: #91cfa7; --topic-tint: #1a2c25; }
 [data-theme="dark"] .practice-topic--operating-systems { --topic-color: #e0a396; --topic-tint: #2e211e; }
 [data-theme="dark"] .practice-topic--information-theory-compression { --topic-color: #b5a8d6; --topic-tint: #252132; }
 
@@ -571,6 +572,11 @@
 
 .practice-option.is-wrong .practice-option-letter { background: var(--accent2); color: #fff; }
 .practice-option.is-wrong > svg { color: var(--accent2); }
+
+/* The dark palette's accents are light tints, so filled chips need dark ink. */
+[data-theme="dark"] .practice-option.is-selected .practice-option-letter,
+[data-theme="dark"] .practice-option.is-correct .practice-option-letter,
+[data-theme="dark"] .practice-option.is-wrong .practice-option-letter { color: #10201c; }
 
 .practice-card-actions {
   display: flex;

@@ -287,34 +287,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .compare-page { padding: 18px 14px; }
   .compare-selectors, .compare-metrics { flex-direction: column; }
 }
-[data-theme="dark"] .home-hero {
-  border-color: var(--border);
-  background:
-    radial-gradient(ellipse at 85% 10%, rgba(216, 165, 43, .1), transparent 33%),
-    linear-gradient(118deg, var(--surface), #142b40);
-}
-[data-theme="dark"] .home-hero h1 { color: var(--text); }
-[data-theme="dark"] .home-hero h1 span,
-[data-theme="dark"] .home-kicker { color: var(--accent); }
-[data-theme="dark"] .home-hero-copy > p,
-[data-theme="dark"] .home-proof-points { color: var(--text-muted); }
-[data-theme="dark"] .hero-node { border-color: var(--border); background: var(--surface); color: var(--accent); }
-[data-theme="dark"] .hero-node--root { border-color: var(--accent); background: var(--accent); color: #fff; }
-[data-theme="dark"] .hero-node--left { color: #ecc365; }
-[data-theme="dark"] .hero-node--right { color: #5bd0aa; }
-[data-theme="dark"] .hero-grid-mark { opacity: .28; }
-[data-theme="dark"] .course-overview--blue { --overview-tint: #15283a; }
-[data-theme="dark"] .course-overview--gold { --overview-tint: #28271f; }
-[data-theme="dark"] .course-overview--violet { --overview-tint: #221d33; }
-[data-theme="dark"] .course-overview--emerald { --overview-tint: #142c27; }
-[data-theme="dark"] .course-card--emerald { --course-color: #5bd0aa; --course-tint: #18372f; }
-[data-theme="dark"] .course-overview--coral { --overview-tint: #2d1b22; }
-[data-theme="dark"] .course-card--coral { --course-color: #ff8490; --course-tint: #351f27; }
-[data-theme="dark"] .topic-card-icon { background: color-mix(in srgb, var(--accent) 13%, var(--surface)); }
-[data-theme="dark"] .topic-card-status { background: color-mix(in srgb, var(--accent3) 14%, var(--surface)); }
-[data-theme="dark"] .topic-card-tags span { color: var(--text-muted); }
-[data-theme="dark"] .learning-tool-card--violet { --tool-tint: #2a2340; }
-[data-theme="dark"] .learning-tool-card--green { --tool-tint: #18372f; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }

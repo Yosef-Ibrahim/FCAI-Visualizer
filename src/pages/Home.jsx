@@ -1,4 +1,4 @@
-import { ArrowRight, Brain, GitCompareArrows, Sparkles } from 'lucide-react';
+import { ArrowRight, Brain, Check, GitCompareArrows, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import CourseCard from '../components/shared/CourseCard';
 import {
@@ -53,17 +53,30 @@ export default function Home() {
           </div>
         </div>
         <div className="home-hero-visual" aria-hidden="true">
-          <div className="hero-grid-mark" />
-          <div className="hero-node hero-node--root">DS</div>
-          <div className="hero-node hero-node--left">A</div>
-          <div className="hero-node hero-node--right">AI</div>
-          <div className="hero-node hero-node--bottom">FCAI</div>
-          <span className="hero-connection hero-connection--left" />
-          <span className="hero-connection hero-connection--right" />
-          <span className="hero-connection hero-connection--bottom" />
+          <span className="hero-aurora hero-aurora--one" />
+          <span className="hero-aurora hero-aurora--two" />
           <span className="hero-orbit hero-orbit--one" />
           <span className="hero-orbit hero-orbit--two" />
-          <span className="hero-visual-label">{t('home:hero.label')}</span>
+          <div className="hero-demo">
+            <div className="hero-demo-top">
+              <span className="hero-demo-dot" />
+              <span className="hero-demo-dot" />
+              <span className="hero-demo-dot" />
+              <span className="hero-demo-title">O(n log n)</span>
+            </div>
+            <div className="hero-bars">
+              {[44, 66, 36, 82, 58, 72, 30].map((height, index) => (
+                <span
+                  key={`${height}-${index}`}
+                  style={{ '--bar-height': `${height}%`, '--bar-index': index }}
+                />
+              ))}
+            </div>
+            <div className="hero-demo-foot">
+              <span>n = 7</span>
+              <span className="hero-demo-badge"><Check size={11} /> sorted</span>
+            </div>
+          </div>
         </div>
       </section>
 

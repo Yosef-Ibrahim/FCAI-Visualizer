@@ -43,9 +43,12 @@
 }
 
 .header-eyebrow {
+  overflow: hidden;
   color: var(--text-muted);
   font-size: 9px;
   letter-spacing: .14em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .header-title {
@@ -120,109 +123,6 @@
 }
 
 .sidebar-footer { border-top: 1px solid var(--border); }
-
-/* Home ------------------------------------------------------------------- */
-.app-content .home-hero {
-  min-height: 320px;
-  padding: clamp(28px, 4vw, 52px);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background:
-    radial-gradient(ellipse at 88% 16%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 45%),
-    linear-gradient(135deg, var(--surface) 20%, color-mix(in srgb, var(--accent) 4%, var(--surface)));
-  box-shadow: var(--shadow-sm);
-}
-
-.app-content .home-hero h1 {
-  margin: 16px 0 12px;
-  color: var(--text);
-  font-size: clamp(34px, 4.6vw, 52px);
-  font-weight: 800;
-  letter-spacing: -.05em;
-}
-
-.app-content .home-hero h1 span { color: var(--accent); }
-
-.app-content .home-kicker {
-  color: var(--accent);
-  font-size: 10px;
-  letter-spacing: .14em;
-}
-
-.app-content .home-hero-copy > p {
-  max-width: 52ch;
-  color: var(--text-muted);
-  font-size: 13px;
-  line-height: 1.8;
-}
-
-.app-content .home-primary-link {
-  min-height: 44px;
-  padding: 0 18px;
-  border-radius: var(--radius-sm);
-  background: var(--accent);
-  box-shadow: none;
-  font-size: 12px;
-}
-
-.app-content .home-primary-link:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-.app-content .home-proof-points {
-  gap: 16px;
-  margin-top: 20px;
-  color: var(--text-muted);
-  font-size: 10px;
-}
-
-.app-content .home-proof-points i { background: var(--accent4); }
-
-.app-content .hero-node {
-  border-color: var(--border);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-  color: var(--accent);
-}
-
-.app-content .hero-node--root {
-  border-color: var(--accent);
-  background: var(--accent);
-  box-shadow: var(--shadow-sm);
-  color: #fff;
-}
-
-.app-content .hero-node--left { color: var(--accent4); }
-.app-content .hero-node--right { color: var(--accent3); }
-.app-content .hero-node--bottom { color: color-mix(in srgb, var(--accent) 60%, var(--text-muted)); }
-
-.app-content .hero-connection { background: color-mix(in srgb, var(--border) 80%, var(--text-muted)); }
-.app-content .hero-grid-mark { opacity: .45; }
-.app-content .hero-orbit { border-color: color-mix(in srgb, var(--border) 70%, transparent); }
-.app-content .hero-visual-label { color: var(--text-muted); opacity: .8; }
-
-.app-content .section-eyebrow,
-.app-content .course-section-heading > div > span {
-  color: var(--text-muted);
-  font-size: 9px;
-  letter-spacing: .14em;
-}
-
-.app-content .home-section-heading h2,
-.app-content .course-section-heading h2 {
-  margin-top: 6px;
-  font-size: 23px;
-  font-weight: 750;
-  letter-spacing: -.03em;
-}
-
-.app-content .home-section-heading > p,
-.app-content .course-section-heading > p {
-  color: var(--text-muted);
-  font-size: 11px;
-  line-height: 1.65;
-}
 
 /* Course + topic cards --------------------------------------------------- */
 .app-content .course-card {
@@ -322,7 +222,7 @@
   transform: translateY(-1px);
 }
 
-.app-content .learning-tool-card--violet { --tool-color: #6a5a8a; --tool-tint: #f0edf6; }
+.app-content .learning-tool-card--violet { --tool-color: var(--accent); --tool-tint: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
 .app-content .learning-tool-card--green { --tool-color: var(--accent3); --tool-tint: color-mix(in srgb, var(--accent3) 10%, var(--surface)); }
 
 /* Shared surfaces -------------------------------------------------------- */
@@ -458,7 +358,16 @@
 
 [data-theme="dark"] .app-content .btn-primary,
 [data-theme="dark"] .app-content .btn.primary,
-[data-theme="dark"] .app-content .compare-run-btn { color: #10201c; }
+[data-theme="dark"] .app-content .compare-run-btn,
+[data-theme="dark"] .header-help-link,
+[data-theme="dark"] .app-content .home-primary-link,
+[data-theme="dark"] .app-content .not-found-page a,
+[data-theme="dark"] .app-content .course-card:hover .course-card-cta,
+[data-theme="dark"] .app-content .ds-btn-primary,
+[data-theme="dark"] .app-content .ds-btn-accent,
+[data-theme="dark"] .app-content .ds-btn-green,
+[data-theme="dark"] .app-content .ds-btn-orange,
+[data-theme="dark"] .app-content .ds-btn-danger { color: #10201c; }
 
 .app-content .btn-primary:hover,
 .app-content .btn.primary:hover,
