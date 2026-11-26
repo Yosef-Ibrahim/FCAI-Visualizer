@@ -29,6 +29,7 @@
   height: 100%;
   display: block;
   cursor: grab;
+  touch-action: none;
 }
 .ds-canvas:active {
   cursor: grabbing;

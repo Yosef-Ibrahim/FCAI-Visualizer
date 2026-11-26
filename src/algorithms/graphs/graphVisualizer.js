@@ -5,6 +5,7 @@
 
 import { THEMES, colA } from '../trees/AVLTree.js';
 import { codeSnippets } from '../../data/algorithmData.js';
+import { attachTouchGestures, cameraHints } from '../../infrastructure/canvas/touchGestures.js';
 
 const SPEED_MULTIPLIERS = [0.6, 1.2, 2.5];
 const NODE_R = 22;
@@ -99,6 +100,7 @@ export function initGraphVisualizer(container) {
   `;
 
   // Canvas area
+  const hints = cameraHints();
   const canvasWrap = document.createElement('main');
   canvasWrap.className = 'tree-canvas-wrap';
   canvasWrap.innerHTML = `
@@ -110,7 +112,7 @@ export function initGraphVisualizer(container) {
       <div class="tree-ls-edges" id="gv-ls-edges">Edges: 0</div>
       <div class="tree-ls-bfs" id="gv-ls-bfs">BFS: Not Started</div>
     </div>
-    <div class="tree-hints">Click nodes to add edges &nbsp;|&nbsp; Drag to move &nbsp;|&nbsp; Scroll: Zoom &nbsp;|&nbsp; Right-click+Drag: Pan</div>
+    <div class="tree-hints">${hints.touch ? `Tap nodes to add edges &nbsp;|&nbsp; ${hints.pan} &nbsp;|&nbsp; ${hints.zoom} &nbsp;|&nbsp; ${hints.reset}` : `Click nodes to add edges &nbsp;|&nbsp; Drag to move &nbsp;|&nbsp; ${hints.zoom} &nbsp;|&nbsp; ${hints.pan}`}</div>
     <div class="tree-popup" id="gv-popup" style="display:none">
       <span class="tree-popup-msg" id="gv-popup-msg"></span>
       <div class="tree-popup-progress" id="gv-popup-progress"></div>
@@ -708,6 +710,14 @@ export function initGraphVisualizer(container) {
   window.addEventListener('mousemove', onMouseMove);
   window.addEventListener('mouseup', onMouseUp);
 
+  // Touch: one-finger pan, pinch zoom, double-tap reset. Taps stay unprevented
+  // so mobile browsers still synthesise the clicks used to select nodes.
+  const detachTouch = attachTouchGestures(canvas, cam, {
+    minZoom: 0.08,
+    maxZoom: 6,
+    reset: resetCamera,
+  });
+
   // Render loop
   let lastTime = performance.now();
   let rafId = null;
@@ -825,6 +835,7 @@ export function initGraphVisualizer(container) {
     resizeObserver.disconnect();
     window.removeEventListener('mousemove', onMouseMove);
     window.removeEventListener('mouseup', onMouseUp);
+    detachTouch();
     container.innerHTML = '';
   }
 
