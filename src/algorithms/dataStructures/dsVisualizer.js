@@ -2,6 +2,7 @@ import { ArrayDS } from './ArrayDS.js';
 import { StackDS } from './StackDS.js';
 import { QueueDS } from './QueueDS.js';
 import { LinkedListDS } from './LinkedListDS.js';
+import { attachTouchGestures, cameraHints } from '../../infrastructure/canvas/touchGestures.js';
 
 const THEMES = {
   night: {
@@ -110,6 +111,7 @@ export function initDSVisualizer(container, type) {
   controlsContainer.innerHTML = dsEngine.getHTMLControls();
 
   // 3. Build Canvas Area
+  const hints = cameraHints();
   const canvasWrap = document.createElement('main');
   canvasWrap.className = 'ds-canvas-wrap';
   canvasWrap.innerHTML = `
@@ -119,7 +121,7 @@ export function initDSVisualizer(container, type) {
       <div class="ds-ls-label">LIVE STATS</div>
       <div class="ds-ls-item" id="ds-ls-size">Size: 0</div>
     </div>
-    <div class="ds-hints">Scroll: Zoom &nbsp;|&nbsp; Right-click+Drag: Pan &nbsp;|&nbsp; Double-click: Reset View</div>
+    <div class="ds-hints">${hints.zoom} &nbsp;|&nbsp; ${hints.pan} &nbsp;|&nbsp; ${hints.reset}</div>
     <div class="ds-popup hidden" id="ds-popup">
       <span class="ds-popup-msg" id="ds-popup-msg"></span>
       <div class="ds-popup-progress" id="ds-popup-progress"></div>
@@ -389,6 +391,13 @@ export function initDSVisualizer(container, type) {
   window.addEventListener('mousemove', onMouseMove);
   window.addEventListener('mouseup', onMouseUp);
 
+  // Touch: one-finger pan, pinch zoom around the midpoint, double-tap reset.
+  const detachTouch = attachTouchGestures(canvas, cam, {
+    minZoom: 0.1,
+    maxZoom: 5,
+    reset: resetCamera,
+  });
+
   // 8. Render Loop
   let lastTime = performance.now();
   let rafId = null;
@@ -429,6 +438,7 @@ export function initDSVisualizer(container, type) {
     if (!resizeObserver) window.removeEventListener('resize', onResize);
     window.removeEventListener('mousemove', onMouseMove);
     window.removeEventListener('mouseup', onMouseUp);
+    detachTouch();
     container.innerHTML = '';
   }
 

@@ -48,6 +48,21 @@ const DP_CONCEPTS = [
   { lvl: 'medium', q: 'In the coin change DP, dp[0] is set to what?', a: '0', d: ['1', 'Infinity', 'The smallest coin'], e: 'Zero amount needs zero coins.' },
 ];
 
+const GREEDY_EASY_CONCEPTS = [
+  { lvl: 'easy', q: 'A greedy algorithm makes which kind of choice at each step?', a: 'The best choice available right now', d: ['A random choice', 'The choice that looks worst later', 'Every possible choice in turn'], e: 'Greedy commits to the locally optimal option and never reconsiders.' },
+  { lvl: 'easy', q: 'Does a greedy algorithm always find the optimal solution?', a: 'No, only when the problem has the greedy-choice property', d: ['Yes, for every problem', 'Never', 'Only on sorted input'], e: 'Counterexamples exist whenever a local choice blocks a better global solution.' },
+  { lvl: 'easy', q: 'Which problem is solved optimally by a simple greedy algorithm?', a: 'Activity selection', d: ['0/1 knapsack', 'Longest common subsequence', 'Optimal binary search tree'], e: 'Picking the activity with the earliest finish time is provably optimal.' },
+  { lvl: 'easy', q: 'For fractional knapsack, greedy sorts items by which key?', a: 'Value per unit weight', d: ['Total value', 'Weight alone', 'Insertion order'], e: 'Taking the highest value-to-weight ratio first fills the capacity best.' },
+  { lvl: 'easy', q: 'Is greedy optimal for 0/1 knapsack?', a: 'No, it can miss the best combination', d: ['Yes, always', 'Yes, if items are sorted', 'Only when weights are equal'], e: 'A high-ratio item can block a combination with greater total value.' },
+  { lvl: 'easy', q: 'Greedy coin change with coins {1, 5, 10} for amount 12 uses how many coins?', a: '3', d: ['2', '4', '12'], e: 'Greedy takes 10 then 1 then 1, which is optimal here.' },
+  { lvl: 'easy', q: 'What is a feasible solution?', a: 'One that satisfies every constraint', d: ['One with the lowest cost', 'One that uses every input', 'One produced by a heuristic'], e: 'Feasibility is about constraints; optimality is about the objective.' },
+  { lvl: 'easy', q: 'What does optimal substructure mean?', a: 'An optimal solution contains optimal solutions to subproblems', d: ['The problem has no subproblems', 'Every subproblem is greedy', 'The input is already sorted'], e: 'It is the property that lets dynamic programming combine smaller optima.' },
+  { lvl: 'easy', q: 'How does greedy differ from dynamic programming?', a: 'Greedy never revisits earlier choices', d: ['Greedy stores every subproblem result', 'Greedy is always slower', 'Greedy considers all choices'], e: 'DP may reconsider choices through a table; greedy commits once.' },
+  { lvl: 'easy', q: 'Huffman coding greedily merges which two nodes?', a: 'The two with the smallest frequencies', d: ['The two with the largest frequencies', 'The two deepest nodes', 'A random pair'], e: 'Repeatedly merging the rarest symbols builds an optimal prefix code.' },
+  { lvl: 'easy', q: 'Is Dijkstra’s algorithm greedy?', a: 'Yes — it finalises the nearest unvisited vertex', d: ['No, it is exhaustive search', 'No, it is dynamic programming', 'Only on unweighted graphs'], e: 'Settling the minimum tentative distance is a greedy choice that is safe with non-negative weights.' },
+  { lvl: 'easy', q: 'Kruskal’s MST algorithm processes edges in which order?', a: 'Ascending weight', d: ['Descending weight', 'Insertion order', 'Random order'], e: 'Adding the cheapest edge that avoids a cycle builds a minimum spanning tree.' },
+];
+
 const GREEDY_CONCEPTS = [
   { lvl: 'easy', q: 'What defines a greedy algorithm?', a: 'It makes the best local choice at each step without backtracking', d: ['It tries every possibility', 'It sorts the final answer', 'It uses a hash table'], e: 'Greedy commits to a locally optimal decision.' },
   { lvl: 'medium', q: 'Which two properties must hold for a greedy algorithm to be optimal?', a: 'Greedy choice property and optimal substructure', d: ['Overlapping subproblems and memoization', 'Hashing and sorting', 'Stability and in-place operation'], e: 'A locally optimal choice must lead to a globally optimal solution.' },
@@ -435,7 +450,7 @@ export function buildGreedyQuestions() {
   }
 
   return uniqueBy(
-    [...qs, ...conceptBatch({ topic: 'greedy', prefix: 'greedy', concepts: GREEDY_CONCEPTS, rand })],
+    [...qs, ...conceptBatch({ topic: 'greedy', prefix: 'greedy', concepts: [...GREEDY_CONCEPTS, ...GREEDY_EASY_CONCEPTS], rand })],
     (question) => question.id,
   );
 }

@@ -7,6 +7,21 @@ import { conceptBatch, list, makeRng, mcq, randInt, uniqueBy } from '../core.js'
 const TOPIC = 'trie-suffix';
 const WORDS = ['cat', 'car', 'card', 'care', 'cart', 'dog', 'do', 'dot', 'dove', 'ant', 'ante', 'anti', 'ban', 'band', 'bank', 'bar', 'bark', 'barn'];
 
+const STRING_EASY_CONCEPTS = [
+  { lvl: 'easy', q: 'What does each edge of a trie represent?', a: 'One character', d: ['One whole word', 'One bit', 'One hash value'], e: 'Walking from the root spells a prefix one character at a time.' },
+  { lvl: 'easy', q: 'What string does the root of a trie represent?', a: 'The empty string', d: ['The alphabet', 'The longest word', 'The first word inserted'], e: 'Every stored word is a path starting at the empty root.' },
+  { lvl: 'easy', q: 'How long does a trie search take for a word of length L?', a: 'O(L)', d: ['O(1)', 'O(n) where n is the number of words', 'O(L log n)'], e: 'The search follows one edge per character of the word.' },
+  { lvl: 'easy', q: 'How many characters are stored in a single trie node?', a: 'None — characters label the edges', d: ['Exactly one', 'Two', 'All characters of the word'], e: 'A path of edges spells the word; nodes mark prefixes and word endings.' },
+  { lvl: 'easy', q: 'What is a suffix array?', a: 'The starting positions of all suffixes sorted lexicographically', d: ['An array of the characters of the string', 'A hash table of prefixes', 'A tree of all rotations'], e: 'It lists where each sorted suffix begins in the original string.' },
+  { lvl: 'easy', q: 'How many suffixes does a string of length n have?', a: 'n', d: ['n − 1', 'n + 1', '2n'], e: 'Every index 0…n − 1 starts one suffix.' },
+  { lvl: 'easy', q: 'What does LCP stand for in string structures?', a: 'Longest Common Prefix', d: ['Least Common Path', 'Longest Character Position', 'Left Child Pointer'], e: 'LCP values compare adjacent suffixes during construction and search.' },
+  { lvl: 'easy', q: 'Which structure is built from all suffixes of a single string?', a: 'A suffix tree', d: ['A trie of prefixes only', 'A binary heap', 'A hash set'], e: 'A suffix tree compresses every suffix of one text into a single tree.' },
+  { lvl: 'easy', q: 'Which structure is best for prefix autocomplete?', a: 'A trie', d: ['A sorted linked list', 'A binary heap', 'A circular queue'], e: 'Walking the prefix lands on the subtree that holds every matching word.' },
+  { lvl: 'easy', q: 'What marks the end of a stored word in a trie?', a: 'A terminal flag on its last node', d: ['A null edge', 'A second root', 'A negative character value'], e: 'The flag distinguishes a word that is a prefix of another word from a full word.' },
+  { lvl: 'easy', q: 'What does the trie space cost depend on?', a: 'The number of distinct prefixes (nodes)', d: ['Only the number of words', 'Only the alphabet size', 'The hash of each word'], e: 'Shared prefixes share nodes, so the node count tracks distinct prefixes.' },
+  { lvl: 'easy', q: 'In a suffix array, what does the value at index k mean?', a: 'The starting position of the k-th smallest suffix', d: ['The k-th character of the string', 'The length of the k-th suffix', 'The k-th distinct word'], e: 'Each entry points back to where that sorted suffix begins.' },
+];
+
 const STRING_CONCEPTS = [
   { lvl: 'easy', q: 'What does a trie store in each node?', a: 'A character and links to child characters', d: ['A full word', 'A hash value', 'A frequency table'], e: 'A path from the root spells a prefix.' },
   { lvl: 'medium', q: 'What is the lookup cost of a word of length L in a trie?', a: 'O(L)', d: ['O(n)', 'O(log n)', 'O(L²)'], e: 'One node is followed per character.' },
@@ -228,7 +243,7 @@ export function buildStringQuestions() {
   }
 
   return uniqueBy(
-    [...qs, ...conceptBatch({ topic: TOPIC, prefix: 'strings', concepts: STRING_CONCEPTS, rand })],
+    [...qs, ...conceptBatch({ topic: TOPIC, prefix: 'strings', concepts: [...STRING_CONCEPTS, ...STRING_EASY_CONCEPTS], rand })],
     (question) => question.id,
   );
 }

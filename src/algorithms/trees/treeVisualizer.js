@@ -10,6 +10,7 @@ import { BST } from './BST.js';
 import { getTreeCode, getTreeCodeLine, getTreeStep, TREE_CODE_LANGUAGES } from './treeCode.js';
 import { layoutTreeSnapshot, TREE_CAMERA_ORIGIN } from './treeLayout.js';
 import { getTreeImplementation, getTreeImplementationLine } from '../../data/treeImplementations.js';
+import { attachTouchGestures, cameraHints } from '../../infrastructure/canvas/touchGestures.js';
 
 const hintIcon = (paths) => `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
 
@@ -24,6 +25,7 @@ export function initTreeVisualizer(container, type = 'avl') {
   const isRBT = type === 'rbt';
   const titleName = isBST ? 'Binary Search Tree' : isAVL ? 'AVL Tree' : 'Red‑Black Tree';
   const readyMsg = isBST ? 'BST Ready' : isAVL ? 'AVL Tree Ready' : 'Red‑Black Tree Ready';
+  const hints = cameraHints();
 
 
 
@@ -191,10 +193,10 @@ export function initTreeVisualizer(container, type = 'avl') {
       <span class="tree-legend-dot" style="background:#8cd23c"></span>
     </div>
     <div class="tree-hints" aria-label="Canvas instructions">
-      <span class="tree-hint"><span class="tree-hint-icon">${hintIcon('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/>')}</span><span>Scroll to zoom</span></span>
-      <span class="tree-hint"><span class="tree-hint-icon">${hintIcon('<path d="m5 3 14 9-7 1-3 7z"/>')}</span><span>Right-click + drag to pan</span></span>
-      <span class="tree-hint"><span class="tree-hint-icon">${hintIcon('<path d="M3 7v6h6"/><path d="M3.5 13a9 9 0 1 0 2.1-6.5L3 9"/>')}</span><span>Double-click to reset view</span></span>
-      <span class="tree-hint"><span class="tree-hint-icon">${hintIcon('<path d="m9 10-5 5 5 5"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/>')}</span><span><kbd>Enter</kbd> to insert</span></span>
+      <span class="tree-hint"><span class="tree-hint-icon">${hintIcon('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/>')}</span><span>${hints.zoom}</span></span>
+      <span class="tree-hint"><span class="tree-hint-icon">${hintIcon('<path d="m5 3 14 9-7 1-3 7z"/>')}</span><span>${hints.pan}</span></span>
+      <span class="tree-hint"><span class="tree-hint-icon">${hintIcon('<path d="M3 7v6h6"/><path d="M3.5 13a9 9 0 1 0 2.1-6.5L3 9"/>')}</span><span>${hints.reset}</span></span>
+      <span class="tree-hint tree-hint--keyboard"><span class="tree-hint-icon">${hintIcon('<path d="m9 10-5 5 5 5"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/>')}</span><span><kbd>Enter</kbd> to insert</span></span>
     </div>
     <div class="tree-trav-bar" id="tv-trav-bar" style="display:none">
       <span class="tree-trav-title" id="tv-trav-title"></span>
@@ -944,24 +946,12 @@ export function initTreeVisualizer(container, type = 'avl') {
   window.addEventListener('mousemove', onMouseMove);
   window.addEventListener('mouseup', onMouseUp);
 
-  // Touch
-  let lastTouchDist = 0;
-  canvas.addEventListener('touchstart', (e) => {
-    if (e.touches.length === 2) {
-      const dx = e.touches[0].clientX - e.touches[1].clientX;
-      const dy = e.touches[0].clientY - e.touches[1].clientY;
-      lastTouchDist = Math.hypot(dx, dy);
-    }
-  }, { passive: true });
-  canvas.addEventListener('touchmove', (e) => {
-    if (e.touches.length === 2) {
-      const dx = e.touches[0].clientX - e.touches[1].clientX;
-      const dy = e.touches[0].clientY - e.touches[1].clientY;
-      const dist = Math.hypot(dx, dy);
-      cam.zoom = Math.max(0.08, Math.min(6, cam.zoom * (dist / (lastTouchDist || dist))));
-      lastTouchDist = dist;
-    }
-  }, { passive: true });
+  // Touch: one-finger pan, pinch zoom around the midpoint, double-tap reset.
+  const detachTouch = attachTouchGestures(canvas, cam, {
+    minZoom: 0.08,
+    maxZoom: 6,
+    reset: resetCamera,
+  });
 
   // ── Render loop ────────────────────────────────────────────────────────
   let lastTime = performance.now();
@@ -1123,6 +1113,7 @@ export function initTreeVisualizer(container, type = 'avl') {
     resizeObserver.disconnect();
     window.removeEventListener('mousemove', onMouseMove);
     window.removeEventListener('mouseup', onMouseUp);
+    detachTouch();
     container.innerHTML = '';
   }
 

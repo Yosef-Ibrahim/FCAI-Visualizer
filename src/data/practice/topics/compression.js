@@ -6,6 +6,21 @@ import { conceptBatch, makeRng, mcq, randInt, uniqueBy } from '../core.js';
 
 const TOPIC = 'compression';
 
+const COMPRESSION_EASY_CONCEPTS = [
+  { lvl: 'easy', q: 'What does lossless compression guarantee?', a: 'The original data can be reconstructed exactly', d: ['The file becomes smaller than one byte', 'Some detail may be discarded', 'Only images are supported'], e: 'Lossless formats keep every bit, so decompression reproduces the input exactly.' },
+  { lvl: 'easy', q: 'What does lossy compression discard?', a: 'Information that cannot be recovered', d: ['Only metadata', 'Nothing at all', 'The file header'], e: 'Lossy formats trade fidelity for a smaller size, and the removed detail is gone.' },
+  { lvl: 'easy', q: 'Which format is lossless?', a: 'PNG', d: ['JPEG', 'MP3', 'H.264'], e: 'PNG reconstructs the exact pixels; the others discard perceptual detail.' },
+  { lvl: 'easy', q: 'Which format is lossy?', a: 'JPEG', d: ['PNG', 'ZIP', 'FLAC'], e: 'JPEG quantises frequency coefficients to shrink photographic images.' },
+  { lvl: 'easy', q: 'What kind of code does Huffman coding build?', a: 'A variable-length prefix code', d: ['A fixed 8-bit code', 'A run-length code', 'A dictionary of whole files'], e: 'Frequent symbols get shorter codewords, and no codeword prefixes another.' },
+  { lvl: 'easy', q: 'In a Huffman code, which symbols receive the shortest codewords?', a: 'The most frequent ones', d: ['The least frequent ones', 'The first in the alphabet', 'All symbols equally'], e: 'Shorter codes for common symbols lower the average bits per symbol.' },
+  { lvl: 'easy', q: 'What does entropy measure in information theory?', a: 'The average information per symbol', d: ['The file size on disk', 'The number of distinct bytes', 'The compression time'], e: 'Entropy sets the theoretical lower bound on average bits per symbol.' },
+  { lvl: 'easy', q: 'What does LZ77 use to encode repeated text?', a: 'Back-references to earlier text', d: ['A fixed Huffman table', 'A Fourier transform', 'A hash of the whole file'], e: 'A match is stored as (offset, length), pointing back into the previous window.' },
+  { lvl: 'easy', q: 'Which input does run-length encoding compress best?', a: 'Long runs of the same symbol', d: ['Random bytes', 'Alternating symbols', 'Already compressed data'], e: 'A run such as AAAAAAAA becomes one symbol plus a count.' },
+  { lvl: 'easy', q: 'How is compression ratio defined?', a: 'Original size ÷ compressed size', d: ['Compressed size ÷ original size', 'Bits per symbol', 'Compression time ÷ file size'], e: 'A ratio above 1 means the compressed data is smaller than the original.' },
+  { lvl: 'easy', q: 'What does prefix-free mean for a code?', a: 'No codeword is a prefix of another codeword', d: ['Every codeword starts with 0', 'All codewords have equal length', 'The first symbol has no code'], e: 'Prefix-free codes can be decoded unambiguously without separators.' },
+  { lvl: 'easy', q: 'How many bits does a plain ASCII character use?', a: '8 bits', d: ['1 bit', '4 bits', '16 bits'], e: 'Standard ASCII fits in one 7-bit set stored in an 8-bit byte.' },
+];
+
 const COMPRESSION_CONCEPTS = [
   { lvl: 'easy', q: 'What distinguishes lossless from lossy compression?', a: 'Lossless restores the exact original data', d: ['Lossless is always smaller', 'Lossy is always reversible', 'They are the same'], e: 'Lossy compression discards some information permanently.' },
   { lvl: 'medium', q: 'Which technique assigns shorter codes to more frequent symbols?', a: 'Huffman coding', d: ['Run-length encoding', 'Fixed-length coding', 'LZ77'], e: 'Frequency-based codes reduce average length.' },
@@ -243,7 +258,7 @@ export function buildCompressionQuestions() {
   }
 
   return uniqueBy(
-    [...qs, ...conceptBatch({ topic: TOPIC, prefix: 'compression', concepts: COMPRESSION_CONCEPTS, rand })],
+    [...qs, ...conceptBatch({ topic: TOPIC, prefix: 'compression', concepts: [...COMPRESSION_CONCEPTS, ...COMPRESSION_EASY_CONCEPTS], rand })],
     (question) => question.id,
   );
 }

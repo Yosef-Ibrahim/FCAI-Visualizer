@@ -8,6 +8,21 @@ import { conceptBatch, makeRng, mcq, randInt, uniqueBy } from '../core.js';
 const TOPIC = 'cpu-scheduling';
 const NAMES = ['P1', 'P2', 'P3', 'P4'];
 
+const SCHEDULING_EASY_CONCEPTS = [
+  { lvl: 'easy', q: 'What does FCFS stand for in CPU scheduling?', a: 'First Come, First Served', d: ['Fastest CPU First Served', 'First Core, First Slice', 'Fixed Cycle, Fixed Slice'], e: 'Processes run in arrival order, like a queue.' },
+  { lvl: 'easy', q: 'Which process does Shortest Job First run next?', a: 'The one with the smallest burst time', d: ['The one that arrived last', 'The one with the largest burst time', 'The oldest process'], e: 'SJF minimises average waiting time by serving short bursts first.' },
+  { lvl: 'easy', q: 'Which scheduling policy can starve long jobs?', a: 'Shortest Job First', d: ['First Come, First Served', 'Round Robin', 'FIFO'], e: 'A steady stream of short jobs keeps long jobs waiting indefinitely.' },
+  { lvl: 'easy', q: 'What does Round Robin scheduling use to bound each turn?', a: 'A fixed time quantum', d: ['A priority number', 'The arrival time', 'The remaining burst only'], e: 'Each process runs for at most one quantum, then goes to the back of the queue.' },
+  { lvl: 'easy', q: 'How is turnaround time defined?', a: 'Completion time − arrival time', d: ['Burst time − waiting time', 'Arrival time + burst time', 'Quantum × number of processes'], e: 'It measures how long the process took from submission to completion.' },
+  { lvl: 'easy', q: 'How is waiting time defined?', a: 'Turnaround time − burst time', d: ['Burst time + arrival time', 'Completion time − quantum', 'Quantum − burst time'], e: 'Waiting time is the part of the turnaround spent in the ready queue.' },
+  { lvl: 'easy', q: 'What does non-preemptive scheduling mean?', a: 'A running process is never interrupted', d: ['A process can be paused at any time', 'Processes run in random order', 'Every process gets equal time'], e: 'The CPU is released only when the process finishes or blocks.' },
+  { lvl: 'easy', q: 'What does preemptive scheduling allow?', a: 'Interrupting a running process to switch to another', d: ['Running only one process ever', 'Ignoring arrival times', 'Running processes without a scheduler'], e: 'The scheduler can take the CPU back, for example when a quantum expires.' },
+  { lvl: 'easy', q: 'Which policy is preemptive by design?', a: 'Round Robin', d: ['First Come, First Served', 'Shortest Job First without preemption', 'FIFO'], e: 'Round Robin interrupts at the end of every quantum.' },
+  { lvl: 'easy', q: 'What is the convoy effect?', a: 'One long job delays many short jobs behind it', d: ['Many short jobs delay one long job', 'Two jobs finish at the same time', 'A job never finishes'], e: 'FCFS lets a CPU-bound job block the queue, inflating average waiting time.' },
+  { lvl: 'easy', q: 'Which problem affects priority scheduling, and how is it usually fixed?', a: 'Starvation — fixed by aging', d: ['Deadlock — fixed by paging', 'Thrashing — fixed by caching', 'Fragmentation — fixed by compaction'], e: 'Aging gradually raises the priority of waiting processes.' },
+  { lvl: 'easy', q: 'What does throughput measure?', a: 'Completed processes per unit time', d: ['Average burst time', 'Total arrival time', 'Number of CPUs'], e: 'Throughput counts how much work the scheduler finishes over time.' },
+];
+
 const SCHEDULING_CONCEPTS = [
   { lvl: 'easy', q: 'Which scheduling policy serves processes in arrival order?', a: 'First-Come, First-Served (FCFS)', d: ['Shortest Job First', 'Round Robin', 'Priority scheduling'], e: 'FCFS is a FIFO ready queue.' },
   { lvl: 'easy', q: 'Which policy selects the process with the smallest burst time?', a: 'Shortest Job First (SJF)', d: ['FCFS', 'Round Robin', 'Multilevel Queue'], e: 'SJF minimizes average waiting time for non-preemptive scheduling.' },
@@ -249,7 +264,7 @@ export function buildSchedulingQuestions() {
   }
 
   return uniqueBy(
-    [...qs, ...conceptBatch({ topic: TOPIC, prefix: 'scheduling', concepts: SCHEDULING_CONCEPTS, rand })],
+    [...qs, ...conceptBatch({ topic: TOPIC, prefix: 'scheduling', concepts: [...SCHEDULING_CONCEPTS, ...SCHEDULING_EASY_CONCEPTS], rand })],
     (question) => question.id,
   );
 }
