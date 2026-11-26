@@ -50,34 +50,29 @@
 
 .sidebar-brand {
   display: flex;
-  min-height: 112px;
+  min-height: 84px;
   align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
+  gap: 11px;
+  padding: 13px 18px;
   border-bottom: 1px solid var(--border);
 }
 
 .sidebar-brand-logo {
-  width: 76px;
-  height: 76px;
+  width: 46px;
+  height: 46px;
   flex: 0 0 auto;
-  object-fit: contain;
   transition: width 280ms ease, height 280ms ease;
-  filter: var(--sidebar-logo-filter, none);
 }
-
-:root[data-theme='dark'] { --sidebar-logo-filter: invert(1); }
-:root[data-theme='light'] { --sidebar-logo-filter: none; }
 .sidebar-brand-copy { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
 .sidebar-brand-copy strong { color: var(--text); font: 800 18px/1 var(--font-head); letter-spacing: -.03em; }
 .sidebar-brand-copy small { color: var(--text-muted); font-size: 10px; font-weight: 650; }
 
 .sidebar.collapsed .sidebar-brand {
-  min-height: 112px;
+  min-height: 110px;
   justify-content: center;
-  padding: 48px 4px 8px;
+  padding: 60px 4px 10px;
 }
-.sidebar.collapsed .sidebar-brand-logo { width: 52px; height: 52px; }
+.sidebar.collapsed .sidebar-brand-logo { width: 38px; height: 38px; }
 .sidebar.collapsed .sidebar-brand-copy,
 .sidebar.collapsed .sidebar-section-title,
 .sidebar.collapsed .sidebar-link > span,

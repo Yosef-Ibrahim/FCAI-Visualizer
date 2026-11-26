@@ -7,7 +7,14 @@
     "cta": "Explore the courses",
     "proof1": "Interactive visualizations",
     "proof2": "Step-by-step learning",
-    "label": "VISUALIZE · EXPLORE · LEARN"
+    "previewsLabel": "Subject previews",
+    "previews": {
+      "data-structure": "Data structures",
+      "advanced-data-structure": "Advanced",
+      "algorithms": "Algorithms",
+      "operating-systems": "OS",
+      "information-theory-compression": "Compression"
+    }
   },
   "courses": {
     "eyebrow": "YOUR LEARNING PATH",

@@ -25,8 +25,8 @@ import {
   Zap,
 } from 'lucide-react';
 import { useT } from '../../hooks/useT';
+import Logo from '../shared/Logo';
 import './Sidebar.css';
-import logo from '../../../assets/ddc-logo-transparent.png';
 
 // Labels resolve through the catalog namespace at render time so switching
 // language re-renders without remounting the sidebar.
@@ -125,7 +125,7 @@ export default function Sidebar({ collapsed, onToggle }) {
         title={t('nav.home')}
         aria-label={t('nav.homeLink')}
       >
-        <img src={logo} alt="" className="sidebar-brand-logo" />
+        <Logo className="sidebar-brand-logo" />
         <span className="sidebar-brand-copy">
           <strong>FCAI-CU</strong>
           <small>{t('nav.brandTagline')}</small>

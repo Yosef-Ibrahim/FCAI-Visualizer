@@ -7,7 +7,14 @@
     "cta": "استكشف المقررات",
     "proof1": "عروض تفاعلية",
     "proof2": "تعلّم خطوة بخطوة",
-    "label": "شاهِد · استكشف · تعلّم"
+    "previewsLabel": "معاينات المقررات",
+    "previews": {
+      "data-structure": "بنى البيانات",
+      "advanced-data-structure": "المتقدمة",
+      "algorithms": "الخوارزميات",
+      "operating-systems": "أنظمة التشغيل",
+      "information-theory-compression": "الضغط"
+    }
   },
   "courses": {
     "eyebrow": "مسارك التعليمي",

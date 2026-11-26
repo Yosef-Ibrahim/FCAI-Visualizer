@@ -7,7 +7,14 @@
     "cta": "浏览课程",
     "proof1": "交互式可视化",
     "proof2": "分步学习",
-    "label": "可视化 · 探索 · 学习"
+    "previewsLabel": "科目预览",
+    "previews": {
+      "data-structure": "数据结构",
+      "advanced-data-structure": "高级结构",
+      "algorithms": "算法",
+      "operating-systems": "操作系统",
+      "information-theory-compression": "压缩"
+    }
   },
   "courses": {
     "eyebrow": "你的学习路径",
