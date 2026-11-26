@@ -10,5 +10,9 @@ export default defineConfig({
     include: ['src/**/*.test.js'],
     // No globals: every test file imports { describe, it, expect } from 'vitest'.
     globals: false,
+    // The exhaustive B-Tree / red-black property tests take ~2s alone but can
+    // exceed the 5s default when many workers share a slow machine. The extra
+    // headroom only prevents flaky timeouts; assertions are unchanged.
+    testTimeout: 20000,
   },
 });

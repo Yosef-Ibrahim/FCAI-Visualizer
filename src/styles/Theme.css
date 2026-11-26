@@ -1,0 +1,432 @@
+/* ── One UI ──────────────────────────────────────────────────────────────────
+   A single, calm visual language layered over the page-specific styles. Rules
+   are scoped under .app-content (or the app shell) with one extra level of
+   specificity so they win over lazily-loaded page CSS without !important.
+   Only colour, surface, radius, type and spacing are touched — no layout or
+   canvas sizing is changed here.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Typography ------------------------------------------------------------- */
+.app-content h1,
+.app-content h2,
+.app-content h3,
+.app-content h4 {
+  font-family: var(--font-head);
+  color: var(--text);
+  letter-spacing: -.02em;
+}
+
+.app-content p,
+.app-content li,
+.app-content label {
+  text-wrap: pretty;
+}
+
+.app-content .page__header h1 {
+  font-size: clamp(26px, 3.1vw, 36px);
+  font-weight: 800;
+  letter-spacing: -.04em;
+}
+
+.app-content .page__subtitle {
+  max-width: 68ch;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+/* Header + sidebar ------------------------------------------------------- */
+.app-header {
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 88%, var(--bg));
+  backdrop-filter: saturate(120%) blur(10px);
+}
+
+.header-eyebrow {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-title {
+  font-size: 16px;
+  font-weight: 750;
+  letter-spacing: -.02em;
+}
+
+.icon-button,
+.theme-toggle {
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  box-shadow: var(--shadow-sm);
+}
+
+.icon-button:hover,
+.theme-toggle:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: var(--surface2);
+  color: var(--accent);
+}
+
+.header-help-link {
+  background: var(--accent);
+  box-shadow: none;
+  font-weight: 750;
+}
+
+.header-help-link:hover { filter: brightness(1.05); transform: none; }
+
+.sidebar {
+  border-inline-end: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.sidebar-section-title {
+  color: color-mix(in srgb, var(--text-muted) 82%, var(--text));
+  font-size: 9px;
+  letter-spacing: .13em;
+}
+
+.sidebar-link,
+.sidebar-course-heading {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.sidebar-link svg,
+.sidebar-course-heading svg { color: color-mix(in srgb, var(--text-muted) 78%, var(--text)); }
+
+.sidebar-link:hover,
+.sidebar-course-heading:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.sidebar-link.active {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color: var(--accent);
+}
+
+.sidebar-support-card {
+  border-color: var(--border);
+  background: var(--surface2);
+  box-shadow: none;
+}
+
+.sidebar-support-icon {
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+}
+
+.sidebar-footer { border-top: 1px solid var(--border); }
+
+/* Course + topic cards --------------------------------------------------- */
+.app-content .course-card {
+  min-height: 232px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.app-content .course-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--course-color) 32%, var(--border));
+  box-shadow: var(--shadow);
+}
+
+.app-content .course-card--blue { --course-color: var(--accent); --course-tint: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.app-content .course-card--gold { --course-color: #96702f; --course-tint: #f6efdf; }
+.app-content .course-card--violet { --course-color: #6a5a8a; --course-tint: #f0edf6; }
+.app-content .course-card--emerald { --course-color: #3f7f63; --course-tint: #e9f3ee; }
+.app-content .course-card--coral { --course-color: #a05a4f; --course-tint: #f8ece9; }
+
+[data-theme="dark"] .app-content .course-card--blue { --course-color: var(--accent); --course-tint: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+[data-theme="dark"] .app-content .course-card--gold { --course-color: #d9b878; --course-tint: #2a261d; }
+[data-theme="dark"] .app-content .course-card--violet { --course-color: #b5a8d6; --course-tint: #242031; }
+[data-theme="dark"] .app-content .course-card--emerald { --course-color: #91cfa7; --course-tint: #1a2c25; }
+[data-theme="dark"] .app-content .course-card--coral { --course-color: #e0a396; --course-tint: #2c211e; }
+
+.app-content .course-card-icon,
+.app-content .topic-card-icon {
+  border-radius: 12px;
+  background: var(--course-tint, color-mix(in srgb, var(--accent) 10%, var(--surface)));
+  color: var(--course-color, var(--accent));
+}
+
+.app-content .course-card-eyebrow { color: var(--course-color); font-size: 9px; letter-spacing: .12em; }
+.app-content .course-card h2 { font-size: 20px; font-weight: 750; letter-spacing: -.03em; }
+.app-content .course-card > p { color: var(--text-muted); font-size: 11px; line-height: 1.7; }
+.app-content .course-card-footer { border-top-color: var(--border); }
+.app-content .course-card-cta { border-color: var(--border); color: var(--text-muted); }
+.app-content .course-card-decoration { opacity: .55; }
+
+.app-content .course-overview-hero {
+  min-height: 200px;
+  padding: 30px clamp(22px, 3.6vw, 44px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(ellipse at 86% 50%, color-mix(in srgb, var(--overview-color) 8%, transparent), transparent 46%),
+    var(--surface);
+}
+
+.app-content .course-overview--blue { --overview-color: var(--accent); --overview-tint: var(--surface); }
+.app-content .course-overview--gold { --overview-color: #96702f; --overview-tint: var(--surface); }
+.app-content .course-overview--violet { --overview-color: #6a5a8a; --overview-tint: var(--surface); }
+.app-content .course-overview--emerald { --overview-color: #3f7f63; --overview-tint: var(--surface); }
+.app-content .course-overview--coral { --overview-color: #a05a4f; --overview-tint: var(--surface); }
+
+.app-content .course-overview-copy h1 { font-size: clamp(27px, 3.6vw, 38px); font-weight: 800; }
+.app-content .course-overview-copy > p { color: var(--text-muted); font-size: 12px; line-height: 1.7; }
+.app-content .course-art-core { border-radius: 22px; box-shadow: var(--shadow-sm); }
+.app-content .course-art-ring { opacity: .6; }
+
+.app-content .topic-card {
+  min-height: 196px;
+  padding: 17px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: none;
+}
+
+.app-content .topic-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 26%, var(--border));
+  box-shadow: var(--shadow-sm);
+}
+
+.app-content .topic-card h3 { font-size: 14px; font-weight: 750; }
+.app-content .topic-card p { color: var(--text-muted); font-size: 10px; line-height: 1.65; }
+.app-content .topic-card-tags span { background: var(--surface2); color: var(--text-muted); font-weight: 650; }
+.app-content .topic-card-status { background: color-mix(in srgb, var(--accent3) 12%, var(--surface)); color: var(--accent3); }
+.app-content .topic-card-link { color: var(--accent); font-weight: 750; }
+.app-content .topic-card-icon { background: color-mix(in srgb, var(--accent) 9%, var(--surface)); color: var(--accent); }
+
+.app-content .learning-tool-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: none;
+}
+
+.app-content .learning-tool-card:hover {
+  border-color: color-mix(in srgb, var(--tool-color) 32%, var(--border));
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.app-content .learning-tool-card--violet { --tool-color: var(--accent); --tool-tint: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.app-content .learning-tool-card--green { --tool-color: var(--accent3); --tool-tint: color-mix(in srgb, var(--accent3) 10%, var(--surface)); }
+
+/* Shared surfaces -------------------------------------------------------- */
+.app-content .panel-card,
+.app-content .scoreboard,
+.app-content .training-card,
+.app-content .quiz-question,
+.app-content .quiz-container,
+.app-content .compare-controls,
+.app-content .compare-metric-card,
+.app-content .compare-canvas-wrapper,
+.app-content .sorting-canvas-wrapper,
+.app-content .searching-canvas-wrapper,
+.app-content .tree-panel,
+.app-content .ds-panel,
+.app-content .ds-code-panel,
+.app-content .ds-live-stats {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.app-content .tree-panel,
+.app-content .ds-panel {
+  background-image: none;
+  box-shadow: none;
+}
+
+.app-content .ds-panel-title,
+.app-content .ds-code-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-content .ds-panel-title { padding: 20px; }
+.app-content .ds-title-sub { color: var(--text-muted); font-size: 10px; letter-spacing: .1em; }
+.app-content .ds-title-main { font-size: 21px; font-weight: 750; letter-spacing: -.03em; }
+
+.app-content .ds-btn,
+.app-content .ds-btn-primary,
+.app-content .ds-btn-accent,
+.app-content .ds-btn-green,
+.app-content .ds-btn-orange,
+.app-content .ds-btn-danger {
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.app-content .ds-btn-primary { background: var(--accent); }
+.app-content .ds-btn-primary:hover { background: color-mix(in srgb, var(--accent) 88%, black); box-shadow: none; }
+.app-content .ds-btn-accent,
+.app-content .ds-btn-green { background: var(--accent3); }
+.app-content .ds-btn-accent:hover,
+.app-content .ds-btn-green:hover { background: color-mix(in srgb, var(--accent3) 88%, black); box-shadow: none; }
+.app-content .ds-btn-danger { background: var(--accent2); }
+.app-content .ds-btn-danger:hover { background: color-mix(in srgb, var(--accent2) 88%, black); box-shadow: none; }
+.app-content .ds-btn-orange { background: var(--accent4); }
+.app-content .ds-btn-orange:hover { background: color-mix(in srgb, var(--accent4) 88%, black); box-shadow: none; }
+
+.app-content .ds-btn-ghost {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.app-content .ds-val-input,
+.app-content .ds-rand-input {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+}
+
+.app-content .ds-val-input:focus,
+.app-content .ds-rand-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.app-content .ds-code-lang-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.app-content .ds-code-pre {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.app-content .ds-cline.active {
+  border-left-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.app-content .ds-code-step-msg.done { color: var(--accent3); background: color-mix(in srgb, var(--accent3) 9%, transparent); }
+.app-content .ds-popup { border-color: var(--accent); }
+.app-content .ds-popup-progress { background: var(--accent); }
+.app-content .ds-speed-btn.active { background: var(--surface); box-shadow: var(--shadow-sm); }
+
+/* Buttons + inputs ------------------------------------------------------- */
+.app-content .btn,
+.app-content .btn-primary,
+.app-content .btn-outline,
+.app-content .compare-run-btn {
+  min-height: 40px;
+  padding: 0 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 750;
+  transition: background .16s, border-color .16s, color .16s;
+}
+
+.app-content .btn:hover,
+.app-content .btn-outline:hover,
+.app-content .compare-run-btn:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: var(--surface2);
+  filter: none;
+}
+
+.app-content .btn-primary,
+.app-content .btn.primary,
+.app-content .compare-run-btn {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+[data-theme="dark"] .app-content .btn-primary,
+[data-theme="dark"] .app-content .btn.primary,
+[data-theme="dark"] .app-content .compare-run-btn,
+[data-theme="dark"] .header-help-link,
+[data-theme="dark"] .app-content .home-primary-link,
+[data-theme="dark"] .app-content .not-found-page a,
+[data-theme="dark"] .app-content .course-card:hover .course-card-cta,
+[data-theme="dark"] .app-content .ds-btn-primary,
+[data-theme="dark"] .app-content .ds-btn-accent,
+[data-theme="dark"] .app-content .ds-btn-green,
+[data-theme="dark"] .app-content .ds-btn-orange,
+[data-theme="dark"] .app-content .ds-btn-danger { color: #10201c; }
+
+.app-content .btn-primary:hover,
+.app-content .btn.primary:hover,
+.app-content .compare-run-btn:hover {
+  background: color-mix(in srgb, var(--accent) 90%, black);
+  border-color: color-mix(in srgb, var(--accent) 90%, black);
+}
+
+.app-content .btn-outline { background: transparent; }
+
+.app-content select,
+.app-content input[type="text"],
+.app-content input[type="number"],
+.app-content input[type="search"],
+.app-content textarea {
+  border-color: var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+.app-content select:focus,
+.app-content input:focus,
+.app-content textarea:focus {
+  border-color: var(--accent);
+}
+
+/* Code ------------------------------------------------------------------- */
+.app-content pre {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+}
+
+/* Focus ------------------------------------------------------------------ */
+.app-content button:focus-visible,
+.app-content a:focus-visible,
+.app-content input:focus-visible,
+.app-content select:focus-visible,
+.app-content textarea:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* Theme transitions ------------------------------------------------------ */
+body,
+.app-header,
+.sidebar,
+.app-content .course-card,
+.app-content .topic-card,
+.app-content .learning-tool-card,
+.app-content .panel-card {
+  transition: background-color .22s ease, border-color .22s ease, color .22s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-content .course-card:hover,
+  .app-content .topic-card:hover,
+  .app-content .learning-tool-card:hover,
+  .app-content .home-primary-link:hover { transform: none; }
+}

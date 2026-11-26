@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', '.tools']),
+  globalIgnores(['dist', '.tools', 'algoviz-react']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
