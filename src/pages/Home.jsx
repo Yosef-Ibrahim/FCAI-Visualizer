@@ -1,4 +1,15 @@
-import { ArrowRight, Brain, Check, GitCompareArrows, Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import {
+  ArrowRight,
+  Binary,
+  Brain,
+  Cpu,
+  GitBranch,
+  GitCompareArrows,
+  Grid3x3,
+  Layers,
+  Sparkles,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import CourseCard from '../components/shared/CourseCard';
 import {
@@ -15,6 +26,104 @@ const TOOLS = [
   { id: 'practice', route: '/practice', icon: Brain, color: 'violet' },
   { id: 'compare', route: '/compare', icon: GitCompareArrows, color: 'green' },
 ];
+
+const PREVIEWS = [
+  { id: 'data-structure', icon: Layers, stat: 'n = 7', meta: 'O(n log n)' },
+  { id: 'advanced-data-structure', icon: GitBranch, stat: 'h = 3', meta: 'O(log n)' },
+  { id: 'algorithms', icon: Grid3x3, stat: 'n × W', meta: 'O(nW)' },
+  { id: 'operating-systems', icon: Cpu, stat: 'P1–P4', meta: 'O(n)' },
+  { id: 'information-theory-compression', icon: Binary, stat: '0 1 0 1', meta: '38%' },
+];
+
+function SortingPreview() {
+  return (
+    <div className="pv-bars">
+      {[44, 66, 36, 82, 58, 72, 30].map((height, index) => (
+        <span key={`${height}-${index}`} style={{ '--h': `${height}%`, '--i': index }} />
+      ))}
+    </div>
+  );
+}
+
+function TreePreview() {
+  const nodes = [
+    [110, 24, 8, 'root'],
+    [58, 66, 4, ''],
+    [162, 66, 12, ''],
+    [30, 104, 2, ''],
+    [86, 104, 6, ''],
+    [134, 104, 10, ''],
+    [190, 104, 14, ''],
+  ];
+  return (
+    <svg className="pv-tree" viewBox="0 0 220 128" aria-hidden="true">
+      <circle className="pv-tree-halo" cx="110" cy="24" r="18" />
+      <path d="M110 24 L58 66 M110 24 L162 66 M58 66 L30 104 M58 66 L86 104 M162 66 L134 104 M162 66 L190 104" />
+      {nodes.map(([cx, cy, value, className], index) => (
+        <g
+          key={value}
+          className={`pv-tree-node${className ? ` pv-tree-node--${className}` : ''}`}
+          style={{ '--i': index }}
+        >
+          <circle cx={cx} cy={cy} r="12" />
+          <text x={cx} y={cy} dominantBaseline="central" textAnchor="middle">{value}</text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+function GridPreview() {
+  return (
+    <div className="pv-cells">
+      {Array.from({ length: 24 }, (_, index) => (
+        <span key={index} style={{ '--i': index }} />
+      ))}
+    </div>
+  );
+}
+
+function GanttPreview() {
+  const blocks = [
+    { grow: 34, color: 'var(--accent)' },
+    { grow: 22, color: 'var(--accent3)' },
+    { grow: 28, color: 'var(--accent4)' },
+    { grow: 16, color: 'var(--accent2)' },
+  ];
+  return (
+    <div className="pv-gantt">
+      {blocks.map((block, index) => (
+        <span
+          key={block.color}
+          style={{ '--w': block.grow, '--c': block.color, '--i': index }}
+        />
+      ))}
+      <i className="pv-playhead" />
+    </div>
+  );
+}
+
+function CompressionPreview() {
+  const bits = ['1', '0', '1', '1', '0', '1', '0', '0', '1', '0', '1', '1', '0', '1'];
+  return (
+    <div className="pv-compress">
+      <div className="pv-bits">
+        {bits.map((bit, index) => (
+          <span key={`${bit}-${index}`} style={{ '--i': index }}>{bit}</span>
+        ))}
+      </div>
+      <div className="pv-meter"><span /></div>
+    </div>
+  );
+}
+
+function SubjectPreview({ id }) {
+  if (id === 'advanced-data-structure') return <TreePreview />;
+  if (id === 'algorithms') return <GridPreview />;
+  if (id === 'operating-systems') return <GanttPreview />;
+  if (id === 'information-theory-compression') return <CompressionPreview />;
+  return <SortingPreview />;
+}
 
 function LearningToolCard({ tool }) {
   const t = useT();
@@ -36,6 +145,8 @@ function LearningToolCard({ tool }) {
 
 export default function Home() {
   const t = useT();
+  const [preview, setPreview] = useState(PREVIEWS[0].id);
+  const activePreview = PREVIEWS.find((item) => item.id === preview) ?? PREVIEWS[0];
 
   return (
     <div className="home-page page animate-in">
@@ -52,30 +163,48 @@ export default function Home() {
             <span><i /> {t('home:hero.proof2')}</span>
           </div>
         </div>
-        <div className="home-hero-visual" aria-hidden="true">
-          <span className="hero-aurora hero-aurora--one" />
-          <span className="hero-aurora hero-aurora--two" />
-          <span className="hero-orbit hero-orbit--one" />
-          <span className="hero-orbit hero-orbit--two" />
-          <div className="hero-demo">
-            <div className="hero-demo-top">
-              <span className="hero-demo-dot" />
-              <span className="hero-demo-dot" />
-              <span className="hero-demo-dot" />
-              <span className="hero-demo-title">O(n log n)</span>
+
+        <div className="home-hero-visual">
+          <span className="hero-aurora hero-aurora--one" aria-hidden="true" />
+          <span className="hero-aurora hero-aurora--two" aria-hidden="true" />
+
+          <div className="hero-stage">
+            <div className="hero-stage-head">
+              <span className="hero-stage-dot" aria-hidden="true" />
+              <span className="hero-stage-dot" aria-hidden="true" />
+              <span className="hero-stage-dot" aria-hidden="true" />
+              <span className="hero-stage-title" aria-live="polite">
+                {t(`home:hero.previews.${activePreview.id}`)}
+              </span>
             </div>
-            <div className="hero-bars">
-              {[44, 66, 36, 82, 58, 72, 30].map((height, index) => (
-                <span
-                  key={`${height}-${index}`}
-                  style={{ '--bar-height': `${height}%`, '--bar-index': index }}
-                />
-              ))}
+            <div className="hero-stage-body" key={preview} aria-hidden="true">
+              <SubjectPreview id={preview} />
             </div>
-            <div className="hero-demo-foot">
-              <span>n = 7</span>
-              <span className="hero-demo-badge"><Check size={11} /> sorted</span>
+            <div className="hero-stage-foot" aria-hidden="true">
+              <span>{activePreview.stat}</span>
+              <span>{activePreview.meta}</span>
             </div>
+          </div>
+
+          <div className="hero-prints" role="group" aria-label={t('home:hero.previewsLabel')}>
+            {PREVIEWS.map((item) => {
+              const Icon = item.icon;
+              const label = t(`home:hero.previews.${item.id}`);
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={`hero-print${preview === item.id ? ' is-active' : ''}`}
+                  onClick={() => setPreview(item.id)}
+                  aria-pressed={preview === item.id}
+                  aria-label={label}
+                  title={label}
+                >
+                  <Icon size={16} aria-hidden="true" />
+                  <span>{label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </section>

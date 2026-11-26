@@ -7,7 +7,14 @@
     "cta": "コースを見る",
     "proof1": "インタラクティブな可視化",
     "proof2": "ステップごとの学習",
-    "label": "可視化 · 探究 · 学習"
+    "previewsLabel": "科目プレビュー",
+    "previews": {
+      "data-structure": "データ構造",
+      "advanced-data-structure": "高度構造",
+      "algorithms": "アルゴリズム",
+      "operating-systems": "OS",
+      "information-theory-compression": "圧縮"
+    }
   },
   "courses": {
     "eyebrow": "学習ロードマップ",
